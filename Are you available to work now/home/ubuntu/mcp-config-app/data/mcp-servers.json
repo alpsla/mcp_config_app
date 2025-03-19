@@ -1,0 +1,104 @@
+[
+  {
+    "id": "mcp-hfspace",
+    "name": "Hugging Face Space",
+    "description": "Access models from Hugging Face Hub directly in Claude",
+    "command": "npx",
+    "defaultArgs": [
+      "-y",
+      "@llmindset/mcp-hfspace",
+      "--work-dir=/tmp",
+      "--HF_TOKEN=HF_{token}"
+    ],
+    "categories": ["AI Models", "Machine Learning", "Text Generation"],
+    "rating": 4.8,
+    "downloads": 5200,
+    "requiresToken": true,
+    "tokenName": "HF_TOKEN",
+    "tokenDescription": "Hugging Face API token for accessing models",
+    "author": "llmindset",
+    "version": "1.2.0",
+    "lastUpdated": "2025-02-15"
+  },
+  {
+    "id": "mcp-filesystem",
+    "name": "File System Access",
+    "description": "Allows Claude to read, write, and manage files on your computer",
+    "command": "npx",
+    "defaultArgs": [
+      "-y",
+      "@anthropic/mcp-filesystem",
+      "--work-dir={workdir}"
+    ],
+    "categories": ["File System", "Data Access", "Utility"],
+    "rating": 4.9,
+    "downloads": 8700,
+    "requiresToken": false,
+    "author": "Anthropic",
+    "version": "2.0.1",
+    "lastUpdated": "2025-01-20"
+  },
+  {
+    "id": "mcp-puppeteer",
+    "name": "Puppeteer Web Browser",
+    "description": "Enables Claude to browse the web and interact with websites",
+    "command": "docker",
+    "defaultArgs": [
+      "run", 
+      "-i", 
+      "--rm", 
+      "--init", 
+      "-e", 
+      "DOCKER_CONTAINER=true", 
+      "mcp/puppeteer"
+    ],
+    "categories": ["Web Browsing", "Automation", "Data Scraping"],
+    "rating": 4.7,
+    "downloads": 6300,
+    "requiresToken": false,
+    "dockerImage": "mcp/puppeteer",
+    "author": "Docker Community",
+    "version": "1.5.0",
+    "lastUpdated": "2025-03-01"
+  },
+  {
+    "id": "mcp-postgres",
+    "name": "PostgreSQL Database",
+    "description": "Connect Claude to PostgreSQL databases for data analysis and management",
+    "command": "npx",
+    "defaultArgs": [
+      "-y",
+      "@anthropic/mcp-postgres",
+      "--connection-string={connectionString}"
+    ],
+    "categories": ["Database", "Data Analysis", "SQL"],
+    "rating": 4.6,
+    "downloads": 4100,
+    "requiresToken": true,
+    "tokenName": "CONNECTION_STRING",
+    "tokenDescription": "PostgreSQL connection string with credentials",
+    "author": "Anthropic",
+    "version": "1.3.2",
+    "lastUpdated": "2025-02-10"
+  },
+  {
+    "id": "mcp-github",
+    "name": "GitHub Integration",
+    "description": "Allows Claude to interact with GitHub repositories and issues",
+    "command": "npx",
+    "defaultArgs": [
+      "-y",
+      "@anthropic/mcp-github",
+      "--token={token}"
+    ],
+    "categories": ["Development", "Version Control", "Collaboration"],
+    "rating": 4.5,
+    "downloads": 3800,
+    "requiresToken": true,
+    "tokenName": "GITHUB_TOKEN",
+    "tokenDescription": "GitHub personal access token",
+    "author": "Anthropic",
+    "version": "1.1.0",
+    "lastUpdated": "2025-01-15"
+  }
+]

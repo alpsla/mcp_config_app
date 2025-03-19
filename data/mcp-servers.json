@@ -1,0 +1,41 @@
+[
+    {
+      "id": "hf-models",
+      "name": "Hugging Face Models",
+      "description": "Access to Hugging Face models via API",
+      "categories": ["AI Models", "Text Generation", "Image Generation"],
+      "rating": 4.8,
+      "downloads": 12500,
+      "version": "1.2.0",
+      "author": "HF Team",
+      "requiresToken": true,
+      "tokenName": "HF_TOKEN",
+      "tokenDescription": "Get your token from huggingface.co/settings/tokens",
+      "defaultArgs": ["--work-dir=/tmp", "--HF_TOKEN={token}"]
+    },
+    {
+      "id": "web-search",
+      "name": "Web Search",
+      "description": "Search the web and retrieve information",
+      "categories": ["Web", "Search", "Information Retrieval"],
+      "rating": 4.5,
+      "downloads": 9800,
+      "version": "2.1.0",
+      "author": "Search Team",
+      "requiresToken": false,
+      "defaultArgs": ["--results=5", "--safe-search=true"]
+    },
+    {
+      "id": "file-system",
+      "name": "File System Access",
+      "description": "Access and manipulate files on your computer",
+      "categories": ["Files", "System", "Storage"],
+      "rating": 4.2,
+      "downloads": 7500,
+      "version": "1.0.5",
+      "author": "FS Team",
+      "requiresToken": false,
+      "defaultArgs": ["--root-dir=/Users", "--read-only=false"]
+    }
+  ]
+  
