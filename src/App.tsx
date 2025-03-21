@@ -3,6 +3,8 @@ import './App.css';
 import MCPServerService from './services/mcpServerService';
 import ConfigurationService from './services/configurationService';
 import { MCPServer, MCPConfiguration, SearchFilters } from './types';
+import ConfigurationList from './components/ConfigurationList';
+import ConfigurationWizard from './components/ConfigurationWizard';
 
 const App: React.FC = () => {
   // Services
@@ -16,6 +18,8 @@ const App: React.FC = () => {
   const [configurations, setConfigurations] = useState<MCPConfiguration[]>([]);
   const [activeTab, setActiveTab] = useState('search'); // 'search' or 'configurations'
   const [message, setMessage] = useState<{text: string, type: 'success' | 'error'} | null>(null);
+  const [showWizard, setShowWizard] = useState(false);
+  const [selectedConfigId, setSelectedConfigId] = useState<string | null>(null);
 
   // Load initial data
   useEffect(() => {
@@ -43,6 +47,65 @@ const App: React.FC = () => {
   const showMessage = (text: string, type: 'success' | 'error') => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 5000);
+  };
+  
+  // Handle creating a new configuration
+  const handleCreateConfiguration = () => {
+    setShowWizard(true);
+  };
+  
+  // Handle selecting a configuration
+  const handleSelectConfiguration = (configId: string) => {
+    setSelectedConfigId(configId);
+  };
+  
+  // Handle deleting a configuration
+  const handleDeleteConfiguration = (configId: string) => {
+    const deleted = configService.deleteConfiguration(configId);
+    if (deleted) {
+      setConfigurations(configService.getAllConfigurations());
+      showMessage('Configuration deleted successfully', 'success');
+    } else {
+      showMessage('Failed to delete configuration', 'error');
+    }
+  };
+  
+  // Handle saving a configuration from the wizard
+  const handleSaveConfiguration = (config: MCPConfiguration) => {
+    try {
+      let savedConfig: MCPConfiguration;
+      
+      // Check if this is a new configuration or an existing one
+      const existingConfig = configService.getConfigurationById(config.id);
+      
+      if (existingConfig) {
+        // Update existing configuration
+        savedConfig = configService.updateConfiguration(config);
+      } else {
+        // Create new configuration
+        savedConfig = configService.createConfiguration(config.name, config.description);
+        
+        // Add servers to the new configuration
+        config.servers.forEach(serverConfig => {
+          configService.addServerToConfiguration(savedConfig.id, serverConfig);
+        });
+        
+        // Get the updated configuration with all servers
+        savedConfig = configService.getConfigurationById(savedConfig.id) as MCPConfiguration;
+      }
+      
+      setConfigurations(configService.getAllConfigurations());
+      setShowWizard(false);
+      showMessage('Configuration saved successfully', 'success');
+    } catch (error) {
+      console.error('Error saving configuration:', error);
+      showMessage('Failed to save configuration', 'error');
+    }
+  };
+  
+  // Handle canceling the wizard
+  const handleCancelWizard = () => {
+    setShowWizard(false);
   };
 
   return (
@@ -126,38 +189,21 @@ const App: React.FC = () => {
         ) : (
           <div className="configurations-view">
             <div className="configurations-container">
-              <div className="configuration-list">
-                <div className="list-header">
-                  <h2>My Configurations</h2>
-                  <button className="create-config-btn">
-                    Create New
-                  </button>
-                </div>
-
-                {configurations.length === 0 ? (
-                  <div className="empty-list">
-                    <p>You don't have any configurations yet.</p>
-                    <p>Create a new configuration to get started.</p>
-                  </div>
-                ) : (
-                  <ul className="config-items">
-                    {configurations.map(config => (
-                      <li key={config.id} className="config-item">
-                        <div className="config-item-content">
-                          <h3>{config.name}</h3>
-                          <p className="config-description">
-                            {config.description || 'No description'}
-                          </p>
-                          <div className="config-meta">
-                            <span>{config.servers.length} servers</span>
-                            <span>Updated: {new Date(config.updatedAt).toLocaleDateString()}</span>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              {showWizard ? (
+                <ConfigurationWizard 
+                  servers={servers}
+                  onSaveConfiguration={handleSaveConfiguration}
+                  onCancel={handleCancelWizard}
+                  initialConfig={undefined}
+                />
+              ) : (
+                <ConfigurationList
+                  configurations={configurations}
+                  onSelectConfiguration={handleSelectConfiguration}
+                  onDeleteConfiguration={handleDeleteConfiguration}
+                  onCreateConfiguration={handleCreateConfiguration}
+                />
+              )}
             </div>
           </div>
         )}
