@@ -1,0 +1,20 @@
+To install the required dependencies for the MCP Configuration Tool, please run the following commands in your terminal:
+
+# Navigate to the project directory
+cd "/Users/alpinro/Code Prjects/mcp-config-app"
+
+# Install Supabase client
+yarn add @supabase/supabase-js
+
+# Install other required dependencies
+yarn add react-dom
+
+# If you're using TypeScript, make sure you have the required types
+yarn add @types/react @types/react-dom typescript --dev
+
+# If you need to configure environment variables
+touch .env.local
+
+# Add the following to your .env.local file:
+# REACT_APP_SUPABASE_URL=your_supabase_url
+# REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key

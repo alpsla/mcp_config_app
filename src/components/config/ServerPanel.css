@@ -1,0 +1,158 @@
+.server-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.server-panel-header {
+  margin-bottom: 1.5rem;
+}
+
+.server-panel-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.server-panel-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.server-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.server-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.server-item:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.server-item.selected {
+  background-color: #f0f7ff;
+  border-left: 4px solid #0078d4;
+}
+
+.server-item.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: #f8f8f8;
+}
+
+.server-item-icon {
+  margin-right: 1rem;
+  color: #0078d4;
+  flex-shrink: 0;
+}
+
+.server-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.server-item-content {
+  flex: 1;
+}
+
+.server-item-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.server-item-name {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.server-tier-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background-color: #e6f7ff;
+  color: #0078d4;
+  font-weight: 500;
+}
+
+.server-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  color: #666;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.server-item-description {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.server-item-upgrade {
+  font-size: 0.7rem;
+  background-color: #f3e5f5;
+  color: #9c27b0;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.server-panel-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.current-subscription {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.subscription-label {
+  color: #666;
+  margin-right: 0.5rem;
+}
+
+.subscription-value {
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.tier-free {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.tier-starter {
+  background-color: #e6f7ff;
+  color: #0078d4;
+}
+
+.tier-standard {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.tier-complete {
+  background-color: #f3e5f5;
+  color: #9c27b0;
+}

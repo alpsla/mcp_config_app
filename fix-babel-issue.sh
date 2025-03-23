@@ -1,3 +1,23 @@
+#!/bin/bash
+
+# Stop on any error
+set -e
+
+echo "🔨 Fixing Babel version compatibility issues..."
+
+# Clear node_modules
+echo "🧹 Removing node_modules..."
+rm -rf node_modules
+
+# Remove lock files
+echo "🧹 Removing lock files..."
+rm -f package-lock.json
+rm -f yarn.lock
+rm -f pnpm-lock.yaml
+
+# Create a temporary package.json with explicit babel versions
+echo "📝 Updating package.json with compatible Babel versions..."
+cat > package.json << 'EOL'
 {
   "name": "mcp-config-app",
   "version": "0.1.0",
@@ -48,9 +68,15 @@
     ]
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/body-parser": "^1.19.5",
     "cors": "^2.8.5",
     "express": "^4.18.2"
   }
 }
+EOL
+
+# Install dependencies using pnpm
+echo "📦 Installing dependencies with pnpm..."
+pnpm install
+
+echo "✅ Babel version fixed and ready!"
+echo "Run 'pnpm start' to start the development server."

@@ -1,0 +1,34 @@
+.two-panel-layout {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.panel {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.left-panel {
+  width: 300px;
+  border-right: 1px solid #eee;
+  background-color: #f8f8f8;
+}
+
+.right-panel {
+  flex: 1;
+  background-color: #fff;
+}
+
+@media (max-width: 768px) {
+  .two-panel-layout {
+    flex-direction: column;
+  }
+  
+  .left-panel {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+}
