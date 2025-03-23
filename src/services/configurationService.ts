@@ -21,10 +21,6 @@ const sampleConfigurations: MCPConfiguration[] = [
 class ConfigurationService {
   private configurations: MCPConfiguration[] = sampleConfigurations;
 
-  constructor() {
-    // In a real app, we would load data from local storage or a database
-  }
-
   getAllConfigurations(): MCPConfiguration[] {
     return this.configurations;
   }

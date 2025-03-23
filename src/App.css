@@ -1,3 +1,156 @@
+/* Help System Styles */
+.token-help-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.help-button {
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.help-box {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.help-content h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.help-content p {
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.help-content a {
+  color: #4a6fa5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.help-content a:hover {
+  text-decoration: underline;
+}
+
+.close-help-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.token-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-bottom: 8px;
+}
+
+.token-description {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+.token-config {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+  position: relative;
+}
+
+.token-config input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.token-description {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.token-label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 10px;
+  font-weight: 500;
+  width: 100%;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+/* Enhanced tooltip styles */
+.tooltip-content a,
+.react-tooltip a,
+.tooltip .tooltip-text a {
+  color: #90CDF4 !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  padding: 4px 0;
+  border-bottom: 1px solid #90CDF4;
+  transition: all 0.2s ease;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.tooltip-content a:hover,
+.react-tooltip a:hover,
+.tooltip .tooltip-text a:hover {
+  color: #BEE3F8 !important;
+  border-bottom-color: #BEE3F8;
+}
+
+.tooltip-content a:focus,
+.react-tooltip a:focus,
+.tooltip .tooltip-text a:focus {
+  outline: 2px solid #63B3ED;
+  border-radius: 2px;
+}
+
+/* Tooltip heading styles */
+.tooltip-content p[style*="font-weight: bold"],
+.react-tooltip p[style*="font-weight: bold"],
+.tooltip .tooltip-text p[style*="font-weight: bold"] {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+/* Enhance the tooltip heading styles */
+.tooltip-content p[style*="font-weight: bold"],
+.react-tooltip p[style*="font-weight: bold"],
+.tooltip-text p strong {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
 .app {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 1200px;
@@ -628,7 +781,128 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Tooltip styles */
+/* Custom Tooltip */
+.custom-tooltip {
+  position: absolute;
+  z-index: 1000;
+  background-color: #333;
+  color: #fff;
+  border-radius: 6px;
+  padding: 15px;
+  width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  line-height: 1.4;
+  right: -5px; /* Position it to the right of the help icon */
+  top: 35px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Arrow for the tooltip */
+.custom-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 10px; /* Align with help icon */
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #333;
+}
+
+/* Make tooltip position responsive */
+@media (max-width: 480px) {
+  .custom-tooltip {
+    right: -5px;
+    width: 250px;
+  }
+  
+  .custom-tooltip::before {
+    right: 10px;
+  }
+}
+
+.tooltip-close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.tooltip-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Help Icon Button */
+.help-icon-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  background-color: #4a6fa5 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  margin-left: 8px !important;
+  cursor: help !important;
+  border: none !important;
+  padding: 0 !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+.help-icon-button:hover {
+  background-color: #3a5a8c !important;
+  transform: scale(1.1) !important;
+}
+
+.help-icon-button:focus {
+  box-shadow: 0 0 0 2px #90CDF4 !important;
+}
+
+/* Tooltip Icon Animation */
+@keyframes tooltip-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 111, 165, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 5px rgba(74, 111, 165, 0); }
+  100% { transform: scale(1); }
+}
+
+.tooltip-icon-pulse {
+  animation: tooltip-pulse 1.5s ease-out;
+}
+
+/* React Tooltip Custom Styles */
+.react-tooltip {
+  background-color: #333 !important;
+  border-radius: 6px !important;
+  padding: 10px !important;
+  opacity: 1 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  z-index: 1000 !important;
+  max-width: 300px !important;
+}
+
+/* Old Tooltip styles */
 .tooltip {
   position: relative;
   display: inline-block;

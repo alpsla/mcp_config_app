@@ -14,6 +14,7 @@ const sampleServers: MCPServer[] = [
     requiresToken: true,
     tokenName: "HF_TOKEN",
     tokenDescription: "Get your token from huggingface.co/settings/tokens",
+    tokenUrl: "https://huggingface.co/settings/tokens",
     defaultArgs: ["--work-dir=/tmp", "--HF_TOKEN={token}"]
   },
   {
@@ -44,10 +45,6 @@ const sampleServers: MCPServer[] = [
 
 class MCPServerService {
   private servers: MCPServer[] = sampleServers;
-
-  constructor() {
-    // In a real app, we would load data from an API or database
-  }
 
   getAllServers(): MCPServer[] {
     return this.servers;

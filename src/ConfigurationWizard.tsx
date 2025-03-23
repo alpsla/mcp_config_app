@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Tooltip } from 'react-tooltip';
+import React, { useState, useEffect } from 'react';
 import { MCPConfiguration, MCPServer, MCPServerConfig } from './types';
+import { Tooltip } from 'react-tooltip';
 
 interface ConfigurationWizardProps {
   servers: MCPServer[];
@@ -98,76 +98,6 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
     setStep(step - 1);
   };
 
-  const TooltipButton: React.FC<{ server: MCPServer }> = ({ server }) => {
-    const [showTooltip, setShowTooltip] = React.useState(false);
-    
-    return (
-      <div style={{ position: 'relative', display: 'inline-block', marginLeft: '8px' }}>
-        <button 
-          type="button"
-          onClick={() => setShowTooltip(!showTooltip)}
-          style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            width: '18px', 
-            height: '18px', 
-            backgroundColor: '#4a6fa5', 
-            color: 'white', 
-            borderRadius: '50%', 
-            fontSize: '12px', 
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            border: 'none'
-          }}
-        >
-          ?
-        </button>
-        {showTooltip && (
-          <div style={{ 
-            width: '250px', 
-            backgroundColor: '#333', 
-            color: '#fff', 
-            textAlign: 'left', 
-            borderRadius: '6px', 
-            padding: '10px', 
-            position: 'absolute', 
-            zIndex: '1', 
-            bottom: '125%', 
-            left: '50%', 
-            marginLeft: '-125px', 
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-          }}>
-            <strong>Required Permissions:</strong><br />
-            This token requires read and write permissions for {server.name}.<br />
-            <br />
-            <strong>How to obtain:</strong><br />
-            Visit the {server.name} developer portal to create a token with the proper permissions.<br />
-            <a href="#" 
-               onClick={(e) => { e.preventDefault(); }} 
-               style={{ color: '#4a6fa5', textDecoration: 'underline' }}>
-              View detailed documentation
-            </a>
-            <button 
-              onClick={() => setShowTooltip(false)}
-              style={{
-                position: 'absolute',
-                top: '5px',
-                right: '5px',
-                background: 'none',
-                border: 'none',
-                color: 'white',
-                fontSize: '14px',
-                cursor: 'pointer'
-              }}
-            >
-              ×
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   const renderStep1 = () => (
     <div className="wizard-step">
@@ -306,59 +236,81 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
                 
                 {server.requiresToken && (
                     <div className="token-config">
-                        <label htmlFor={`token-${server.id}`} style={{ display: 'flex', alignItems: 'center' }}>
-                        {server.tokenName}:
-                        <span 
-                            data-tooltip-id={`tooltip-${server.id}`}
-                            style={{ 
-                            display: 'inline-flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            width: '18px', 
-                            height: '18px', 
-                            backgroundColor: '#4a6fa5', 
-                            color: 'white', 
-                            borderRadius: '50%', 
-                            fontSize: '12px', 
-                            fontWeight: 'bold',
-                            marginLeft: '8px',
-                            cursor: 'help'
-                            }}
-                        >
-                            ?
-                        </span>
-                        <Tooltip id={`tooltip-${server.id}`} place="top">
-                            <div style={{ maxWidth: '250px', textAlign: 'left' }}>
-                            <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>Required Permissions:</p>
-                            <p style={{ margin: '0 0 8px 0' }}>This token requires read and write permissions for {server.name}.</p>
-                            
-                            <p style={{ margin: '8px 0', fontWeight: 'bold' }}>How to obtain:</p>
-                            <p style={{ margin: '0' }}>Visit the {server.name} developer portal to create a token with the proper permissions.</p>
-                            <a 
-                                href="#" 
-                                onClick={(e) => { e.preventDefault(); }} 
-                                style={{ color: '#4a6fa5', textDecoration: 'underline', display: 'inline-block', marginTop: '8px' }}
+                        <div className="token-help-section">
+                            <label htmlFor={`token-${server.id}`}>{server.tokenName}:</label>
+                            <button 
+                                type="button"
+                                className="help-icon-button"
+                                data-tooltip-id={`token-tooltip-${server.id}`}
+                                aria-label="Show help"
                             >
-                                View detailed documentation
-                            </a>
-                            </div>
-                        </Tooltip>
-                        </label>
+                                ?
+                            </button>
+                            <Tooltip 
+                                id={`token-tooltip-${server.id}`}
+                                className="tooltip-content"
+                                place="top"
+                            >
+                                <div>
+                                    <p style={{ fontWeight: 'bold' }}>Token Information</p>
+                                    <p>This token requires read and write permissions for {server.name}.</p>
+                                    <p>Visit the <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener noreferrer">Hugging Face tokens page</a> to create a token with the proper permissions.</p>
+                                    <a 
+                                        href="/documentation/hugging-face-token.html" 
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        View detailed documentation
+                                    </a>
+                                </div>
+                            </Tooltip>
+                        </div>
+
                         <input 
-                        id={`token-${server.id}`}
-                        type="text"
-                        value={serverConfig.tokenValue || ''}
-                        onChange={(e) => handleTokenChange(server.id, e.target.value)}
-                        placeholder={`Enter your ${server.tokenName}`}
-                        style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+                            id={`token-${server.id}`}
+                            type="text"
+                            value={serverConfig.tokenValue || ''}
+                            onChange={(e) => handleTokenChange(server.id, e.target.value)}
+                            placeholder={`Enter your ${server.tokenName}`}
+                            style={{
+                                width: '100%',
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #ddd',
+                                marginBottom: '8px',
+                                marginTop: '10px'
+                            }}
                         />
+                        
                         {server.tokenDescription && (
-                        <p className="token-description" style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>
-                            {server.tokenDescription}
-                        </p>
+                            <p style={{
+                                fontSize: '12px', 
+                                color: '#6c757d', 
+                                marginTop: '5px',
+                                marginBottom: '15px'
+                            }}>
+                                {server.tokenUrl ? (
+                                    <>
+                                        Get your token from <a 
+                                            href={server.tokenUrl} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            style={{
+                                                color: '#4a6fa5',
+                                                fontWeight: 'bold',
+                                                textDecoration: 'underline'
+                                            }}
+                                        >
+                                            {new URL(server.tokenUrl).hostname}
+                                        </a>
+                                    </>
+                                ) : (
+                                    server.tokenDescription
+                                )}
+                            </p>
                         )}
                     </div>
-                    )}
+                )}
 
 
 
@@ -431,6 +383,7 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
     </div>
   );
 
+  
   return (
     <div className="configuration-wizard">
       <div className="wizard-progress">

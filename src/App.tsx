@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+
 import MCPServerService from './services/mcpServerService';
 import ConfigurationService from './services/configurationService';
 import { MCPServer, MCPConfiguration, SearchFilters } from './types';
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('search'); // 'search' or 'configurations'
   const [message, setMessage] = useState<{text: string, type: 'success' | 'error'} | null>(null);
   const [showWizard, setShowWizard] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedConfigId, setSelectedConfigId] = useState<string | null>(null);
 
   // Load initial data
@@ -35,6 +37,7 @@ const App: React.FC = () => {
     // Load configurations
     const allConfigurations = configService.getAllConfigurations();
     setConfigurations(allConfigurations);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle filter changes

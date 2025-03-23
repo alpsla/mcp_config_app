@@ -10,6 +10,7 @@ export interface MCPServer {
     requiresToken: boolean;
     tokenName?: string;
     tokenDescription?: string;
+    tokenUrl?: string;
     defaultArgs: string[];
   }
   

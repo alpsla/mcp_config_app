@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hugging Face API Token Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #4a6fa5;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #4a6fa5;
+            margin-top: 30px;
+        }
+        .step {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: #4a6fa5;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .note {
+            background-color: #e9ecef;
+            border-left: 4px solid #4a6fa5;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4a6fa5;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #3a5a8c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hugging Face API Token Guide</h1>
+    
+    <p>This guide will help you create and configure a Hugging Face API token with the necessary permissions for use with the MCP Configuration Tool.</p>
+    
+    <div class="note">
+        <strong>Note:</strong> A Hugging Face account is required to create an API token. If you don't have an account, you'll need to create one first.
+    </div>
+    
+    <h2>Creating a Hugging Face API Token</h2>
+    
+    <div class="step">
+        <h3><span class="step-number">1</span> Sign in to Hugging Face</h3>
+        <p>Go to the <a href="https://huggingface.co/login" target="_blank">Hugging Face login page</a> and sign in to your account. If you don't have an account, you'll need to create one.</p>
+    </div>
+    
+    <div class="step">
+        <h3><span class="step-number">2</span> Navigate to Settings</h3>
+        <p>Once signed in, click on your profile picture in the top-right corner of the page and select "Settings" from the dropdown menu.</p>
+    </div>
+    
+    <div class="step">
+        <h3><span class="step-number">3</span> Access the API Tokens Section</h3>
+        <p>In the left sidebar of the Settings page, click on "Access Tokens".</p>
+    </div>
+    
+    <div class="step">
+        <h3><span class="step-number">4</span> Create a New Token</h3>
+        <p>Click the "New token" button to create a new API token.</p>
+    </div>
+    
+    <div class="step">
+        <h3><span class="step-number">5</span> Configure Token Permissions</h3>
+        <p>Fill in the following information:</p>
+        <ul>
+            <li><strong>Token name:</strong> Provide a meaningful name (e.g., "MCP Config Tool")</li>
+            <li><strong>Role:</strong> Select "Read" for basic access, or "Write" if you plan to use features that require write access</li>
+        </ul>
+        <p>For most MCP configurations, selecting the "Read" role is sufficient.</p>
+    </div>
+    
+    <div class="step">
+        <h3><span class="step-number">6</span> Generate the Token</h3>
+        <p>Click the "Generate a token" button to create your token.</p>
+        <div class="warning">
+            <strong>Important:</strong> Copy your token immediately and store it in a safe place. You will not be able to view it again after leaving this page.
+        </div>
+    </div>
+    
+    <div class="step">
+        <h3><span class="step-number">7</span> Use the Token in MCP Configuration Tool</h3>
+        <p>Paste the token into the Hugging Face token field in the MCP Configuration Wizard.</p>
+    </div>
+    
+    <h2>Scope and Permissions</h2>
+    
+    <p>Different MCP server configurations may require different permission levels:</p>
+    
+    <ul>
+        <li><strong>Read access:</strong> Allows querying models, embeddings, and other read-only operations</li>
+        <li><strong>Write access:</strong> Necessary for operations that modify resources, such as fine-tuning models</li>
+    </ul>
+    
+    <div class="note">
+        <strong>Recommendation:</strong> Start with the minimum required permissions (Read) and upgrade only if needed for specific operations.
+    </div>
+    
+    <h2>Token Security Best Practices</h2>
+    
+    <ul>
+        <li>Never share your API tokens publicly</li>
+        <li>Avoid committing tokens to version control systems</li>
+        <li>Revoke tokens that are no longer in use</li>
+        <li>Create different tokens for different applications</li>
+    </ul>
+    
+    <div class="warning">
+        <strong>Security Warning:</strong> Anyone with your token can make API calls on your behalf, potentially incurring usage charges or accessing private information.
+    </div>
+    
+    <h2>Troubleshooting Token Issues</h2>
+    
+    <p>If you encounter issues with your Hugging Face token:</p>
+    
+    <ol>
+        <li>Verify that your token has not expired</li>
+        <li>Check that your token has the necessary permissions</li>
+        <li>Regenerate your token if you suspect it has been compromised</li>
+        <li>Ensure you're correctly copying the full token string without extra spaces</li>
+    </ol>
+    
+    <a href="https://huggingface.co/docs/api-inference/quicktour" target="_blank" class="btn">View Hugging Face API Documentation</a>
+</body>
+</html>
