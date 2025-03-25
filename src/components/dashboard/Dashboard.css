@@ -1,0 +1,56 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.dashboard-header {
+  padding: 1.5rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.dashboard-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dashboard-tab {
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 4px;
+}
+
+.dashboard-tab.active {
+  background-color: #f0f7ff;
+  color: #0078d4;
+  font-weight: 500;
+}
+
+.dashboard-tab.coming-soon {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  background-color: #f0f0f0;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow: hidden;
+}

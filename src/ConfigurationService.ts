@@ -1,4 +1,4 @@
-import { MCPConfiguration, MCPServerConfig, MCPDesktopConfig } from './types';
+import { MCPConfiguration, MCPServer, MCPDesktopConfig } from './types';
 
 // Sample data - in a real app, this would be stored in a database or local storage
 const sampleConfigurations: MCPConfiguration[] = [
@@ -8,13 +8,16 @@ const sampleConfigurations: MCPConfiguration[] = [
     description: "Basic configuration with essential services",
     servers: [
       {
-        serverId: "web-search",
+        id: "web-search",
+        name: "Web Search",
+        url: "https://api.example.com/search",
+        type: "web-search",
+        enabled: true,
         args: ["--results=5", "--safe-search=true"],
-        enabled: true
-      }
+      } as MCPServer
     ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ];
 
@@ -39,8 +42,8 @@ class ConfigurationService {
       name,
       description,
       servers: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
     this.configurations.push(newConfig);
@@ -56,7 +59,7 @@ class ConfigurationService {
 
     const updatedConfig = {
       ...config,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     };
 
     this.configurations[index] = updatedConfig;
@@ -69,7 +72,7 @@ class ConfigurationService {
     return this.configurations.length < initialLength;
   }
 
-  addServerToConfiguration(configId: string, serverConfig: MCPServerConfig): MCPConfiguration {
+  addServerToConfiguration(configId: string, server: MCPServer): MCPConfiguration {
     const config = this.getConfigurationById(configId);
     
     if (!config) {
@@ -80,17 +83,17 @@ class ConfigurationService {
     const updatedConfig = JSON.parse(JSON.stringify(config));
 
     // Check if server already exists in configuration
-    const serverIndex = updatedConfig.servers.findIndex((s: MCPServerConfig) => s.serverId === serverConfig.serverId);
+    const serverIndex = updatedConfig.servers.findIndex((s: MCPServer) => s.id === server.id);
     
     if (serverIndex !== -1) {
       // Update existing server
-      updatedConfig.servers[serverIndex] = serverConfig;
+      updatedConfig.servers[serverIndex] = server;
     } else {
       // Add new server
-      updatedConfig.servers.push(serverConfig);
+      updatedConfig.servers.push(server);
     }
 
-    updatedConfig.updatedAt = new Date().toISOString();
+    updatedConfig.updatedAt = new Date();
     return this.updateConfiguration(updatedConfig);
   }
 
@@ -101,7 +104,7 @@ class ConfigurationService {
       throw new Error(`Configuration with ID ${configId} not found`);
     }
 
-    config.servers = config.servers.filter(s => s.serverId !== serverId);
+    config.servers = config.servers.filter(s => s.id !== serverId);
     return this.updateConfiguration(config);
   }
 
@@ -112,14 +115,20 @@ class ConfigurationService {
       throw new Error(`Configuration with ID ${configId} not found`);
     }
 
-    const desktopConfig: MCPDesktopConfig = {};
+    const desktopConfig: MCPDesktopConfig = {
+      configId: configId,
+      servers: [],
+      format: 'json'
+    };
 
-    config.servers.forEach((serverConfig: MCPServerConfig) => {
-      if (serverConfig.enabled) {
-        desktopConfig[`mcp-${serverConfig.serverId}`] = {
-          command: "npx",
-          args: serverConfig.args
-        };
+    config.servers.forEach((server: MCPServer) => {
+      if (server.enabled) {
+        desktopConfig.servers.push({
+          id: server.id,
+          enabled: server.enabled,
+          args: server.defaultArgs || [],
+          tokenValue: server.requiresToken ? '' : undefined
+        });
       }
     });
 

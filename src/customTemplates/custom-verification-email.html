@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your MCP Configuration Tool Account</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .content {
+      padding: 30px 0;
+    }
+    .verify-button {
+      display: block;
+      width: 250px;
+      margin: 30px auto;
+      padding: 16px 24px;
+      background-color: #4F46E5;
+      color: #FFFFFF !important; /* Ensure text is white */
+      text-align: center;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    /* Fallback text in case the button doesn't display properly */
+    .button-fallback {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Email Verification</h1>
+  </div>
+  
+  <div class="content">
+    <p>Hello,</p>
+    
+    <p>Thank you for creating an account with the <strong>MCP Configuration Tool</strong>. We're excited to help you easily configure Claude with powerful external models!</p>
+    
+    <p>To complete your registration and start using our tool, please verify your email address:</p>
+    
+    <a href="{{ .ConfirmationURL }}" class="verify-button">VERIFY EMAIL ADDRESS</a>
+    
+    <!-- Fallback for email clients that might not show the button properly -->
+    <div class="button-fallback">
+      <p>If the button above doesn't work, please copy and paste this link into your browser:</p>
+      <p>{{ .ConfirmationURL }}</p>
+    </div>
+    
+    <p>This link will expire in 24 hours. If you didn't create an account with us, you can safely ignore this email.</p>
+    
+    <p>After verification, you'll be able to:</p>
+    <ul>
+      <li>Browse and connect to specialized models in just a few clicks</li>
+      <li>Save your favorite configurations for quick access</li>
+      <li>Customize Claude for your specific needs</li>
+    </ul>
+    
+    <p>If you have any questions, please contact our support team.</p>
+    
+    <p>Best regards,<br>
+    The MCP Configuration Tool Team</p>
+  </div>
+  
+  <div class="footer">
+    <p>&copy; 2025 MCP Configuration Tool. All rights reserved.</p>
+    <p>
+      <a href="#">Privacy Policy</a> |
+      <a href="#">Terms of Service</a> |
+      <a href="#">Unsubscribe</a>
+    </p>
+  </div>
+</body>
+</html>

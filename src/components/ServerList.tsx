@@ -44,19 +44,19 @@ const ServerList: React.FC<ServerListProps> = ({
             <div className="server-header">
               <h3>{server.name}</h3>
               <div className="server-rating">
-                Rating: {server.rating.toFixed(1)}
+                Rating: {server.rating ? server.rating.toFixed(1) : 'N/A'}
               </div>
             </div>
             <p className="server-description">{server.description}</p>
             <div className="server-categories">
-              {server.categories.map(category => (
+              {server.categories && server.categories.map(category => (
                 <span key={category} className="category-tag">{category}</span>
               ))}
             </div>
             <div className="server-details">
-              <p>Downloads: {server.downloads}</p>
-              <p>Version: {server.version}</p>
-              <p>Author: {server.author}</p>
+              <p>Downloads: {server.downloads || 0}</p>
+              <p>Version: {server.version || 'Unknown'}</p>
+              <p>Author: {server.author || 'Unknown'}</p>
               {server.requiresToken && (
                 <p className="token-required">Requires Token: {server.tokenName}</p>
               )}

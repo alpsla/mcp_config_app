@@ -1,0 +1,6 @@
+.config-panel {
+  height: 100%;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background-color: #fff;
+}

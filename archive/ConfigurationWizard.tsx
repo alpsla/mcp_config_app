@@ -21,8 +21,8 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
       name: '',
       description: '',
       servers: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   );
 
@@ -36,29 +36,29 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
 
   const handleAddServer = (server: MCPServer) => {
     // Check if server is already in the configuration
-    if (config.servers.some(s => s.serverId === server.id)) {
+    if (config.servers.some(s => s.id === server.id)) {
       return;
     }
 
     const serverConfig: MCPServerConfig = {
       serverId: server.id,
-      args: [...server.defaultArgs],
+      args: server.defaultArgs ? [...server.defaultArgs] : [],
       tokenValue: server.requiresToken ? '' : undefined,
       enabled: true
     };
 
     setConfig({
       ...config,
-      servers: [...config.servers, serverConfig],
-      updatedAt: new Date().toISOString()
+      servers: [...config.servers, serverConfig as unknown as MCPServer],
+      updatedAt: new Date()
     });
   };
 
   const handleRemoveServer = (serverId: string) => {
     setConfig({
       ...config,
-      servers: config.servers.filter(s => s.serverId !== serverId),
-      updatedAt: new Date().toISOString()
+      servers: config.servers.filter(s => s.id !== serverId),
+      updatedAt: new Date()
     });
   };
 
@@ -66,9 +66,9 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
     setConfig({
       ...config,
       servers: config.servers.map(s => 
-        s.serverId === serverId ? { ...s, tokenValue } : s
+        s.id === serverId ? { ...s, tokenValue } : s
       ),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     });
   };
 
@@ -76,16 +76,16 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
     setConfig({
       ...config,
       servers: config.servers.map(s => 
-        s.serverId === serverId ? { ...s, enabled } : s
+        s.id === serverId ? { ...s, enabled } : s
       ),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     });
   };
 
   const handleSave = () => {
     onSaveConfiguration({
       ...config,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     });
   };
 
@@ -137,7 +137,7 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
   const renderStep2 = () => {
     // Filter out servers that are already in the configuration
     const availableServers = servers.filter(
-      server => !config.servers.some(s => s.serverId === server.id)
+      server => !config.servers.some(s => s.id === server.id)
     );
 
     return (
@@ -150,7 +150,7 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
           ) : (
             <ul className="selected-server-list">
               {config.servers.map(serverConfig => {
-                const server = servers.find(s => s.id === serverConfig.serverId);
+                const server = servers.find(s => s.id === serverConfig.id);
                 return server ? (
                   <li key={server.id} className="selected-server-item">
                     <div className="selected-server-info">
@@ -215,7 +215,7 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
       ) : (
         <div className="server-configurations">
           {config.servers.map(serverConfig => {
-            const server = servers.find(s => s.id === serverConfig.serverId);
+            const server = servers.find(s => s.id === serverConfig.id);
             if (!server) return null;
             
             return (
@@ -282,7 +282,7 @@ const ConfigurationWizard: React.FC<ConfigurationWizardProps> = ({
           <h4>Configured Servers:</h4>
           <ul className="server-summary-list">
             {config.servers.map(serverConfig => {
-              const server = servers.find(s => s.id === serverConfig.serverId);
+              const server = servers.find(s => s.id === serverConfig.id);
               if (!server) return null;
               
               return (

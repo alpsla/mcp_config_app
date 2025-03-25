@@ -1,219 +1,137 @@
 import React, { useState, useEffect } from 'react';
+import { AuthProvider } from './auth/AuthContext';
+import { AuthContainer } from './auth/AuthContainer';
+import { Dashboard } from './components/dashboard/Dashboard';
+import { useAuth } from './auth/AuthContext';
+import { SupabaseCheck } from './components/diagnostic/SupabaseCheck';
+import { AuthDiagnostic } from './components/diagnostic/AuthDiagnostic';
+import VerifyEmail from './pages/VerifyEmail';
+import ResetPassword from './pages/reset-password';
 import './App.css';
-import MCPServerService from './services/mcpServerService';
-import ConfigurationService from './services/configurationService';
-import { MCPServer, MCPConfiguration, SearchFilters } from './types';
-import ConfigurationList from './components/ConfigurationList';
-import ConfigurationWizard from './components/ConfigurationWizard';
 
-const App: React.FC = () => {
-  // Services
-  const serverService = new MCPServerService();
-  const configService = new ConfigurationService();
-
-  // State
-  const [servers, setServers] = useState<MCPServer[]>([]);
-  const [filteredServers, setFilteredServers] = useState<MCPServer[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [configurations, setConfigurations] = useState<MCPConfiguration[]>([]);
-  const [activeTab, setActiveTab] = useState('search'); // 'search' or 'configurations'
-  const [message, setMessage] = useState<{text: string, type: 'success' | 'error'} | null>(null);
-  const [showWizard, setShowWizard] = useState(false);
-  const [selectedConfigId, setSelectedConfigId] = useState<string | null>(null);
-
-  // Load initial data
-  useEffect(() => {
-    // Load servers
-    const allServers = serverService.getAllServers();
-    setServers(allServers);
-    setFilteredServers(allServers);
-    
-    // Load categories
-    const allCategories = serverService.getCategories();
-    setCategories(allCategories);
-    
-    // Load configurations
-    const allConfigurations = configService.getAllConfigurations();
-    setConfigurations(allConfigurations);
-  }, []);
-
-  // Handle filter changes
-  const handleFilterChange = (filters: SearchFilters) => {
-    const results = serverService.searchServers(filters);
-    setFilteredServers(results);
-  };
-
-  // Show message with auto-dismiss
-  const showMessage = (text: string, type: 'success' | 'error') => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage(null), 5000);
-  };
+const AuthenticatedApp: React.FC = () => {
+  const { authState, logout } = useAuth();
+  const user = authState.user;
   
-  // Handle creating a new configuration
-  const handleCreateConfiguration = () => {
-    setShowWizard(true);
-  };
-  
-  // Handle selecting a configuration
-  const handleSelectConfiguration = (configId: string) => {
-    setSelectedConfigId(configId);
-  };
-  
-  // Handle deleting a configuration
-  const handleDeleteConfiguration = (configId: string) => {
-    const deleted = configService.deleteConfiguration(configId);
-    if (deleted) {
-      setConfigurations(configService.getAllConfigurations());
-      showMessage('Configuration deleted successfully', 'success');
-    } else {
-      showMessage('Failed to delete configuration', 'error');
-    }
-  };
-  
-  // Handle saving a configuration from the wizard
-  const handleSaveConfiguration = (config: MCPConfiguration) => {
-    try {
-      let savedConfig: MCPConfiguration;
-      
-      // Check if this is a new configuration or an existing one
-      const existingConfig = configService.getConfigurationById(config.id);
-      
-      if (existingConfig) {
-        // Update existing configuration
-        savedConfig = configService.updateConfiguration(config);
-      } else {
-        // Create new configuration
-        savedConfig = configService.createConfiguration(config.name, config.description);
-        
-        // Add servers to the new configuration
-        config.servers.forEach(serverConfig => {
-          configService.addServerToConfiguration(savedConfig.id, serverConfig);
-        });
-        
-        // Get the updated configuration with all servers
-        savedConfig = configService.getConfigurationById(savedConfig.id) as MCPConfiguration;
-      }
-      
-      setConfigurations(configService.getAllConfigurations());
-      setShowWizard(false);
-      showMessage('Configuration saved successfully', 'success');
-    } catch (error) {
-      console.error('Error saving configuration:', error);
-      showMessage('Failed to save configuration', 'error');
-    }
-  };
-  
-  // Handle canceling the wizard
-  const handleCancelWizard = () => {
-    setShowWizard(false);
-  };
-
   return (
-    <div className="app">
+    <div className="app-container">
       <header className="app-header">
-        <h1>MCP Configuration Tool</h1>
-        <div className="tabs">
-          <button 
-            className={activeTab === 'search' ? 'active' : ''}
-            onClick={() => setActiveTab('search')}
-          >
-            Search MCP Servers
-          </button>
-          <button 
-            className={activeTab === 'configurations' ? 'active' : ''}
-            onClick={() => setActiveTab('configurations')}
-          >
-            My Configurations
-          </button>
+        <div className="app-logo">MCP Config Tool</div>
+        <div className="app-user-info">
+          <span>{user?.email}</span>
+          <button onClick={logout} className="signout-button">Sign Out</button>
         </div>
       </header>
-
-      {message && (
-        <div className={`message ${message.type}`}>
-          {message.text}
-        </div>
-      )}
-
-      <main className="app-content">
-        {activeTab === 'search' ? (
-          <div className="search-view">
-            <h2>Search Filters</h2>
-            <div className="filter-controls">
-              <input 
-                type="text" 
-                placeholder="Search by name or description"
-                onChange={(e) => handleFilterChange({ query: e.target.value })}
-              />
-              
-              <div className="categories-section">
-                <h3>Categories:</h3>
-                <div className="categories-list">
-                  {categories.map(category => (
-                    <label key={category} className="category-checkbox">
-                      <input type="checkbox" />
-                      {category}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <h2>Available MCP Servers ({filteredServers.length})</h2>
-            <div className="server-cards">
-              {filteredServers.map(server => (
-                <div key={server.id} className="server-card">
-                  <div className="server-header">
-                    <h3>{server.name}</h3>
-                    <div className="server-rating">
-                      Rating: {server.rating.toFixed(1)}
-                    </div>
-                  </div>
-                  <p className="server-description">{server.description}</p>
-                  <div className="server-categories">
-                    {server.categories.map(category => (
-                      <span key={category} className="category-tag">{category}</span>
-                    ))}
-                  </div>
-                  <div className="server-details">
-                    <p>Downloads: {server.downloads}</p>
-                    <p>Version: {server.version}</p>
-                    <p>Author: {server.author}</p>
-                    {server.requiresToken && (
-                      <p className="token-required">Requires Token: {server.tokenName}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="configurations-view">
-            <div className="configurations-container">
-              {showWizard ? (
-                <ConfigurationWizard 
-                  servers={servers}
-                  onSaveConfiguration={handleSaveConfiguration}
-                  onCancel={handleCancelWizard}
-                  initialConfig={undefined}
-                />
-              ) : (
-                <ConfigurationList
-                  configurations={configurations}
-                  onSelectConfiguration={handleSelectConfiguration}
-                  onDeleteConfiguration={handleDeleteConfiguration}
-                  onCreateConfiguration={handleCreateConfiguration}
-                />
-              )}
-            </div>
-          </div>
-        )}
+      <main className="app-main">
+        <Dashboard />
       </main>
-
       <footer className="app-footer">
-        <p>MCP Configuration Tool for Claude Sonnet Desktop</p>
+        <div className="footer-content">
+          <p>&copy; {new Date().getFullYear()} MCP Configuration Tool</p>
+          <p className="beta-indicator">Beta Version</p>
+        </div>
       </footer>
     </div>
   );
 };
 
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+};
+
+// We need this component to use the useAuth hook inside the AuthProvider
+const AppContent: React.FC = () => {
+  const { authState } = useAuth();
+  const [currentPath, setCurrentPath] = useState<string>(window.location.pathname);
+  
+  // Listen to path changes
+  useEffect(() => {
+    const handlePathChange = () => {
+      setCurrentPath(window.location.pathname);
+      console.log('Path changed to:', window.location.pathname);
+      
+      // Log query parameters for debugging
+      const urlParams = new URLSearchParams(window.location.search);
+      const codeParam = urlParams.get('code');
+      if (codeParam) {
+        console.log('Reset code detected:', codeParam.substring(0, 5) + '...');
+      }
+      
+      console.log('URL hash:', window.location.hash);
+    };
+    
+    window.addEventListener('popstate', handlePathChange);
+    return () => window.removeEventListener('popstate', handlePathChange);
+  }, []);
+  
+  // Process the current path on initial load
+  useEffect(() => {
+    console.log('Initial path:', currentPath);
+    console.log('Initial search params:', window.location.search);
+    console.log('Initial hash:', window.location.hash);
+    
+    // Check for reset code
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeParam = urlParams.get('code');
+    if (codeParam) {
+      console.log('Reset code detected on load:', codeParam.substring(0, 5) + '...');
+    }
+  }, [currentPath]);
+  
+  // Check for reset password code or hash to trigger the reset form
+  const urlParams = new URLSearchParams(window.location.search);
+  const resetCode = urlParams.get('code');
+  const isResetPasswordRequest = currentPath === '/reset-password' || resetCode || window.location.hash.includes('type=recovery');
+  
+  // Check for the auth-diagnostic path
+  if (currentPath === '/auth-diagnostic') {
+    console.log('Showing authentication diagnostic tool');
+    return <AuthDiagnostic />;
+  }
+  
+  // Check for email verification
+  if (currentPath === '/verify-email' || window.location.search.includes('error=access_denied') || window.location.search.includes('error=otp_expired')) {
+    console.log('Detected email verification request or error');
+    return <VerifyEmail />;
+  }
+  
+  // Check for reset password request
+  if (isResetPasswordRequest) {
+    console.log('Detected password reset request');
+    // Log additional details to help with debugging
+    if (resetCode) {
+      console.log(`Reset code found: ${resetCode.substring(0, 8)}... URL: ${window.location.href}`);
+    } else if (window.location.hash.includes('type=recovery')) {
+      console.log('Recovery hash detected, URL:', window.location.href);
+    } else {
+      console.log('No specific reset parameters found, URL:', window.location.pathname + window.location.search);
+    }
+    return <ResetPassword />;
+  }
+  
+  return (
+    <div>
+      <SupabaseCheck />
+      {currentPath === '/auth-diagnostic' ? (
+        <AuthDiagnostic />
+      ) : (
+        authState.user ? <AuthenticatedApp /> : <AuthContainer />
+      )}
+      
+      {/* Temporary diagnostic tool access link */}
+      <div style={{position: 'fixed', bottom: '20px', right: '20px', background: '#4F46E5', padding: '10px 15px', borderRadius: '5px', boxShadow: '0 2px 10px rgba(0,0,0,0.2)'}}>
+        <a href="/auth-diagnostic" style={{color: 'white', textDecoration: 'none', fontWeight: 'bold'}}>
+          Auth Diagnostic Tool
+        </a>
+      </div>
+    </div>
+  );
+};
+
+// Export App as both a named export and a default export
+export { App };
 export default App;

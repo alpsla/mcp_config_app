@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MCPConfiguration } from '../types';
+// Tooltip removed
 
 interface ConfigurationListProps {
   configurations: MCPConfiguration[];
@@ -43,7 +44,10 @@ const ConfigurationList: React.FC<ConfigurationListProps> = ({
     <div className="configuration-list">
       <div className="list-header">
         <h2>My Configurations</h2>
-        <button className="create-config-btn" onClick={onCreateConfiguration}>
+        <button 
+          className="create-config-btn" 
+          onClick={onCreateConfiguration}
+        >
           Create New
         </button>
       </div>
@@ -74,7 +78,6 @@ const ConfigurationList: React.FC<ConfigurationListProps> = ({
               <button 
                 className="delete-btn"
                 onClick={(e) => handleDelete(e, config.id)}
-                title="Delete configuration"
               >
                 Delete
               </button>

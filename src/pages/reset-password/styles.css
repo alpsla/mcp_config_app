@@ -1,0 +1,168 @@
+/* Success container */
+.success-container {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #67c23a;
+  color: white;
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.success-container h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.success-container p {
+  color: #666;
+  margin-bottom: 24px;
+}.reset-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 20px;
+}
+
+.reset-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.reset-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.reset-subtitle {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: #666;
+  font-weight: 500;
+}
+
+.reset-error {
+  background-color: #fdf2f2;
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.reset-success {
+  background-color: #f0f9eb;
+  color: #67c23a;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.reset-form {
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #4f46e5;
+  outline: none;
+}
+
+.reset-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #4338ca;
+}
+
+.reset-button:disabled {
+  background-color: #a5a5a5;
+  cursor: not-allowed;
+}
+
+/* Help section */
+.help-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.help-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.help-list {
+  font-size: 14px;
+  color: #666;
+  margin-left: 16px;
+  margin-bottom: 16px;
+}
+
+.help-list li {
+  margin-bottom: 6px;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #4F46E5;
+  font-size: 14px;
+  padding: 0;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.text-button:hover {
+  color: #4338CA;
+}
