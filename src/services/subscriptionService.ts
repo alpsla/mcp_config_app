@@ -1,4 +1,4 @@
-import { SubscriptionPlan, SubscriptionTier, User } from '../types';
+import { SubscriptionPlan, SubscriptionTier } from '../types';
 
 // API endpoints
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';

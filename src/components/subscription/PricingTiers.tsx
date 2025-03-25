@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { subscriptionPlans, processPayment, getSubscriptionPlan } from '../../services/subscriptionService';
+import { subscriptionPlans, processPayment } from '../../services/subscriptionService';
 import { useAuth } from '../../auth/AuthContext';
 import './PricingTiers.css';
 
@@ -37,7 +37,7 @@ export const PricingTiers: React.FC = () => {
       
       // Update user's subscription tier
       if (result.success) {
-        await updateSubscriptionTier(user.id, plan.tier);
+        await updateSubscriptionTier(plan.tier);
         setSuccessMessage(result.message);
       }
     } catch (error: any) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
-import { LoginCredentials } from '../types';
+import { LoginCredentials } from '../types/index';
 import './AuthForms.css';
 
 interface LoginFormProps {
@@ -17,7 +17,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials(prev => ({ ...prev, [name]: value }));
+    setCredentials((prev: LoginCredentials) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,9 +31,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
     }
 
     try {
-      await login(credentials);
+      await login(credentials.email, credentials.password);
     } catch (err: any) {
-      setFormError(err.message || 'Login failed');
+      // Improve the error message for invalid credentials
+      if (err.message === 'Invalid login credentials') {
+        setFormError('Invalid login credentials. If you recently registered, please check your email to verify your account first.');
+      } else {
+        setFormError(err.message || 'Login failed');
+      }
     }
   };
 

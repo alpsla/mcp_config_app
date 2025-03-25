@@ -1,0 +1,54 @@
+.verification-status {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.verification-status svg {
+  margin-bottom: 16px;
+  width: 48px;
+  height: 48px;
+}
+
+.verification-status.success {
+  color: #388e3c;
+}
+
+.verification-status.success svg {
+  color: #388e3c;
+}
+
+.verification-status.error {
+  color: #d32f2f;
+  background-color: rgba(211, 47, 47, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  margin-top: 20px;
+}
+
+.verification-status.error svg {
+  color: #d32f2f;
+  margin-bottom: 15px;
+}
+
+.verification-status.error p {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

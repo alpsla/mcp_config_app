@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RegisterCredentials } from '../types';
+import { RegisterCredentials } from '../types/index';
 import { useAuth } from './AuthContext';
 import './AuthForms.css';
 
@@ -53,6 +53,37 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onLoginClick }) 
     }
   };
 
+  // Create a temporary interface to match the auth state we need
+  interface TempAuthState {
+    loading: boolean;
+    error: string | null;
+    requiresEmailConfirmation?: boolean;
+    confirmationMessage?: string | null;
+  }
+  
+  // Cast the authState to our temporary interface
+  const tempAuthState = authState as TempAuthState;
+
+  if (tempAuthState.requiresEmailConfirmation) {
+    return (
+      <div className="auth-form-container">
+        <h2>Email Verification Required</h2>
+        <div className="auth-form-success">
+          <p>{tempAuthState.confirmationMessage}</p>
+          <p>Once verified, you can log in to your account.</p>
+        </div>
+        <div className="form-actions">
+          <button 
+            onClick={onLoginClick}
+            className="primary-button"
+          >
+            Return to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="auth-form-container">
       <h2>Create Account</h2>
@@ -65,6 +96,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onLoginClick }) 
       )}
       
       <form className="auth-form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email">Email <span className="required">*</span></label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="firstName">First Name</label>
@@ -87,18 +130,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onLoginClick }) 
               placeholder="Enter your last name"
             />
           </div>
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="email">Email <span className="required">*</span></label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-          />
         </div>
         
         <div className="form-group">

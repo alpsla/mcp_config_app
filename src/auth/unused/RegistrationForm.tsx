@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
-import { RegisterCredentials } from '../types';
+import { RegisterCredentials } from '../types/index';
 import './AuthForms.css';
 
 interface RegistrationFormProps {
@@ -20,7 +20,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSwitchToLo
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials(prev => ({ ...prev, [name]: value }));
+    setCredentials((prev: RegisterCredentials) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +44,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSwitchToLo
     }
 
     try {
-      await register(credentials);
+      // Remove confirmPassword before sending to register
+      const { confirmPassword, ...registerData } = credentials;
+      await register(registerData);
     } catch (err: any) {
       setFormError(err.message || 'Registration failed');
     }

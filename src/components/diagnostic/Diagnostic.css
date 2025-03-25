@@ -1,0 +1,162 @@
+.diagnostic-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+.diagnostic-container h2 {
+  color: #333;
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #f1f2f3;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.close-button:hover {
+  background-color: #e2e3e5;
+}
+
+.diagnostic-panel {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.diagnostic-panel h3 {
+  margin-top: 0;
+  color: #4F46E5;
+  font-size: 18px;
+}
+
+.diagnostic-output {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 250px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.diagnostic-form {
+  margin-bottom: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.button-group.vertical {
+  flex-direction: column;
+}
+
+.diagnostic-button {
+  padding: 10px 15px;
+  background-color: #4F46E5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.diagnostic-button:hover {
+  background-color: #4338ca;
+}
+
+.diagnostic-button:disabled {
+  background-color: #a5a5a5;
+  cursor: not-allowed;
+}
+
+.diagnostic-button.secondary {
+  background-color: #6c757d;
+}
+
+.diagnostic-button.secondary:hover {
+  background-color: #5a6268;
+}
+
+.status-message {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #fff3cd;
+  border: 1px solid #ffecb5;
+  border-radius: 4px;
+  color: #664d03;
+}
+
+.status-message.success {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+
+.fix-result {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  color: #842029;
+}
+
+.fix-result.success {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+
+.issue-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.issue-list li {
+  margin-bottom: 8px;
+}
+
+.issue-list strong {
+  color: #4F46E5;
+}

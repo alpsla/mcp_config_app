@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Link for MCP Configuration Tool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .content {
+      padding: 30px 0;
+    }
+    .button {
+      display: block;
+      width: 200px;
+      margin: 30px auto;
+      padding: 12px 20px;
+      background-color: #4F46E5;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="[Your Logo URL]" alt="MCP Configuration Tool" class="logo">
+    <h1>Access Your Account</h1>
+  </div>
+  
+  <div class="content">
+    <p>Hello,</p>
+    
+    <p>You recently requested to log in to your <strong>MCP Configuration Tool</strong> account. Click the button below to securely access your account:</p>
+    
+    <a href="{{ .ConfirmationURL }}" class="button">Log In Now</a>
+    
+    <p>This link is valid for 24 hours and can only be used once. If you didn't request this login link, you can safely ignore this email.</p>
+    
+    <p>The MCP Configuration Tool helps you enhance Claude's capabilities by seamlessly connecting it with specialized models - without requiring any technical knowledge.</p>
+    
+    <p>If you have any questions or concerns about your account, please contact our support team.</p>
+    
+    <p>Best regards,<br>
+    The MCP Configuration Tool Team</p>
+  </div>
+  
+  <div class="footer">
+    <p>&copy; 2025 MCP Configuration Tool. All rights reserved.</p>
+    <p>
+      <a href="[Your Privacy Policy URL]">Privacy Policy</a> |
+      <a href="[Your Terms of Service URL]">Terms of Service</a> |
+      <a href="[Your Unsubscribe URL]">Unsubscribe</a>
+    </p>
+  </div>
+</body>
+</html>

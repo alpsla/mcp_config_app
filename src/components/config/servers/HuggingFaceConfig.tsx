@@ -122,7 +122,14 @@ export const HuggingFaceConfig: React.FC<HuggingFaceConfigProps> = ({
                   placeholder="Enter your Hugging Face API token"
                 />
                 <div className="help-text">
-                  Your API token is encrypted and securely stored. <a href="#" className="help-link">Need help?</a>
+                  Your API token is encrypted and securely stored. 
+                  <button 
+                    type="button"
+                    onClick={() => {/* Add help action here */}}
+                    className="help-link"
+                  >
+                    Need help?
+                  </button>
                 </div>
               </div>
 
