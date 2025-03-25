@@ -133,6 +133,21 @@
   color: #0f5132;
 }
 
+.error-alert {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  border-radius: 4px;
+  color: #842029;
+}
+
+.error-alert p {
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 0.9em;
+}
+
 .fix-result {
   margin-top: 10px;
   padding: 10px;
@@ -159,4 +174,33 @@
 
 .issue-list strong {
   color: #4F46E5;
+}
+
+.diagnostic-panel.highlight {
+  border: 2px solid #4F46E5;
+  background-color: #f8f9ff;
+}
+
+.recovery-message {
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.diagnostic-button.primary {
+  background-color: #4338ca;
+  font-weight: bold;
+}
+
+.diagnostic-button.primary:hover {
+  background-color: #3730a3;
+}
+
+.step-instructions {
+  font-size: 14px;
+  font-style: italic;
+  color: #666;
+  margin-top: 10px;
+  text-align: center;
 }

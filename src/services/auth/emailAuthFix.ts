@@ -199,7 +199,7 @@ export const enhancedResetPassword = async (email: string) => {
   
   // Use sanitized email for password reset
   try {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(
+    const { error } = await supabase.auth.resetPasswordForEmail(
       emailValidation.sanitizedEmail as string
     );
     
@@ -258,7 +258,7 @@ export const enhancedMagicLink = async (email: string) => {
   
   // Use sanitized email for magic link
   try {
-    const { data, error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithOtp({
       email: emailValidation.sanitizedEmail as string
     });
     
@@ -303,4 +303,157 @@ export const applyAuthFixes = () => {
   console.log('Applied enhanced email validation and authentication fixes');
   // This is a hook for any global fixes that need to be applied
   // Currently, the individual enhanced functions can be used directly
+};
+
+/**
+ * Diagnose and attempt to fix common authentication issues
+ * This function is used by the Auth Diagnostic Tool
+ * @param email The email to diagnose and fix issues for
+ * @returns Results of the diagnosis and any fixes attempted
+ */
+export const diagnoseAndFixAuth = async (email: string) => {
+  const issues: string[] = [];
+  let fixAttempted = false;
+  let fixResult = '';
+  let success = false;
+  
+  try {
+    // Validate email first
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      issues.push(`Invalid email format: ${emailValidation.message}`);
+      return { success: false, issues, fixAttempted, fixResult };
+    }
+    
+    // Check if user exists in auth
+    const { data: userData, error: userError } = await supabase.auth.admin.listUsers();
+    
+    if (userError) {
+      issues.push(`Admin API error: ${userError.message}`);
+      
+      // Try alternate method - sign in with wrong password to check if user exists
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: 'test-password-diagnostic-only'
+      });
+      
+      // If error includes 'Invalid login credentials', user might exist
+      if (signInError && !signInError.message.includes('Invalid login credentials')) {
+        issues.push(`User not found in authentication system`);
+      } else {
+        issues.push(`User likely exists but verification status unknown`);
+      }
+      
+      // Check profiles table
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, email')
+        .eq('email', email.trim());
+        
+      if (!profileData || profileData.length === 0) {
+        issues.push(`No profile found in database for email: ${email}`);
+      } else {
+        success = true;
+        issues.push(`Profile found in database`);
+      }
+      
+      return { success, issues, fixAttempted, fixResult };
+    }
+    
+    // Check if user exists in auth list
+    const users = userData.users as any[];
+    const user = users.find(u => u.email === email.trim());
+    
+    if (!user) {
+      issues.push(`No user found with email: ${email}`);
+      return { success: false, issues, fixAttempted, fixResult };
+    }
+    
+    // Check if email is confirmed
+    if (!user.email_confirmed_at) {
+      issues.push(`Email not confirmed`);
+      
+      // Try to fix by sending verification email
+      try {
+        const { error: resendError } = await supabase.auth.resend({
+          type: 'signup',
+          email: email.trim()
+        });
+        
+        if (resendError) {
+          issues.push(`Failed to resend verification: ${resendError.message}`);
+        } else {
+          fixAttempted = true;
+          fixResult = `Verification email resent successfully`;
+        }
+      } catch (error: any) {
+        issues.push(`Error resending verification: ${error.message}`);
+      }
+    } else {
+      success = true;
+      issues.push(`Email confirmed at: ${new Date(user.email_confirmed_at).toLocaleString()}`);
+    }
+    
+    // Check if user has a profile in database
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('id', user.id);
+      
+    if (!profileData || profileData.length === 0) {
+      issues.push(`No profile found in database`);
+      
+      // Try to fix by creating a profile
+      try {
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: user.id,
+            email: email.trim(),
+            created_at: new Date().toISOString()
+          }]);
+          
+        if (insertError) {
+          issues.push(`Failed to create profile: ${insertError.message}`);
+        } else {
+          fixAttempted = true;
+          fixResult = `Profile created successfully`;
+          success = true;
+        }
+      } catch (error: any) {
+        issues.push(`Error creating profile: ${error.message}`);
+      }
+    } else {
+      success = true;
+      issues.push(`Profile found in database`);
+      
+      // Check if profile has email
+      if (!profileData[0].email) {
+        issues.push(`Profile missing email field`);
+        
+        // Try to fix by updating profile
+        try {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ email: email.trim() })
+            .eq('id', user.id);
+            
+          if (updateError) {
+            issues.push(`Failed to update profile: ${updateError.message}`);
+          } else {
+            fixAttempted = true;
+            fixResult = `Profile updated with email`;
+            success = true;
+          }
+        } catch (error: any) {
+          issues.push(`Error updating profile: ${error.message}`);
+        }
+      }
+    }
+    
+    return { success, issues, fixAttempted, fixResult };
+  } catch (error: any) {
+    issues.push(`Diagnostic error: ${error.message}`);
+    return { success: false, issues, fixAttempted, fixResult };
+  }
 };

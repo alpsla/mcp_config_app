@@ -3,18 +3,21 @@ import { ConfigState, WebSearchConfig, FileSystemConfig, HuggingFaceConfig, Subs
 
 // Default configurations
 const defaultWebSearchConfig: WebSearchConfig = {
+  id: 'web-search',
   enabled: false,
   resultCount: 5,
   safeSearch: true
 };
 
 const defaultFileSystemConfig: FileSystemConfig = {
+  id: 'file-system',
   enabled: false,
   directories: [],
   useRootPermissions: false
 };
 
 const defaultHuggingFaceConfig: HuggingFaceConfig = {
+  id: 'huggingface',
   enabled: false,
   token: '',
   models: [

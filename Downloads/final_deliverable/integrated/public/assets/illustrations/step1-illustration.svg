@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="200" rx="10" fill="#F8F9FA" />
+  
+  <!-- Step 1 illustration -->
+  <rect x="50" y="50" width="200" height="100" rx="8" fill="#FFFFFF" stroke="#CED4DA" stroke-width="2" />
+  <text x="150" y="85" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#212529">Choose Your Tools</text>
+  
+  <!-- Toggle buttons -->
+  <rect x="70" y="100" width="50" height="20" rx="10" fill="#3A86FF" />
+  <rect x="130" y="100" width="50" height="20" rx="10" fill="#FFFFFF" stroke="#CED4DA" stroke-width="1" />
+  <rect x="190" y="100" width="50" height="20" rx="10" fill="#FFFFFF" stroke="#CED4DA" stroke-width="1" />
+</svg>

@@ -1,8 +1,4 @@
-import React from 'react';
-import DirectReset from './DirectReset';
+import DirectReset from '../../auth/DirectReset';
 
-const ResetPassword: React.FC = () => {
-  return <DirectReset />;
-};
-
-export default ResetPassword;
+// Re-export the component 
+export default DirectReset;

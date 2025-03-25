@@ -102,6 +102,7 @@ export const useConfiguration = (initialConfigId?: string) => {
   ) => {
     try {
       const serverConfig: MCPServerConfig = {
+        id: server.id, // Add the required id field
         serverId: server.id,
         args: server.defaultArgs ? [...server.defaultArgs] : [],
         tokenValue: server.requiresToken ? '' : undefined,

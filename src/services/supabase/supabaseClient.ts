@@ -21,15 +21,29 @@ export const getSupabaseClient = (): SupabaseClient => {
     }
 
     // Create a new client instance
-    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: true,      // Store the session in localStorage
-        autoRefreshToken: true,    // Automatically refresh the token
-        detectSessionInUrl: true,  // Detect OAuth sessions in the URL
-        flowType: 'pkce',          // Use PKCE flow for more secure authentication
-        storageKey: 'mcp-supabase-auth', // Custom storage key to avoid conflicts
-      },
-    });
+    try {
+      console.log('Creating Supabase client with URL:', supabaseUrl ? supabaseUrl.substring(0, 15) + '...' : 'undefined');
+      supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: true,      // Store the session in localStorage
+          autoRefreshToken: true,    // Automatically refresh the token
+          detectSessionInUrl: true,  // Detect OAuth sessions in the URL
+          flowType: 'pkce',          // Use PKCE flow for more secure authentication
+          storageKey: 'mcp-supabase-auth', // Custom storage key to avoid conflicts
+        },
+      });
+      console.log('Supabase client created successfully');
+      
+      // Test authentication state
+      supabaseInstance.auth.onAuthStateChange((event, session) => {
+        console.log('Supabase auth state changed:', event, session ? 'Session exists' : 'No session');
+      });
+      
+    } catch (error) {
+      console.error('Error creating Supabase client:', error);
+      // Create a minimal client that won't crash the application
+      supabaseInstance = createClient('https://placeholder.supabase.co', 'placeholder-key');
+    }
   }
 
   return supabaseInstance;

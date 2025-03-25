@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Configuration Tool - Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="logo.svg" alt="MCP Configuration Tool Logo">
+                    <span>MCP Config</span>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#" class="active">Dashboard</a></li>
+                        <li><a href="#">Configurations</a></li>
+                        <li><a href="#">Servers</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="subscription-badge free">Free</div>
+                    <div class="user-dropdown">
+                        <button class="user-dropdown-toggle">
+                            <div class="user-avatar">JS</div>
+                            <span class="user-name">John Smith</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="user-dropdown-menu">
+                            <a href="#">Profile</a>
+                            <a href="#">Account Settings</a>
+                            <a href="#">Subscription</a>
+                            <a href="#">Help & Support</a>
+                            <a href="#" class="logout">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <section class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>Welcome, John!</h1>
+                    <p class="stats-summary">You have <span class="highlight">3 configurations</span> with <span class="highlight">5 servers</span> connected.</p>
+                </div>
+                <div class="dashboard-actions">
+                    <button class="btn btn-primary create-config-btn">
+                        <span class="icon">+</span> Create New Configuration
+                    </button>
+                    <div class="view-toggle">
+                        <button class="view-toggle-btn active" data-view="grid">
+                            <span class="icon">⊞</span>
+                        </button>
+                        <button class="view-toggle-btn" data-view="list">
+                            <span class="icon">≡</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Configurations Section -->
+            <section class="recent-configurations">
+                <div class="section-header">
+                    <h2>Recent Configurations</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                
+                <div class="configurations-grid">
+                    <!-- Configuration Card 1 -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3 class="config-name">Web Research Assistant</h3>
+                            <div class="config-actions">
+                                <button class="action-btn edit-btn" title="Edit Configuration">
+                                    <span class="icon">✎</span>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Configuration">
+                                    <span class="icon">🗑</span>
+                                </button>
+                                <button class="action-btn export-btn" title="Export Configuration">
+                                    <span class="icon">↓</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="config-description">Enhanced web search capabilities with file system access for research projects.</p>
+                        <div class="config-meta">
+                            <div class="server-types">
+                                <span class="server-type web" title="Web Search">🌐</span>
+                                <span class="server-type file" title="File System">📁</span>
+                            </div>
+                            <div class="config-stats">
+                                <span class="server-count">2 servers</span>
+                                <span class="update-date">Updated: Mar 20, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Card 2 -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3 class="config-name">Content Creator</h3>
+                            <div class="config-actions">
+                                <button class="action-btn edit-btn" title="Edit Configuration">
+                                    <span class="icon">✎</span>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Configuration">
+                                    <span class="icon">🗑</span>
+                                </button>
+                                <button class="action-btn export-btn" title="Export Configuration">
+                                    <span class="icon">↓</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="config-description">Optimized for content creation with Hugging Face models for image generation.</p>
+                        <div class="config-meta">
+                            <div class="server-types">
+                                <span class="server-type web" title="Web Search">🌐</span>
+                                <span class="server-type huggingface" title="Hugging Face">🤗</span>
+                            </div>
+                            <div class="config-stats">
+                                <span class="server-count">2 servers</span>
+                                <span class="update-date">Updated: Mar 18, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Card 3 -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3 class="config-name">Document Analyzer</h3>
+                            <div class="config-actions">
+                                <button class="action-btn edit-btn" title="Edit Configuration">
+                                    <span class="icon">✎</span>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Configuration">
+                                    <span class="icon">🗑</span>
+                                </button>
+                                <button class="action-btn export-btn" title="Export Configuration">
+                                    <span class="icon">↓</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="config-description">File system integration for document analysis and processing.</p>
+                        <div class="config-meta">
+                            <div class="server-types">
+                                <span class="server-type file" title="File System">📁</span>
+                                <span class="server-type huggingface" title="Hugging Face">🤗</span>
+                            </div>
+                            <div class="config-stats">
+                                <span class="server-count">2 servers</span>
+                                <span class="update-date">Updated: Mar 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State (hidden by default, shown when no configurations) -->
+                <div class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No Configurations Yet</h3>
+                    <p>Create your first configuration to get started with MCP Configuration Tool.</p>
+                    <button class="btn btn-primary create-config-btn">Create Your First Configuration</button>
+                </div>
+            </section>
+
+            <!-- Search and Filter Section -->
+            <section class="search-filter">
+                <div class="section-header">
+                    <h2>All Configurations</h2>
+                </div>
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search configurations..." class="search-input">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                    <div class="filter-options">
+                        <div class="filter-group">
+                            <label for="server-type">Server Type:</label>
+                            <select id="server-type" class="filter-select">
+                                <option value="all">All Types</option>
+                                <option value="web">Web Search</option>
+                                <option value="file">File System</option>
+                                <option value="huggingface">Hugging Face</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sort-by">Sort By:</label>
+                            <select id="sort-by" class="filter-select">
+                                <option value="updated">Last Updated</option>
+                                <option value="created">Date Created</option>
+                                <option value="name">Name (A-Z)</option>
+                                <option value="servers">Number of Servers</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary clear-filters-btn">Clear Filters</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- All Configurations Section -->
+            <section class="all-configurations">
+                <div class="configurations-grid">
+                    <!-- Configuration Card 1 (same as recent) -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3 class="config-name">Web Research Assistant</h3>
+                            <div class="config-actions">
+                                <button class="action-btn edit-btn" title="Edit Configuration">
+                                    <span class="icon">✎</span>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Configuration">
+                                    <span class="icon">🗑</span>
+                                </button>
+                                <button class="action-btn export-btn" title="Export Configuration">
+                                    <span class="icon">↓</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="config-description">Enhanced web search capabilities with file system access for research projects.</p>
+                        <div class="config-meta">
+                            <div class="server-types">
+                                <span class="server-type web" title="Web Search">🌐</span>
+                                <span class="server-type file" title="File System">📁</span>
+                            </div>
+                            <div class="config-stats">
+                                <span class="server-count">2 servers</span>
+                                <span class="update-date">Updated: Mar 20, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Card 2 (same as recent) -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3 class="config-name">Content Creator</h3>
+                            <div class="config-actions">
+                                <button class="action-btn edit-btn" title="Edit Configuration">
+                                    <span class="icon">✎</span>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Configuration">
+                                    <span class="icon">🗑</span>
+                                </button>
+                                <button class="action-btn export-btn" title="Export Configuration">
+                                    <span class="icon">↓</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="config-description">Optimized for content creation with Hugging Face models for image generation.</p>
+                        <div class="config-meta">
+                            <div class="server-types">
+                                <span class="server-type web" title="Web Search">🌐</span>
+                                <span class="server-type huggingface" title="Hugging Face">🤗</span>
+                            </div>
+                            <div class="config-stats">
+                                <span class="server-count">2 servers</span>
+                                <span class="update-date">Updated: Mar 18, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Card 3 (same as recent) -->
+                    <div class="config-card">
+                        <div class="config-card-header">
+                            <h3 class="config-name">Document Analyzer</h3>
+                            <div class="config-actions">
+                                <button class="action-btn edit-btn" title="Edit Configuration">
+                                    <span class="icon">✎</span>
+                                </button>
+                                <button class="action-btn delete-btn" title="Delete Configuration">
+                                    <span class="icon">🗑</span>
+                                </button>
+                                <button class="action-btn export-btn" title="Export Configuration">
+                                    <span class="icon">↓</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="config-description">File system integration for document analysis and processing.</p>
+                        <div class="config-meta">
+                            <div class="server-types">
+                                <span class="server-type file" title="File System">📁</span>
+                                <span class="server-type huggingface" title="Hugging Face">🤗</span>
+                            </div>
+                            <div class="config-stats">
+                                <span class="server-count">2 servers</span>
+                                <span class="update-date">Updated: Mar 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button class="pagination-btn prev" disabled>Previous</button>
+                    <div class="pagination-numbers">
+                        <button class="pagination-number active">1</button>
+                        <button class="pagination-number">2</button>
+                        <button class="pagination-number">3</button>
+                    </div>
+                    <button class="pagination-btn next">Next</button>
+                </div>
+            </section>
+
+            <!-- Quick Access Section -->
+            <section class="quick-access">
+                <div class="section-header">
+                    <h2>Quick Access</h2>
+                </div>
+                <div class="quick-access-grid">
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon file">📁</div>
+                        <h3>Add File System</h3>
+                        <p>Connect to local files and directories</p>
+                        <button class="btn btn-secondary">Configure</button>
+                    </div>
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon web">🌐</div>
+                        <h3>Add Web Search</h3>
+                        <p>Enable web search capabilities</p>
+                        <button class="btn btn-secondary">Configure</button>
+                    </div>
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon huggingface">🤗</div>
+                        <h3>Add Hugging Face</h3>
+                        <p>Connect to Hugging Face models</p>
+                        <button class="btn btn-secondary">Configure</button>
+                    </div>
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon export">↓</div>
+                        <h3>Export Configuration</h3>
+                        <p>Export for use with Claude</p>
+                        <button class="btn btn-secondary">Export</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Coming Soon Section -->
+            <section class="coming-soon">
+                <div class="section-header">
+                    <h2>Coming in Future Updates</h2>
+                </div>
+                <div class="coming-soon-grid">
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-icon">👥</div>
+                        <h3>Team Collaboration</h3>
+                        <p>Share configurations with your team and collaborate on settings</p>
+                        <div class="coming-soon-badge">Phase 2</div>
+                    </div>
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-icon">📊</div>
+                        <h3>Analytics Dashboard</h3>
+                        <p>Track usage and performance of your configurations</p>
+                        <div class="coming-soon-badge">Phase 2</div>
+                    </div>
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-icon">🔄</div>
+                        <h3>Additional Models</h3>
+                        <p>Support for more model types and integrations</p>
+                        <div class="coming-soon-badge">Phase 2</div>
+                    </div>
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-icon">📝</div>
+                        <h3>Custom Templates</h3>
+                        <p>Create and share configuration templates</p>
+                        <div class="coming-soon-badge">Phase 2</div>
+                    </div>
+                </div>
+                <div class="upgrade-prompt">
+                    <p>Want early access to upcoming features? <a href="#" class="upgrade-link">Upgrade your subscription</a></p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="logo.svg" alt="MCP Configuration Tool Logo">
+                    <span>MCP Config</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#">Dashboard</a></li>
+                            <li><a href="#">Configurations</a></li>
+                            <li><a href="#">Servers</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MCP Configuration Tool. All rights reserved.</p>
+                <p class="version">Version 1.0.0 (Beta)</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Create Configuration Modal (hidden by default) -->
+    <div class="modal create-config-modal" id="createConfigModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Create New Configuration</h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createConfigForm">
+                    <div class="form-group">
+                        <label for="configName">Configuration Name</label>
+                        <input type="text" id="configName" name="configName" placeholder="Enter a name for your configuration" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="configDescription">Description (Optional)</label>
+                        <textarea id="configDescription" name="configDescription" placeholder="Describe what this configuration is for"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Template (Optional)</label>
+                        <div class="template-options">
+                            <div class="template-option">
+                                <input type="radio" id="templateNone" name="template" value="none" checked>
+                                <label for="templateNone">
+                                    <div class="template-icon">📋</div>
+                                    <div class="template-info">
+                                        <h4>Start from Scratch</h4>
+                                        <p>Create a blank configuration</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="template-option">
+                                <input type="radio" id="templateWeb" name="template" value="web">
+                                <label for="templateWeb">
+                                    <div class="template-icon">🌐</div>
+                                    <div class="template-info">
+                                        <h4>Web Researcher</h4>
+                                        <p>Optimized for web search</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="template-option">
+                                <input type="radio" id="templateFile" name="template" value="file">
+                                <label for="templateFile">
+                                    <div class="template-icon">📁</div>
+                                    <div class="template-info">
+                                        <h4>File Explorer</h4>
+                                        <p>Optimized for file access</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="template-option">
+                                <input type="radio" id="templateAI" name="template" value="ai">
+                                <label for="templateAI">
+                                    <div class="template-icon">🤗</div>
+                                    <div class="template-info">
+                                        <h4>AI Assistant</h4>
+                                        <p>Hugging Face integration</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel-btn">Cancel</button>
+                <button class="btn btn-primary modal-create-btn">Create Configuration</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
