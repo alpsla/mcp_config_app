@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { sendMagicLink, resetPassword } from '../services/supabase/authService';
+import { validateEmail, validatePassword, validatePasswordMatch } from '../utils/validation';
+import { AuthErrorMessage } from '../components/AuthErrorMessage';
+import { AuthErrorType, AuthErrorHandler } from '../utils/authErrorHandler';
 import './AuthContainer.css';
+import './AuthFix.css';
 
 type AuthMode = 'login' | 'signup';
 
@@ -13,6 +17,11 @@ export const AuthContainer: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [verificationMessage, setVerificationMessage] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<{
+    type: AuthErrorType;
+    message: string;
+    actions: ReturnType<typeof AuthErrorHandler.getErrorAction>;
+  } | null>(null);
   const [resendStatus, setResendStatus] = useState<{ loading: boolean, message: string | null }>({ loading: false, message: null });
   // Status for magic link and reset password operations
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,12 +42,42 @@ export const AuthContainer: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    if (!email || !password) {
+    // Clear previous validation errors
+    setValidationError(null);
+    
+    // Check email format
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      setValidationError({
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.message,
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      });
+      return false;
+    }
+    
+    // Check password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setValidationError({
+        type: AuthErrorType.INVALID_PASSWORD,
+        message: passwordValidation.message,
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_PASSWORD)
+      });
       return false;
     }
 
-    if (mode === 'signup' && password !== confirmPassword) {
-      return false;
+    // For signup, validate password confirmation
+    if (mode === 'signup') {
+      const passwordMatchValidation = validatePasswordMatch(password, confirmPassword);
+      if (!passwordMatchValidation.valid) {
+        setValidationError({
+          type: AuthErrorType.PASSWORDS_DONT_MATCH,
+          message: passwordMatchValidation.message,
+          actions: AuthErrorHandler.getErrorAction(AuthErrorType.PASSWORDS_DONT_MATCH)
+        });
+        return false;
+      }
     }
 
     return true;
@@ -67,10 +106,12 @@ export const AuthContainer: React.FC = () => {
   };
   
   const handleResendVerification = async () => {
-    if (!email) {
+    // Validate email before attempting to resend
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
       setResendStatus({
         loading: false,
-        message: 'Please enter your email address first.'
+        message: emailValidation.message
       });
       return;
     }
@@ -96,8 +137,14 @@ export const AuthContainer: React.FC = () => {
   };
   
   const handleForgotPassword = async () => {
-    if (!email) {
-      alert('Please enter your email address first');
+    // Validate email format before proceeding
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      setValidationError({
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.message,
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      });
       return;
     }
     
@@ -113,8 +160,14 @@ export const AuthContainer: React.FC = () => {
   const handleMagicLinkLogin = async () => {
     setShowPasswordResetModal(false);
     
-    if (!email) {
-      alert('Please enter your email address first');
+    // Validate email format before proceeding
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      setValidationError({
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.message,
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      });
       return;
     }
     
@@ -161,8 +214,14 @@ export const AuthContainer: React.FC = () => {
   const handlePasswordReset = async () => {
     setShowPasswordResetModal(false);
     
-    if (!email) {
-      alert('Please enter your email address first');
+    // Validate email format before proceeding
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      setValidationError({
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.message,
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      });
       return;
     }
     
@@ -213,7 +272,27 @@ export const AuthContainer: React.FC = () => {
           {mode === 'login' ? 'Sign In' : 'Create Account'}
         </h2>
 
-        {error && <div className="auth-error">{error}</div>}
+        {error && !validationError && <div className="auth-error">{error}</div>}
+        
+        {validationError && (
+          <AuthErrorMessage 
+            error={validationError} 
+            onPrimaryAction={() => setValidationError(null)}
+            onSecondaryAction={() => {
+              if (validationError.actions.secondaryAction === 'SWITCH_TO_LOGIN') {
+                setMode('login');
+                setValidationError(null);
+              } else if (validationError.actions.secondaryAction === 'SWITCH_TO_SIGNUP') {
+                setMode('signup');
+                setValidationError(null);
+              } else if (validationError.actions.secondaryAction === 'RESET_PASSWORD') {
+                handleForgotPassword();
+              } else {
+                setValidationError(null);
+              }
+            }}
+          />
+        )}
         
         {verificationMessage && (
           <div className="auth-verification-message">
@@ -297,7 +376,26 @@ export const AuthContainer: React.FC = () => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  // Clear validation error when user starts typing
+                  if (validationError?.type === AuthErrorType.INVALID_EMAIL) {
+                    setValidationError(null);
+                  }
+                }}
+                onBlur={() => {
+                  // Validate email when focus leaves the field
+                  if (email) {
+                    const emailValidation = validateEmail(email);
+                    if (!emailValidation.valid) {
+                      setValidationError({
+                        type: AuthErrorType.INVALID_EMAIL,
+                        message: emailValidation.message,
+                        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+                      });
+                    }
+                  }
+                }}
                 required
                 disabled={loading}
               />
@@ -339,7 +437,26 @@ export const AuthContainer: React.FC = () => {
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  // Clear validation error when user starts typing
+                  if (validationError?.type === AuthErrorType.INVALID_PASSWORD) {
+                    setValidationError(null);
+                  }
+                }}
+                onBlur={() => {
+                  // Validate password when focus leaves the field
+                  if (password) {
+                    const passwordValidation = validatePassword(password);
+                    if (!passwordValidation.valid) {
+                      setValidationError({
+                        type: AuthErrorType.INVALID_PASSWORD,
+                        message: passwordValidation.message,
+                        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_PASSWORD)
+                      });
+                    }
+                  }
+                }}
                 required
                 disabled={loading}
               />
@@ -365,7 +482,26 @@ export const AuthContainer: React.FC = () => {
                   type="password"
                   id="confirmPassword"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    // Clear validation error when user starts typing
+                    if (validationError?.type === AuthErrorType.PASSWORDS_DONT_MATCH) {
+                      setValidationError(null);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Validate password match when focus leaves the field
+                    if (password && confirmPassword) {
+                      const passwordMatchValidation = validatePasswordMatch(password, confirmPassword);
+                      if (!passwordMatchValidation.valid) {
+                        setValidationError({
+                          type: AuthErrorType.PASSWORDS_DONT_MATCH,
+                          message: passwordMatchValidation.message,
+                          actions: AuthErrorHandler.getErrorAction(AuthErrorType.PASSWORDS_DONT_MATCH)
+                        });
+                      }
+                    }
+                  }}
                   required
                   disabled={loading}
                 />

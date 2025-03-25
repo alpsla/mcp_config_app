@@ -1,257 +1,306 @@
+/**
+ * Email Authentication Fix
+ * This module provides enhanced email validation and authentication fixes
+ * for the MCP Configuration Tool.
+ */
+
 import { supabase } from '../supabase/supabaseClient';
+import { validateEmail } from '../../utils/validation';
+import { AuthErrorType, AuthErrorHandler } from '../../utils/authErrorHandler';
 
 /**
- * Comprehensive diagnostic and fix for email authentication issues
+ * Validate and sanitize email address before authentication
+ * @param email The email address to validate and sanitize
+ * @returns Object with validation results and sanitized email if valid
  */
-export interface AuthDiagnosticResult {
-  success: boolean;
-  issues: string[];
-  fixAttempted: boolean;
-  fixResult?: string;
-  userData?: any;
-}
-
-/**
- * Diagnose auth issues and attempt to fix them
- */
-export const diagnoseAndFixAuth = async (email: string): Promise<AuthDiagnosticResult> => {
-  const issues: string[] = [];
-  let fixAttempted = false;
-  let fixResult: string | undefined;
-  let userData: any = null;
+export const validateAndSanitizeEmail = (email: string): {
+  valid: boolean;
+  sanitizedEmail?: string;
+  errorType?: AuthErrorType;
+  errorMessage?: string;
+} => {
+  // Trim whitespace
+  const trimmedEmail = email.trim();
   
-  try {
-    // Step 1: Check if user exists in auth system
-    // Check if user exists via sign-in attempt - we can't use admin API directly
-    // Try with a list users approach instead
-    const { data, error } = await supabase.auth.getUser();
-    
-    if (error) {
-      issues.push(`Error checking user: ${error.message}`);
-      return { success: false, issues, fixAttempted, userData: null };
-    }
-    
-    // Check if we have a session - indicates we're logged in
-    if (!data.user) {
-      issues.push(`Unable to access user information. Make sure you have the right permissions.`);
-      return { success: false, issues, fixAttempted, userData: null };
-    }
-    
-    // Step 2: Check email verification status
-    const isEmailVerified = userData.user.email_confirmed_at !== null;
-    
-    if (!isEmailVerified) {
-      issues.push(`User email is not verified`);
-      
-      // Attempt to fix: Force email verification if admin capabilities available
-      try {
-        const { error: updateError } = await supabase.auth.admin.updateUserById(
-          userData.user.id,
-          { email_confirm: true }
-        );
-        
-        if (updateError) {
-          issues.push(`Failed to force verify email: ${updateError.message}`);
-        } else {
-          fixAttempted = true;
-          fixResult = "Successfully forced email verification";
-        }
-      } catch (adminErr: any) {
-        issues.push(`Admin update failed: ${adminErr.message}`);
-      }
-    }
-    
-    // Step 3: Check for profile record
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userData.user.id)
-      .single();
-      
-    if (profileError && !profileError.message.includes('No rows found')) {
-      issues.push(`Error retrieving profile: ${profileError.message}`);
-    }
-    
-    if (!profileData) {
-      issues.push(`User profile record is missing`);
-      
-      // Attempt to fix: Create missing profile
-      try {
-        const { error: insertError } = await supabase
-          .from('profiles')
-          .insert([{
-            id: userData.user.id,
-            email: email,
-            created_at: new Date().toISOString(),
-            subscription_tier: 'free'
-          }]);
-          
-        if (insertError) {
-          issues.push(`Failed to create profile: ${insertError.message}`);
-        } else {
-          fixAttempted = true;
-          fixResult = fixResult 
-            ? `${fixResult}, Created missing profile record` 
-            : "Created missing profile record";
-        }
-      } catch (profileErr: any) {
-        issues.push(`Profile creation failed: ${profileErr.message}`);
-      }
-    }
-    
+  // Perform validation
+  const validation = validateEmail(trimmedEmail);
+  
+  if (!validation.valid) {
     return {
-      success: issues.length === 0 || fixAttempted,
-      issues,
-      fixAttempted,
-      fixResult,
-      userData: userData?.user || null
-    };
-  } catch (err: any) {
-    issues.push(`Unexpected error: ${err.message}`);
-    return {
-      success: false,
-      issues,
-      fixAttempted: false,
-      userData: null
+      valid: false,
+      errorType: AuthErrorType.INVALID_EMAIL,
+      errorMessage: validation.message
     };
   }
+  
+  // Email is valid, return sanitized version
+  return {
+    valid: true,
+    sanitizedEmail: trimmedEmail
+  };
 };
 
 /**
- * Force resend verification email with improved error handling
+ * Enhanced login that includes proper email validation
+ * @param email The email address to use for login
+ * @param password The password to use for login
+ * @returns Authentication result with appropriate error handling
  */
-export const forceResendVerification = async (email: string): Promise<{
-  success: boolean;
-  message: string;
-}> => {
-  try {
-    // Try multiple methods to ensure email gets sent
-    
-    // Method 1: Standard resend
-    const { error: resendError } = await supabase.auth.resend({
-      type: 'signup',
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/verify-email`
+export const enhancedLogin = async (email: string, password: string) => {
+  // First validate the email
+  const emailValidation = validateAndSanitizeEmail(email);
+  
+  if (!emailValidation.valid) {
+    return {
+      success: false,
+      error: {
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.errorMessage || 'Invalid email format',
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
       }
+    };
+  }
+  
+  // Use sanitized email for authentication
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: emailValidation.sanitizedEmail as string,
+      password
     });
     
-    if (resendError) {
-      console.error('Standard resend failed:', resendError);
-      
-      // Method 2: Try OTP (magic link) as fallback
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/verify-email`
-        }
-      });
-      
-      if (otpError) {
-        console.error('OTP fallback failed:', otpError);
-        throw new Error(otpError.message);
-      }
+    if (error) {
+      // Map Supabase error to our standard error types
+      const errorType = AuthErrorHandler.mapSupabaseError(error.message);
       
       return {
-        success: true,
-        message: 'Verification link sent using alternative method. Please check your email.'
+        success: false,
+        error: {
+          type: errorType,
+          message: AuthErrorHandler.getUserFriendlyMessage(errorType),
+          actions: AuthErrorHandler.getErrorAction(errorType)
+        }
       };
     }
     
     return {
       success: true,
-      message: 'Verification email sent successfully. Please check your inbox and spam folder.'
+      data
     };
-  } catch (err: any) {
-    console.error('Verification resend failed:', err);
+  } catch (error: any) {
+    console.error('Login error:', error);
+    
     return {
       success: false,
-      message: `Failed to send verification email: ${err.message}`
+      error: {
+        type: AuthErrorType.UNKNOWN_ERROR,
+        message: 'An unexpected error occurred during login',
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.UNKNOWN_ERROR)
+      }
     };
   }
 };
 
 /**
- * Try to log in using multiple methods
+ * Enhanced signup that includes proper email validation
+ * @param email The email to use for signup
+ * @param password The password to use
+ * @param firstName Optional first name
+ * @param lastName Optional last name
+ * @returns Signup result with appropriate error handling
  */
-export const robustLogin = async (email: string, password: string): Promise<{
-  success: boolean;
-  user: any | null;
-  session: any | null;
-  error?: string;
-  requiresEmailConfirmation?: boolean;
-}> => {
+export const enhancedSignup = async (
+  email: string, 
+  password: string,
+  firstName?: string, 
+  lastName?: string
+) => {
+  // First validate the email
+  const emailValidation = validateAndSanitizeEmail(email);
+  
+  if (!emailValidation.valid) {
+    return {
+      success: false,
+      error: {
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.errorMessage || 'Invalid email format',
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      }
+    };
+  }
+  
+  // Use sanitized email for signup
   try {
-    // First try standard password login
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
+    const { data, error } = await supabase.auth.signUp({
+      email: emailValidation.sanitizedEmail as string,
+      password,
+      options: {
+        data: {
+          first_name: firstName || '',
+          last_name: lastName || ''
+        }
+      }
     });
     
-    // If successful, return the user
-    if (data.user && !error) {
-      return {
-        success: true,
-        user: data.user,
-        session: data.session
-      };
-    }
-    
-    // If error indicates email verification issue
-    if (error && (
-      error.message.includes('Email not confirmed') ||
-      error.message.includes('not verified')
-    )) {
-      // Try to fix the verification status
-      const diagnosticResult = await diagnoseAndFixAuth(email);
-      
-      if (diagnosticResult.success && diagnosticResult.fixAttempted) {
-        // Try logging in again after fix
-        const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-        
-        if (retryData.user && !retryError) {
-          return {
-            success: true,
-            user: retryData.user,
-            session: retryData.session
-          };
-        }
-        
-        // If still failing, fall back to email verification requirement
-        return {
-          success: false,
-          user: null,
-          session: null,
-          error: retryError?.message || 'Login failed after verification fix',
-          requiresEmailConfirmation: true
-        };
-      }
+    if (error) {
+      // Map Supabase error to our standard error types
+      const errorType = AuthErrorHandler.mapSupabaseError(error.message);
       
       return {
         success: false,
-        user: null,
-        session: null,
-        error: error.message,
-        requiresEmailConfirmation: true
+        error: {
+          type: errorType,
+          message: AuthErrorHandler.getUserFriendlyMessage(errorType),
+          actions: AuthErrorHandler.getErrorAction(errorType)
+        }
       };
     }
     
-    // For other errors, return the error
+    // Check if email confirmation is required
+    const requiresEmailConfirmation = data.user && !data.session;
+    
     return {
-      success: false,
-      user: null,
-      session: null,
-      error: error?.message || 'Unknown login error'
+      success: true,
+      data,
+      requiresEmailConfirmation
     };
-  } catch (err: any) {
+  } catch (error: any) {
+    console.error('Signup error:', error);
+    
     return {
       success: false,
-      user: null,
-      session: null,
-      error: err.message
+      error: {
+        type: AuthErrorType.UNKNOWN_ERROR,
+        message: 'An unexpected error occurred during signup',
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.UNKNOWN_ERROR)
+      }
     };
   }
+};
+
+/**
+ * Enhanced password reset with proper email validation
+ * @param email The email to send password reset instructions to
+ * @returns Password reset result with appropriate error handling
+ */
+export const enhancedResetPassword = async (email: string) => {
+  // First validate the email
+  const emailValidation = validateAndSanitizeEmail(email);
+  
+  if (!emailValidation.valid) {
+    return {
+      success: false,
+      error: {
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.errorMessage || 'Invalid email format',
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      }
+    };
+  }
+  
+  // Use sanitized email for password reset
+  try {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(
+      emailValidation.sanitizedEmail as string
+    );
+    
+    if (error) {
+      // Special case for rate limiting
+      if (error.message.includes('rate limit')) {
+        return {
+          success: false,
+          error: {
+            type: AuthErrorType.RATE_LIMIT,
+            message: 'Too many password reset attempts. Please try again later.',
+            actions: AuthErrorHandler.getErrorAction(AuthErrorType.RATE_LIMIT)
+          }
+        };
+      }
+      
+      // For security reasons, we don't expose whether the email exists or not
+      // So we return a generic success message even if there was an error
+      console.warn('Password reset error (not exposed to user):', error.message);
+    }
+    
+    return {
+      success: true,
+      message: 'If an account exists with this email, password reset instructions have been sent.'
+    };
+  } catch (error: any) {
+    console.error('Password reset error:', error);
+    
+    // Still return success for security reasons
+    return {
+      success: true,
+      message: 'If an account exists with this email, password reset instructions have been sent.'
+    };
+  }
+};
+
+/**
+ * Enhanced magic link login with proper email validation
+ * @param email The email to send a magic link to
+ * @returns Magic link result with appropriate error handling
+ */
+export const enhancedMagicLink = async (email: string) => {
+  // First validate the email
+  const emailValidation = validateAndSanitizeEmail(email);
+  
+  if (!emailValidation.valid) {
+    return {
+      success: false,
+      error: {
+        type: AuthErrorType.INVALID_EMAIL,
+        message: emailValidation.errorMessage || 'Invalid email format',
+        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
+      }
+    };
+  }
+  
+  // Use sanitized email for magic link
+  try {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email: emailValidation.sanitizedEmail as string
+    });
+    
+    if (error) {
+      // Special case for rate limiting
+      if (error.message.includes('rate limit')) {
+        return {
+          success: false,
+          error: {
+            type: AuthErrorType.RATE_LIMIT,
+            message: 'Too many login attempts. Please try again later.',
+            actions: AuthErrorHandler.getErrorAction(AuthErrorType.RATE_LIMIT)
+          }
+        };
+      }
+      
+      // For security reasons, we don't expose whether the email exists or not
+      // So we return a generic success message even if there was an error
+      console.warn('Magic link error (not exposed to user):', error.message);
+    }
+    
+    return {
+      success: true,
+      message: 'If an account exists with this email, a magic link has been sent.'
+    };
+  } catch (error: any) {
+    console.error('Magic link error:', error);
+    
+    // Still return success for security reasons
+    return {
+      success: true,
+      message: 'If an account exists with this email, a magic link has been sent.'
+    };
+  }
+};
+
+/**
+ * Update AuthContext to use the enhanced authentication functions
+ * This function should be imported and called in the app's initialization
+ */
+export const applyAuthFixes = () => {
+  console.log('Applied enhanced email validation and authentication fixes');
+  // This is a hook for any global fixes that need to be applied
+  // Currently, the individual enhanced functions can be used directly
 };

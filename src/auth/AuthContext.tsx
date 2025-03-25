@@ -8,7 +8,7 @@ import {
   signInWithSocialProvider,
   resendVerificationEmail
 } from '../services/supabase/authService';
-import { robustLogin as robustLoginService, forceResendVerification } from '../services/auth/emailAuthFix';
+import { robustLogin as robustLoginService, forceResendVerification } from '../services/auth/robustAuthService';
 import { User, SubscriptionTier } from '../types';
 
 // Define the shape of our auth state
