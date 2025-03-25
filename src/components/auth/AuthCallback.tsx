@@ -315,7 +315,10 @@ const AuthCallback: React.FC = () => {
               marginTop: '30px'
             }}>
               <button 
-                onClick={() => navigate('/login')} 
+                onClick={() => {
+                  // Replace the current page instead of opening a new one
+                  window.location.href = '/login';
+                }} 
                 style={{
                   backgroundColor: '#6750A4',
                   color: 'white',
