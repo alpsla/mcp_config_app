@@ -1,7 +1,7 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 import { Provider } from '@supabase/supabase-js';
 import { User, SubscriptionTier } from '../../types';
-import { getVerificationEmailTemplate, getPasswordResetEmailTemplate } from './emailTemplates';
+import { getVerificationEmailTemplate, getPasswordResetEmailTemplate, getMagicLinkEmailTemplate } from './emailTemplates';
 import { safeOAuthSignIn } from '../../auth/providerTypes';
 
 /**
@@ -614,10 +614,14 @@ export async function sendMagicLink(email: string) {
   checkSupabaseConfig();
   
   try {
+    // Get email template if available
+    const emailTemplate = getMagicLinkEmailTemplate();
+    
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        ...(emailTemplate && { emailTemplate })
       }
     });
     
@@ -1004,11 +1008,15 @@ export async function directAccessLogin(email: string) {
   checkSupabaseConfig();
   
   try {
+    // Get email template if available
+    const emailTemplate = getMagicLinkEmailTemplate();
+    
     // Step 1: Send a magic link
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        ...(emailTemplate && { emailTemplate })
       }
     });
     

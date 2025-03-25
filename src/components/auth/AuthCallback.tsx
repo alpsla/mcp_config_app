@@ -18,7 +18,8 @@ const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [status, setStatus] = useState<string>('Processing authentication...');
-  const [error, setError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<string | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -222,13 +223,27 @@ const AuthCallback: React.FC = () => {
         }, 1000);
       } catch (err: any) {
         console.error('Auth callback error:', err);
-        setError(err.message || 'Authentication failed');
+        
+        // Check for specific error types based on URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = urlParams.get('error_code');
+        const errorDescription = urlParams.get('error_description');
+        
+        if (errorCode === 'otp_expired') {
+          setErrorType('expired_link');
+          setErrorDetails('Your magic link has expired. For security reasons, magic links expire after 24 hours or once they have been used.');
+        } else if (errorCode === 'access_denied') {
+          setErrorType('access_denied');
+          setErrorDetails(errorDescription || 'Access was denied. The link may be invalid or your session has expired.');
+        } else {
+          setErrorType('authentication_failed');
+          setErrorDetails(err.message || 'Authentication failed. Please try again.');
+        }
+        
         setStatus('Authentication failed');
         
-        // Redirect to login page after a short delay
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        // No longer auto-redirect on error - user will use the buttons
+        // Keep only the successful redirect
       }
     };
 
@@ -243,29 +258,131 @@ const AuthCallback: React.FC = () => {
       justifyContent: 'center',
       height: '100vh',
       padding: '20px',
-      textAlign: 'center'
+      textAlign: 'center',
+      backgroundColor: '#f8f9fa'
     }}>
-      <h2>Authentication {error ? 'Failed' : 'Processing'}</h2>
-      
       <div style={{
-        marginTop: '20px',
-        padding: '15px 20px',
-        borderRadius: '4px',
-        backgroundColor: error ? '#FEE2E2' : '#E0F2FE',
-        color: error ? '#B91C1C' : '#0369A1'
+        maxWidth: '450px',
+        width: '100%',
+        padding: '30px',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
       }}>
-        {status}
-      </div>
-      
-      {error && (
-        <div style={{
-          marginTop: '20px',
-          color: '#B91C1C'
+        <h1 style={{
+          color: '#333',
+          fontSize: '24px',
+          marginBottom: '20px',
+          fontWeight: 'bold'
         }}>
-          <p>{error}</p>
-          <p>Redirecting to login page...</p>
-        </div>
-      )}
+          {errorType ? 'Authentication Failed' : 'Processing Authentication'}
+        </h1>
+
+        {errorType ? (
+          <div>
+            <div style={{
+              backgroundColor: '#6750A4',
+              color: 'white',
+              borderRadius: '4px',
+              padding: '16px',
+              marginBottom: '20px',
+              fontSize: '18px'
+            }}>
+              Verify Email Address
+            </div>
+
+            <div style={{
+              marginTop: '20px',
+              marginBottom: '20px'
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#d32f2f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+            </div>
+
+            <p style={{
+              color: '#333',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              marginBottom: '20px'
+            }}>
+              {errorDetails}
+            </p>
+
+            <div style={{
+              marginTop: '30px'
+            }}>
+              <button 
+                onClick={() => navigate('/login')} 
+                style={{
+                  backgroundColor: '#6750A4',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '10px 16px',
+                  fontSize: '16px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }}
+              >
+                Try Again
+              </button>
+              
+              <div style={{ marginTop: '16px' }}>
+                <button 
+                  onClick={() => window.location.href = '/magic-link'} 
+                  style={{
+                    backgroundColor: 'transparent',
+                    color: '#6750A4',
+                    border: '1px solid #6750A4',
+                    borderRadius: '4px',
+                    padding: '10px 16px',
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                    width: '100%'
+                  }}
+                >
+                  Send New Magic Link
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div style={{
+              marginTop: '20px',
+              marginBottom: '30px'
+            }}>
+              <div style={{
+                border: '4px solid rgba(0, 0, 0, 0.1)',
+                borderTopColor: '#6750A4',
+                borderRadius: '50%',
+                width: '40px',
+                height: '40px',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto'
+              }}>
+                <style>{`
+                  @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                  }
+                `}</style>
+              </div>
+            </div>
+            
+            <p style={{
+              color: '#333',
+              fontSize: '16px',
+              lineHeight: '1.5'
+            }}>
+              {status}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useLocation, Navigate, Link } from 'react-router-dom';
+import SignIn from './components/auth/signin/SignIn';
+import SignUp from './components/auth/signup/SignUp';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
-import { AuthContainer } from './auth/AuthContainer';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { useAuth } from './auth/AuthContext';
-import { SupabaseCheck } from './components/diagnostic/SupabaseCheck';
 import { AuthDiagnostic } from './components/diagnostic/AuthDiagnostic';
 import ErrorBoundary from './components/ErrorBoundary';
 import VerifyEmail from './pages/VerifyEmail';
@@ -85,8 +85,6 @@ const AppContent: React.FC = () => {
   
   return (
     <div>
-      <SupabaseCheck />
-      
       <ErrorBoundary>
         <Routes>
           <Route path="/auth-diagnostic" element={<AuthDiagnostic />} />
@@ -96,7 +94,8 @@ const AppContent: React.FC = () => {
           <Route path="/reset-password/debug" element={<DirectDebug />} />
           <Route path="/magic-link" element={<MagicLinkPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
-          <Route path="/login" element={<AuthContainer />} />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={
             authState.user ? (
               <ProtectedRoute>

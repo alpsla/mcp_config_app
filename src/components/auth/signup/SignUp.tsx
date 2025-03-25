@@ -1,40 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import { sendMagicLink } from '../services/supabase/authService';
-import { validateEmail } from '../utils/validation';
-import { AuthErrorMessage } from '../components/AuthErrorMessage';
-import { AuthErrorType, AuthErrorHandler } from '../utils/authErrorHandler';
-import './AuthContainer.css';
-import './AuthFix.css';
+import React, { useState } from 'react';
+import '../AuthStatus.css';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../../auth/AuthContext';
+import { sendMagicLink } from '../../../services/auth/magicLinkAuth';
+import { validateEmail } from '../../../utils/validation';
+import { AuthErrorType, AuthErrorHandler } from '../../../utils/authErrorHandler';
+import { AuthErrorMessage } from '../../AuthErrorMessage';
+import '../../auth/MagicLinkLogin.css';
 
-export const AuthContainer: React.FC = () => {
+/**
+ * SignUp Component
+ * 
+ * Dedicated component for new user registration with name fields
+ */
+const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [verificationMessage, setVerificationMessage] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { socialLogin } = useAuth();
   const [validationError, setValidationError] = useState<{
     type: AuthErrorType;
     message: string;
     actions: ReturnType<typeof AuthErrorHandler.getErrorAction>;
   } | null>(null);
-  // Status for magic link operation
-  const [magicLinkStatus, setMagicLinkStatus] = useState<{ loading: boolean, message: string | null }>({ loading: false, message: null });
-  const { authState, socialLogin } = useAuth();
-  const { loading, error, requiresEmailConfirmation, confirmationMessage } = authState;
-  
-  // Handle email verification message when signing up
-  useEffect(() => {
-    if (requiresEmailConfirmation && confirmationMessage) {
-      setVerificationMessage(confirmationMessage);
-    }
-  }, [requiresEmailConfirmation, confirmationMessage]);
+  const [verificationMessage, setVerificationMessage] = useState<string | null>(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const navigate = useNavigate();
 
   // Clear any existing error
   const clearValidationError = () => {
     setValidationError(null);
   };
   
-  // Validate the form - just checks email format
+  // Validate the form - checks email format
   const validateForm = (): boolean => {
     // Clear previous validation errors
     clearValidationError();
@@ -53,7 +54,6 @@ export const AuthContainer: React.FC = () => {
     return true;
   };
 
-  // Handle form submission - this now only sends magic links
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -61,43 +61,16 @@ export const AuthContainer: React.FC = () => {
       return;
     }
 
-    await handleMagicLinkLogin();
-  };
-
-  const handleGoogleLogin = async () => {
-    await socialLogin('google');
-  };
-  
-  const handleGithubLogin = async () => {
-    await socialLogin('github');
-  };
-  
-  // Handle magic link login request
-  const handleMagicLinkLogin = async () => {
-    // Validate email format before proceeding
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.valid) {
-      setValidationError({
-        type: AuthErrorType.INVALID_EMAIL,
-        message: emailValidation.message,
-        actions: AuthErrorHandler.getErrorAction(AuthErrorType.INVALID_EMAIL)
-      });
-      return;
-    }
-    
-    console.log('Sending magic link to:', email);
-    
-    setMagicLinkStatus({
-      loading: true,
-      message: null
-    });
+    setLoading(true);
     
     try {
-      // Store the name details if provided
+      // Store the name details for profile creation after authentication
       if (firstName || lastName) {
         localStorage.setItem('pendingUserFirstName', firstName);
         localStorage.setItem('pendingUserLastName', lastName);
       }
+      
+      console.log('Sending magic link to:', email);
       
       // Send magic link
       const result = await sendMagicLink(email);
@@ -105,28 +78,19 @@ export const AuthContainer: React.FC = () => {
       
       if (result.error) {
         console.error('Magic link error:', result.error);
-        setMagicLinkStatus({
-          loading: false,
-          message: `Error: ${result.error}`
-        });
+        setStatus(`Error: ${result.error}`);
         return;
       }
       
-      setMagicLinkStatus({
-        loading: false,
-        message: null
-      });
-      
       // Show success message
       setVerificationMessage(
-        result.message || 'A login link has been sent to your email. Please check your inbox (including spam/junk folders).'
+        result.message || 'A sign-up link has been sent to your email. Please check your inbox (including spam/junk folders) to verify your account.'
       );
     } catch (error: any) {
       console.error('Error sending magic link:', error);
-      setMagicLinkStatus({
-        loading: false,
-        message: `Error: ${error.message}`
-      });
+      setStatus(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,10 +98,8 @@ export const AuthContainer: React.FC = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h1 className="auth-title">MCP Configuration Tool</h1>
-        <h2 className="auth-subtitle">Magic Link Sign In</h2>
+        <h2 className="auth-subtitle">Create Account</h2>
 
-        {error && !validationError && <div className="auth-error">{error}</div>}
-        
         {validationError && (
           <AuthErrorMessage 
             error={validationError} 
@@ -146,46 +108,19 @@ export const AuthContainer: React.FC = () => {
           />
         )}
         
-        {verificationMessage && (
+        {verificationMessage ? (
           <div className="auth-verification-message">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
             <p>{verificationMessage}</p>
-            
-            <div className="resend-verification">
-              <div className="form-group email-input">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Confirm your email address"
-                  required
-                  disabled={magicLinkStatus.loading}
-                />
-              </div>
-              
-              <button 
-                onClick={handleMagicLinkLogin} 
-                className="resend-button"
-                disabled={magicLinkStatus.loading || !email}
-              >
-                {magicLinkStatus.loading ? 'Sending...' : 'Resend Magic Link'}
-              </button>
-              
-              {magicLinkStatus.message && (
-                <p className="resend-status">{magicLinkStatus.message}</p>
-              )}
-            </div>
           </div>
-        )}
-
-        {!verificationMessage && (
+        ) : (
           <form className="auth-form" onSubmit={handleSubmit}>
-            {/* Email field - always visible */}
+            {/* Email field */}
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Email <span className="required">*</span></label>
               <input
                 type="email"
                 id="email"
@@ -203,9 +138,9 @@ export const AuthContainer: React.FC = () => {
               />
             </div>
 
-            {/* First Name and Last Name - optional but helpful */}
+            {/* First Name */}
             <div className="form-group">
-              <label htmlFor="firstName">First Name (optional)</label>
+              <label htmlFor="firstName">First Name <span className="required">*</span></label>
               <input
                 type="text"
                 id="firstName"
@@ -213,11 +148,13 @@ export const AuthContainer: React.FC = () => {
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Your first name"
                 disabled={loading}
+                required
               />
             </div>
 
+            {/* Last Name */}
             <div className="form-group">
-              <label htmlFor="lastName">Last Name (optional)</label>
+              <label htmlFor="lastName">Last Name <span className="required">*</span></label>
               <input
                 type="text"
                 id="lastName"
@@ -225,25 +162,32 @@ export const AuthContainer: React.FC = () => {
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Your last name"
                 disabled={loading}
+                required
               />
             </div>
             
             <div className="auth-help-text">
               <p>
-                Enter your email address to receive a secure login link. 
-                No password required! Adding your name is optional but helps with account setup.
+                We'll send you a secure sign-up link via email.
+                No password needed!
               </p>
             </div>
 
             <button
               type="submit"
               className="auth-button"
-              disabled={loading || !email}
+              disabled={loading || !email || !firstName || !lastName}
             >
-              {magicLinkStatus.loading
+              {loading
                 ? 'Sending...'
-                : 'Send Magic Link'}
+                : 'Create Account'}
             </button>
+            
+            {status && <div className="auth-status-message">{status}</div>}
+            
+            <div className="auth-toggle">
+              <p>Already have an account? <Link to="/login">Sign in</Link></p>
+            </div>
           </form>
         )}
 
@@ -257,7 +201,7 @@ export const AuthContainer: React.FC = () => {
               <button
                 type="button"
                 className="social-button google"
-                onClick={handleGoogleLogin}
+                onClick={() => socialLogin('google')}
                 disabled={loading}
               >
                 <svg viewBox="0 0 24 24" width="24" height="24">
@@ -272,7 +216,7 @@ export const AuthContainer: React.FC = () => {
               <button
                 type="button"
                 className="social-button github"
-                onClick={handleGithubLogin}
+                onClick={() => socialLogin('github')}
                 disabled={loading}
               >
                 <svg viewBox="0 0 24 24" width="24" height="24">
@@ -286,9 +230,9 @@ export const AuthContainer: React.FC = () => {
             </div>
           </>
         )}
-
-        {/* Auth toggle removed as this is already the magic link page */}
       </div>
     </div>
   );
 };
+
+export default SignUp;
