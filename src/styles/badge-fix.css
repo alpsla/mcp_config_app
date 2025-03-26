@@ -1,0 +1,43 @@
+/**
+ * Global fix for badge and label font sizes
+ * This ensures that badges like "Desktop Only" and "Premium" have consistent sizing
+ */
+
+/* Target all badge and label elements */
+[class*="badge"],
+[class*="label"],
+sup, 
+small,
+.small-text {
+  /* Force same font size as parent */
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+
+/* Specific targeting for elements with Desktop Only and Premium text */
+*:not(style):not(script):contains('Desktop Only'),
+*:not(style):not(script):contains('Premium') {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+/* Target specific buttons that match your screenshot */
+button, 
+.button,
+[role="button"],
+.server-button,
+.option-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+button *, 
+.button *,
+[role="button"] *,
+.server-button *,
+.option-button * {
+  font-size: inherit !important;
+}
