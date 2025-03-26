@@ -1,0 +1,88 @@
+.error-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 400px;
+  animation: slideIn 0.3s ease-out;
+  z-index: 1000;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.error-notification.error {
+  background-color: #FEE2E2;
+  border-left: 4px solid #DC2626;
+  color: #7F1D1D;
+}
+
+.error-notification.warning {
+  background-color: #FEF3C7;
+  border-left: 4px solid #F59E0B;
+  color: #78350F;
+}
+
+.error-notification.info {
+  background-color: #E0F2FE;
+  border-left: 4px solid #0EA5E9;
+  color: #0C4A6E;
+}
+
+.error-notification.success {
+  background-color: #DCFCE7;
+  border-left: 4px solid #22C55E;
+  color: #166534;
+}
+
+.error-message {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.error-close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 0 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.error-close-button:hover {
+  opacity: 1;
+}
+
+.error-notification.error .error-close-button {
+  color: #991B1B;
+}
+
+.error-notification.warning .error-close-button {
+  color: #92400E;
+}
+
+.error-notification.info .error-close-button {
+  color: #0E7490;
+}
+
+.error-notification.success .error-close-button {
+  color: #166534;
+}

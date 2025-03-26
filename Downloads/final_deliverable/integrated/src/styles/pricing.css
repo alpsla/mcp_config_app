@@ -1,0 +1,496 @@
+/* Pricing Page Specific Styles */
+
+/* Hero Section */
+.pricing-hero {
+    background: linear-gradient(135deg, #3A86FF 0%, #8338EC 100%);
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.pricing-hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pricing-hero-subtitle {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+/* Value Proposition Section */
+.value-proposition {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.value-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.value-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.value-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.emoji {
+    font-size: 2.5rem;
+}
+
+.value-card h3 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+/* Pricing Tiers Section */
+.pricing-tiers {
+    padding: 80px 0;
+}
+
+.pricing-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.pricing-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    border: 1px solid #e9ecef;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.popular {
+    border: 2px solid #3A86FF;
+    transform: scale(1.05);
+}
+
+.pricing-card.popular:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3A86FF;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.pricing-card-header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+.pricing-card-header h3 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.price-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.price-period {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-left: 5px;
+}
+
+.pricing-card-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pricing-card-features li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.check-icon {
+    color: #38B000;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.x-icon {
+    color: #e63946;
+    margin-right: 10px;
+}
+
+.pricing-card-cta {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.early-adopter-callout {
+    background-color: #f0f7ff;
+    border: 1px solid #cfe2ff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    margin-top: 50px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.early-adopter-callout h3 {
+    color: #3A86FF;
+    margin-bottom: 10px;
+}
+
+/* Comparison Table Section */
+.comparison-table {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-top: 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Use Case Examples Section */
+.use-cases {
+    padding: 80px 0;
+}
+
+.testimonial-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.testimonial-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+}
+
+.testimonial-icon img {
+    width: 100%;
+    height: 100%;
+}
+
+.testimonial-card h3 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.quote {
+    font-style: italic;
+    margin-bottom: 15px;
+    color: #495057;
+}
+
+.author {
+    font-weight: 600;
+    color: #3A86FF;
+}
+
+/* FAQ Section */
+.faq {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.faq-accordion {
+    max-width: 800px;
+    margin: 40px auto 0;
+}
+
+.faq-item {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-question h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.faq-toggle {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-toggle {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    padding: 0 20px 20px;
+    max-height: 1000px;
+}
+
+/* Call to Action Section */
+.cta {
+    padding: 80px 0;
+    text-align: center;
+    background: linear-gradient(135deg, #3A86FF 0%, #8338EC 100%);
+    color: white;
+}
+
+.cta h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.cta p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Coming Soon Section */
+.coming-soon {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.coming-soon-features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.coming-soon-feature {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 250px;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+}
+
+/* Live Chat Button */
+.live-chat-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
+.chat-button {
+    background-color: #3A86FF;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chat-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.chat-icon {
+    font-size: 1.2rem;
+}
+
+.chat-text {
+    font-weight: 600;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .pricing-card.popular {
+        transform: scale(1.03);
+    }
+    
+    .pricing-card.popular:hover {
+        transform: scale(1.03) translateY(-5px);
+    }
+}
+
+@media (max-width: 768px) {
+    .pricing-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .pricing-card, 
+    .pricing-card.popular {
+        transform: none;
+        max-width: 100%;
+    }
+    
+    .pricing-card:hover,
+    .pricing-card.popular:hover {
+        transform: translateY(-5px);
+    }
+    
+    .chat-text {
+        display: none;
+    }
+    
+    .chat-button {
+        padding: 15px;
+        border-radius: 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    .pricing-hero {
+        padding: 60px 0;
+    }
+    
+    .pricing-hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+    }
+    
+    .value-cards,
+    .pricing-cards,
+    .testimonial-cards {
+        gap: 20px;
+    }
+    
+    .value-card,
+    .pricing-card,
+    .testimonial-card {
+        padding: 20px;
+    }
+}

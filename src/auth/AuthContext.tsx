@@ -8,6 +8,7 @@ import {
   signInWithSocialProvider,
   resendVerificationEmail
 } from '../services/supabase/authService';
+import { supabase } from '../services/supabase/supabaseClient';
 import { robustLogin as robustLoginService, forceResendVerification } from '../services/auth/robustAuthService';
 import { User, SubscriptionTier } from '../types';
 
@@ -99,6 +100,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Get user profile data
         const userData = await getCurrentUser();
         
+        if (!userData) {
+          // This indicates a serious problem - user authenticated but profile not available
+          console.error('Authentication succeeded but profile retrieval failed - critical error');
+          throw new Error('Profile could not be retrieved after login. Please try again.');
+        }
+        
         setAuthState({
           user: userData,
           loading: false,
@@ -129,26 +136,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error(response.error || robustResponse.error || 'Login failed');
       }
 
+      // Check again to make sure we have a user profile
+      if (!response.user) {
+        console.error('Login succeeded but no user profile returned');
+        throw new Error('Login successful but your profile could not be loaded. Please try again.');
+      }
+
       setAuthState({
         user: response.user,
         loading: false,
         error: null,
-        isAuthenticated: !!response.user,
+        isAuthenticated: true,
         session: response.session,
         requiresEmailConfirmation: false,
         confirmationMessage: null
       });
     } catch (error: any) {
       // Check if the error message indicates an email verification issue
-      if (error.message.includes('Email not confirmed') || 
+      if (error.message && (
+          error.message.includes('Email not confirmed') || 
           error.message.includes('not verified') || 
-          error.message.toLowerCase().includes('verify')) {
+          error.message.toLowerCase().includes('verify'))) {
         setAuthState(prevState => ({
           ...prevState,
           loading: false,
           error: null,
           requiresEmailConfirmation: true,
           confirmationMessage: 'Your email is not yet verified. Please check your inbox for the verification email.'
+        }));
+        return;
+      }
+      
+      // Special case for missing profile errors
+      if (error.message && error.message.includes('profile')) {
+        setAuthState(prevState => ({
+          ...prevState,
+          loading: false,
+          error: 'Login successful but your profile could not be loaded. Try again or use the "Diagnose & Fix" option if issues persist.',
+          requiresEmailConfirmation: false,
+          confirmationMessage: null
         }));
         return;
       }
@@ -251,7 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       setAuthState({
-        user: response.user,
+        user: response.user || null,
         loading: false,
         error: null,
         isAuthenticated: !!response.user,
@@ -280,6 +306,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
 
     try {
+      // @ts-ignore - Ignoring type checking for signInWithSocialProvider
       await signInWithSocialProvider(provider);
       // Note: The actual auth state update will happen in the useEffect below
       // when the session changes after the OAuth redirect
@@ -428,17 +455,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // If we have a session, get the user
         if (sessionData.session) {
-          const user = await getCurrentUser();
-          
-          setAuthState({
-            user,
-            loading: false,
-            error: null,
-            isAuthenticated: !!user,
-            session: sessionData.session,
-            requiresEmailConfirmation: false,
-            confirmationMessage: null
-          });
+          try {
+            const user = await getCurrentUser();
+            
+            // If we have a user but it's missing critical data, double-check the profile
+            if (user && (!user.firstName || !user.lastName || !user.email)) {
+              console.log('AuthContext: User profile is missing data, checking database directly...');
+              
+              // Get direct profile data
+              const { data: profileData } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+              
+              if (profileData) {
+                console.log('AuthContext: Found profile data in database:', profileData);
+                
+                // Update user with data from profile
+                user.firstName = profileData.first_name || user.firstName;
+                user.lastName = profileData.last_name || user.lastName;
+                user.email = profileData.email || user.email;
+                user.subscriptionTier = profileData.subscription_tier || user.subscriptionTier;
+              }
+            }
+            
+            setAuthState({
+              user,
+              loading: false,
+              error: null,
+              isAuthenticated: !!user,
+              session: sessionData.session,
+              requiresEmailConfirmation: false,
+              confirmationMessage: null
+            });
+          } catch (userError) {
+            console.error('AuthContext: Error getting user:', userError);
+            setAuthState({
+              user: null,
+              loading: false,
+              error: 'Error loading user profile. Please try logging in again.',
+              isAuthenticated: false,
+              session: null,
+              requiresEmailConfirmation: false,
+              confirmationMessage: null
+            });
+          }
         } else {
           setAuthState({
             user: null,
