@@ -3,7 +3,6 @@ import {
   getCurrentUser, 
   getCurrentSession, 
   signInWithEmail, 
-  signUpWithEmail, 
   signOut,
   signInWithSocialProvider,
   resendVerificationEmail
@@ -28,8 +27,6 @@ interface AuthContextType {
   authState: AuthState;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  signup: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>;
-  register: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>; // Alias for signup
   socialLogin: (provider: 'google' | 'github' | 'facebook') => Promise<void>;
   updateSubscriptionTier: (tier: SubscriptionTier) => Promise<void>;
   clearError: () => void;
@@ -50,8 +47,7 @@ const AuthContext = createContext<AuthContextType>({
   },
   login: async () => {},
   logout: async () => {},
-  signup: async () => {},
-  register: async () => {}, // Alias for signup
+  // signup and register functions removed
   socialLogin: async () => {},
   updateSubscriptionTier: async () => {},
   clearError: () => {},
@@ -248,54 +244,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Function to signup
-  const signup = async (email: string, password: string, firstName?: string, lastName?: string) => {
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null,
-      requiresEmailConfirmation: false,
-      confirmationMessage: null
-    }));
-
-    try {
-      const response = await signUpWithEmail(email, password, firstName, lastName);
-      
-      if (response.error) {
-        throw new Error(response.error);
-      }
-
-      if (response.requiresEmailConfirmation) {
-        setAuthState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: null,
-          requiresEmailConfirmation: true,
-          confirmationMessage: response.message || 'Please check your email to confirm your account before logging in.'
-        }));
-        return;
-      }
-
-      setAuthState({
-        user: response.user || null,
-        loading: false,
-        error: null,
-        isAuthenticated: !!response.user,
-        session: response.session,
-        requiresEmailConfirmation: false,
-        confirmationMessage: null
-      });
-    } catch (error: any) {
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message
-      }));
-    }
-  };
-
-  // Alias for signup (for components using register instead of signup)
-  const register = (email: string, password: string, firstName?: string, lastName?: string) => signup(email, password, firstName, lastName);
+  // Signup and register functions removed as per requirements
 
   // Function to handle social login
   const socialLogin = async (provider: 'google' | 'github' | 'facebook') => {
@@ -534,8 +483,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         authState,
         login,
         logout,
-        signup,
-        register,
         socialLogin,
         updateSubscriptionTier,
         clearError,

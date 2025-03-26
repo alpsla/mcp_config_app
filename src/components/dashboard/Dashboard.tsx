@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom'; // Not currently used
 import { ConfigWizard } from '../config/ConfigWizard';
 import { PricingTiers } from '../subscription/PricingTiers';
 import { checkAndRepairCurrentUserProfile } from '../../utils/profileRepair';
 import { supabase } from '../../services/supabase/supabaseClient';
+// import { useAuth } from '../../auth/AuthContext'; // Not currently used
 import './Dashboard.css';
 
 export const Dashboard: React.FC = () => {
