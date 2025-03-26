@@ -621,6 +621,7 @@ export async function sendMagicLink(email: string) {
       email,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
+        shouldCreateUser: true,  // Always create a new user account if it doesn't exist
         ...(emailTemplate && { emailTemplate })
       }
     });
@@ -1016,6 +1017,7 @@ export async function directAccessLogin(email: string) {
       email: email.trim(),
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
+        shouldCreateUser: true,  // Always create a new user account if it doesn't exist
         ...(emailTemplate && { emailTemplate })
       }
     });

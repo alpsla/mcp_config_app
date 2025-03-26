@@ -30,7 +30,7 @@ export async function sendMagicLink(email: string) {
       email: sanitizedEmail,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
-        shouldCreateUser: true
+        shouldCreateUser: true  // Always create user account if it doesn't exist
       }
     });
     
@@ -43,7 +43,7 @@ export async function sendMagicLink(email: string) {
     console.log('MagicLinkAuth: Magic link sent successfully');
     return {
       success: true,
-      message: 'Magic link sent successfully. Please check your email inbox.'
+      message: 'Magic link sent successfully. Please check your email inbox (including spam/junk folders).'
     };
   } catch (error: any) {
     console.error('MagicLinkAuth: Unexpected error:', error);

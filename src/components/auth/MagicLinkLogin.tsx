@@ -73,10 +73,10 @@ const MagicLinkLogin: React.FC<MagicLinkLoginProps> = ({
     <div className={`magic-link-login ${className}`}>
       <form onSubmit={handleSubmit}>
         <div className="form-header">
-          <h3>Magic Link Login</h3>
+          <h3>Email Sign In</h3>
           <p>
-            Enter your email to receive a secure login link. 
-            No password required.
+            Enter your email to receive a secure sign-in link. 
+            No password required. Check your inbox after submitting.
           </p>
         </div>
         

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import SignIn from './components/auth/signin/SignIn';
-import SignUp from './components/auth/signup/SignUp';
+// SignUp component removed as per requirements
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import { Dashboard } from './components/dashboard/Dashboard';
@@ -13,6 +13,9 @@ import DirectDebug from './pages/reset-password/DirectDebug';
 import ForgotPassword from './pages/forgot-password';
 import AuthCallbackPage from './pages/auth/callback';
 import MagicLinkPage from './pages/magic-link';
+// Profile components not currently used
+// import ProfileCompletion from './components/profile/ProfileCompletion';
+// import ProfileChecker from './components/profile/ProfileChecker';
 import './App.css';
 
 const AuthenticatedApp: React.FC = () => {
@@ -95,7 +98,7 @@ const AppContent: React.FC = () => {
           <Route path="/magic-link" element={<MagicLinkPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/login" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup" element={<Navigate to="/login" replace />} />
           <Route path="/" element={
             authState.user ? (
               <ProtectedRoute>

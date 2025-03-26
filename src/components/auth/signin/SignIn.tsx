@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../AuthStatus.css';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom'; // Not currently used
 import { useAuth } from '../../../auth/AuthContext';
 import { sendMagicLink } from '../../../services/auth/magicLinkAuth';
 import { validateEmail } from '../../../utils/validation';
@@ -146,9 +146,7 @@ const SignIn: React.FC = () => {
             
             {status && <div className="auth-status-message">{status}</div>}
             
-            <div className="auth-toggle">
-              <p>Don't have an account? <Link to="/signup">Create account</Link></p>
-            </div>
+            {/* Account creation link removed as per requirements */}
           </form>
         )}
 

@@ -39,8 +39,8 @@ const MagicLinkPage: React.FC = () => {
         <MagicLinkLogin />
         
         <div style={{ marginTop: '30px', textAlign: 'center' }}>
-          <a href="/login" style={{ color: '#4F46E5', textDecoration: 'none' }}>
-            Return to standard login
+          <a href="/" style={{ color: '#4F46E5', textDecoration: 'none' }}>
+            Return to home
           </a>
         </div>
       </div>

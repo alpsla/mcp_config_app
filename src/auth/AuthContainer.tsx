@@ -9,8 +9,6 @@ import './AuthFix.css';
 
 export const AuthContainer: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [verificationMessage, setVerificationMessage] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<{
     type: AuthErrorType;
@@ -93,11 +91,7 @@ export const AuthContainer: React.FC = () => {
     });
     
     try {
-      // Store the name details if provided
-      if (firstName || lastName) {
-        localStorage.setItem('pendingUserFirstName', firstName);
-        localStorage.setItem('pendingUserLastName', lastName);
-      }
+      // No need to store name details anymore
       
       // Send magic link
       const result = await sendMagicLink(email);
@@ -119,7 +113,7 @@ export const AuthContainer: React.FC = () => {
       
       // Show success message
       setVerificationMessage(
-        result.message || 'A login link has been sent to your email. Please check your inbox (including spam/junk folders).'
+        result.message || 'A magic link has been sent to your email. Please check your inbox (including spam/junk folders).'
       );
     } catch (error: any) {
       console.error('Error sending magic link:', error);
@@ -134,7 +128,7 @@ export const AuthContainer: React.FC = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h1 className="auth-title">MCP Configuration Tool</h1>
-        <h2 className="auth-subtitle">Magic Link Sign In</h2>
+        <h2 className="auth-subtitle">Sign In with Magic Link</h2>
 
         {error && !validationError && <div className="auth-error">{error}</div>}
         
@@ -171,7 +165,7 @@ export const AuthContainer: React.FC = () => {
                 className="resend-button"
                 disabled={magicLinkStatus.loading || !email}
               >
-                {magicLinkStatus.loading ? 'Sending...' : 'Resend Magic Link'}
+                {magicLinkStatus.loading ? 'Sending...' : 'Send Magic Link'}
               </button>
               
               {magicLinkStatus.message && (
@@ -203,35 +197,12 @@ export const AuthContainer: React.FC = () => {
               />
             </div>
 
-            {/* First Name and Last Name - optional but helpful */}
-            <div className="form-group">
-              <label htmlFor="firstName">First Name (optional)</label>
-              <input
-                type="text"
-                id="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Your first name"
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="lastName">Last Name (optional)</label>
-              <input
-                type="text"
-                id="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Your last name"
-                disabled={loading}
-              />
-            </div>
+            {/* No additional fields needed for magic link authentication */}
             
             <div className="auth-help-text">
               <p>
-                Enter your email address to receive a secure login link. 
-                No password required! Adding your name is optional but helps with account setup.
+                Enter your email address to receive a secure magic link.
+                No password required! Click the link in your email to sign in instantly.
               </p>
             </div>
 
@@ -287,7 +258,7 @@ export const AuthContainer: React.FC = () => {
           </>
         )}
 
-        {/* Auth toggle removed as this is already the magic link page */}
+        {/* No authentication toggle needed - using magic link only */}
       </div>
     </div>
   );
