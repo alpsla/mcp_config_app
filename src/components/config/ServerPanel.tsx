@@ -84,7 +84,7 @@ export const ServerPanel: React.FC<ServerPanelProps> = ({
   return (
     <div className="server-panel">
       <div className="server-panel-header">
-        <h2 className="server-panel-title">Services</h2>
+        <h2 className="server-panel-title">Server Selection - DIRECT EDIT</h2>
         <p className="server-panel-subtitle">Configure your integration services</p>
       </div>
       
@@ -94,20 +94,40 @@ export const ServerPanel: React.FC<ServerPanelProps> = ({
             key={server.id}
             className={`server-item ${selectedServer === server.id ? 'selected' : ''} ${!server.enabled ? 'disabled' : ''}`}
             onClick={() => server.enabled && onServerSelect(server.id)}
+            data-server-id={server.id}
           >
             <div className="server-item-icon">
               {server.icon}
             </div>
             <div className="server-item-content">
-              <div className="server-item-header">
-                <h3 className="server-item-name">{server.name}</h3>
+              <div className="server-item-header" style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                alignItems: 'center',
+                gap: '3px'
+              }}>
+                <h3 className="server-item-name" style={{ 
+                  fontSize: '1rem',
+                  fontWeight: 'normal',
+                  display: 'inline'
+                }}>{server.name}</h3>
                 {server.tier !== SubscriptionTier.FREE && (
                   <div className="server-tier-badge">
                     {getTierBadge(server.tier)}
                   </div>
                 )}
                 {server.badge && (
-                  <div className="server-badge">
+                  <div className="server-badge" style={{ 
+                    display: 'inline', 
+                    fontSize: '1rem', /* Force same size as main text */
+                    fontWeight: 'normal',
+                    marginLeft: '3px',
+                    padding: 0,
+                    border: 'none',
+                    background: 'none',
+                    color: server.id === 'huggingface' ? '#e35b88' : '#666'
+                  }}>
                     {server.badge}
                   </div>
                 )}

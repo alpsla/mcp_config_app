@@ -1,8 +1,10 @@
+/* TEST - Very obvious change */
 .server-panel {
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: 1.5rem;
+  background-color: #f5f5f5; /* Test change */
 }
 
 .server-panel-header {
@@ -26,82 +28,114 @@
   overflow-y: auto;
 }
 
+/* Simplify item structure to match the screenshot */
 .server-item {
   display: flex;
-  align-items: flex-start;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: center; /* Center content */
+  padding: 0.75rem 1.5rem; /* More horizontal padding */
+  border-radius: 24px;
+  margin-bottom: 0.75rem;
   background-color: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
   cursor: pointer;
   transition: all 0.2s;
+  min-height: 44px;
+  max-width: 220px; /* Constrain width to match screenshot */
 }
 
 .server-item:hover {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  border-color: #d0d0d0;
+  background-color: #f9f9f9;
 }
 
 .server-item.selected {
-  background-color: #f0f7ff;
-  border-left: 4px solid #0078d4;
+  background-color: #4285f4;
+  color: white;
+  border-color: #4285f4;
 }
 
-.server-item.disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  background-color: #f8f8f8;
+/* Hide content description - not in screenshot */
+.server-item-description {
+  display: none;
 }
 
+/* Hide the icon - not in screenshot */
 .server-item-icon {
-  margin-right: 1rem;
-  color: #0078d4;
-  flex-shrink: 0;
-}
-
-.server-icon {
-  width: 24px;
-  height: 24px;
+  display: none;
 }
 
 .server-item-content {
-  flex: 1;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
 }
 
+/* Improved alignment for server item headers */
 .server-item-header {
   display: flex;
   align-items: center;
-  margin-bottom: 0.25rem;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 0;
+  white-space: nowrap;
 }
 
+/* Make name and badges appear on same line with consistent spacing */
 .server-item-name {
-  font-size: 1rem;
-  font-weight: 500;
-  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: normal;
+  display: inline;
+  white-space: nowrap;
+}
+
+/* Server badge styles that match the screenshot exactly */
+.server-badge,
+.server-tier-badge {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #666;
+  display: inline;
+  line-height: 1;
+}
+
+/* Remove background and padding to allow text to display inline */
+.server-badge {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  margin-left: 0; /* Remove margin and control positioning in the header */
 }
 
 .server-tier-badge {
-  font-size: 0.7rem;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  background-color: #e6f7ff;
-  color: #0078d4;
-  font-weight: 500;
-}
-
-.server-badge {
-  font-size: 0.7rem;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  color: #666;
-  font-weight: 500;
-  margin-left: 0.5rem;
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: #e35b88; /* Premium color */
 }
 
 .server-item-description {
   font-size: 0.8rem;
   color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Change badge colors to match text when selected */
+.server-item.selected .server-badge,
+.server-item.selected .server-tier-badge {
+  color: white;
+}
+
+/* Special styling for server items with badges to match screenshot */
+.server-item[data-server-id="filesystem"] .server-item-header,
+.server-item[data-server-id="huggingface"] .server-item-header {
+  display: inline-flex;
+  flex-wrap: nowrap;
+}
+
+.server-item[data-server-id="filesystem"] .server-badge,
+.server-item[data-server-id="huggingface"] .server-tier-badge {
+  margin-left: 0.3rem;
 }
 
 .server-item-upgrade {

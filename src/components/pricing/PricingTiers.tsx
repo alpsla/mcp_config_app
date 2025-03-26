@@ -36,9 +36,8 @@ const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectTier }) => {
       case SubscriptionTier.FREE:
         return 'Free';
       case SubscriptionTier.STARTER:
-        return 'Starter';
-      case SubscriptionTier.STANDARD:
-        return 'Standard';
+      case SubscriptionTier.STANDARD: // For backward compatibility
+        return 'Basic';
       case SubscriptionTier.COMPLETE:
         return 'Complete';
       default:

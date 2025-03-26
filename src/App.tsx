@@ -13,36 +13,15 @@ import DirectDebug from './pages/reset-password/DirectDebug';
 import ForgotPassword from './pages/forgot-password';
 import AuthCallbackPage from './pages/auth/callback';
 import MagicLinkPage from './pages/magic-link';
+// New pages
+import Homepage from './pages/homepage/Homepage';
+import Pricing from './components/pricing/Pricing';
 // Profile components not currently used
 // import ProfileCompletion from './components/profile/ProfileCompletion';
 // import ProfileChecker from './components/profile/ProfileChecker';
 import './App.css';
 
-const AuthenticatedApp: React.FC = () => {
-  const { authState, logout } = useAuth();
-  const user = authState.user;
-  
-  return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="app-logo">MCP Config Tool</div>
-        <div className="app-user-info">
-          <span>{user?.email}</span>
-          <button onClick={logout} className="signout-button">Sign Out</button>
-        </div>
-      </header>
-      <main className="app-main">
-        <Dashboard />
-      </main>
-      <footer className="app-footer">
-        <div className="footer-content">
-          <p>&copy; {new Date().getFullYear()} MCP Configuration Tool</p>
-          <p className="beta-indicator">Beta Version</p>
-        </div>
-      </footer>
-    </div>
-  );
-};
+// Removed AuthenticatedApp component as we are now using the standalone Dashboard component
 
 const App: React.FC = () => {
   return (
@@ -99,13 +78,22 @@ const AppContent: React.FC = () => {
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/signup" element={<Navigate to="/login" replace />} />
-          <Route path="/" element={
+          <Route path="/home" element={<Homepage />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/dashboard" element={
             authState.user ? (
               <ProtectedRoute>
-                <AuthenticatedApp />
+                <Dashboard />
               </ProtectedRoute>
             ) : (
               <Navigate to="/login" replace />
+            )
+          } />
+          <Route path="/" element={
+            authState.user ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Homepage />
             )
           } />
           {/* Fallback route */}
