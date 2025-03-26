@@ -1,8 +1,8 @@
 // Subscription related types - must be defined before User
 export enum SubscriptionTier {
   FREE = 'FREE',
-  STARTER = 'STARTER',
-  STANDARD = 'STANDARD',
+  STARTER = 'BASIC',
+  STANDARD = 'BASIC',  // Keep STANDARD for backward compatibility, but it means BASIC now
   COMPLETE = 'COMPLETE'
 }
 

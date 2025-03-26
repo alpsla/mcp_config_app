@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TwoPanelLayout } from '../common/TwoPanelLayout';
-import { ServerPanel } from './ServerPanel';
+// Comment out the unused import
+// import { ServerPanel } from './ServerPanel';
 import { ConfigPanel } from './ConfigPanel';
 import { WebSearchConfig } from './servers/WebSearchConfig';
 import { FileSystemConfig } from './servers/FileSystemConfig';
@@ -8,6 +9,10 @@ import { HuggingFaceConfig } from './servers/HuggingFaceConfig';
 import { EmptyState } from '../common/EmptyState';
 import { useConfig } from '../../hooks/useConfig';
 import './ConfigWizard.css';
+
+// Import our new ServerButtons component
+// @ts-ignore - TypeScript will complain about the lack of typings
+import ServerButtons from './ServerButtons';
 
 export const ConfigWizard: React.FC = () => {
   const { config, updateConfig, exportConfig } = useConfig();
@@ -47,10 +52,18 @@ export const ConfigWizard: React.FC = () => {
     <div className="config-wizard-container">
       <TwoPanelLayout
         leftPanel={
+          // Use our new component with simplified styling
+          <ServerButtons 
+            selectedServer={selectedServer}
+            onServerSelect={handleServerSelect}
+          />
+          // Comment out the original component for now
+          /*
           <ServerPanel 
             selectedServer={selectedServer}
             onServerSelect={handleServerSelect}
           />
+          */
         }
         rightPanel={
           <ConfigPanel>

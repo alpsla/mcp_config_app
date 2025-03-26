@@ -22,43 +22,28 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     ]
   },
   {
-    id: 'starter',
-    name: 'Starter',
+    id: 'basic',
+    name: 'Basic',
     tier: SubscriptionTier.STARTER,
-    price: 5,
-    modelCount: 3,
-    features: [
-      'Web Search Integration',
-      'File System Access',
-      'Hugging Face (3 models)',
-      'Email Support'
-    ]
-  },
-  {
-    id: 'standard',
-    name: 'Standard',
-    tier: SubscriptionTier.STANDARD,
-    price: 10,
+    price: 2,
     modelCount: 6,
     features: [
-      'Web Search Integration',
-      'Advanced File System Access',
-      'Hugging Face (6 models)',
-      'Priority Email Support'
+      'Access to 6 model configurations',
+      'Saved configuration profiles (up to 5)',
+      'Email support'
     ]
   },
   {
     id: 'complete',
     name: 'Complete',
     tier: SubscriptionTier.COMPLETE,
-    price: 15,
+    price: 5,
     modelCount: 10,
     features: [
-      'Web Search Integration',
-      'Advanced File System Access',
-      'Hugging Face (All models)',
-      'Priority Email Support',
-      'Custom Configuration Options'
+      'Access to all 10 model configurations',
+      'Unlimited saved configuration profiles',
+      'Priority support',
+      'Early access to new features'
     ]
   }
 ];
