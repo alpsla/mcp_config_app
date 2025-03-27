@@ -80,9 +80,9 @@ const Pricing = () => {
             <p className="pricing-hero-subtitle">
               Beta pricing - Choose the plan that's right for you
             </p>
-            <div className="beta-badge-large">
-              <span>Beta Release Pricing</span>
-              <p>Lock in these rates for 12 months after full release!</p>
+            <div className="beta-badge-large" style={{backgroundColor: "#e6f7ff", color: "#3A86FF", border: "2px solid #3A86FF"}}>
+              <span style={{fontSize: "1.4rem", fontWeight: "700"}}>Beta Release Pricing</span>
+              <p style={{color: "#1e40af", fontWeight: "500", fontSize: "1.1rem", marginTop: "8px"}}>Lock in these <strong>special rates</strong> for 12 months after full release!</p>
             </div>
           </div>
         </section>
@@ -332,7 +332,7 @@ const Pricing = () => {
           <div className="container">
             <h2 className="section-title">Frequently Asked Questions</h2>
             <div className="faq-accordion">
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>How does billing work?</h3>
                   <span className="faq-toggle">+</span>
@@ -342,7 +342,7 @@ const Pricing = () => {
                 </div>
               </div>
               
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Do you offer refunds?</h3>
                   <span className="faq-toggle">+</span>
@@ -352,7 +352,7 @@ const Pricing = () => {
                 </div>
               </div>
               
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Can I switch between plans?</h3>
                   <span className="faq-toggle">+</span>
@@ -362,7 +362,7 @@ const Pricing = () => {
                 </div>
               </div>
               
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Is there a free trial for paid plans?</h3>
                   <span className="faq-toggle">+</span>
@@ -372,7 +372,7 @@ const Pricing = () => {
                 </div>
               </div>
               
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Do you offer discounts for annual billing?</h3>
                   <span className="faq-toggle">+</span>
@@ -382,7 +382,7 @@ const Pricing = () => {
                 </div>
               </div>
               
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>What payment methods do you accept?</h3>
                   <span className="faq-toggle">+</span>
@@ -392,7 +392,7 @@ const Pricing = () => {
                 </div>
               </div>
               
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Does Hugging Face integration work on web?</h3>
                   <span className="faq-toggle">+</span>

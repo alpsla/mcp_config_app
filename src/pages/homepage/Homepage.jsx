@@ -1,10 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import '../../styles/homepage.css';
 import '../../styles/common.css';
 
 const Homepage = () => {
+  const faqInitializedRef = useRef(false);
+
+  // Function to toggle FAQ items
+  const toggleFAQ = (e) => {
+    const item = e.currentTarget;
+    item.classList.toggle('active');
+    
+    // Close other items
+    document.querySelectorAll('.faq-item').forEach(otherItem => {
+      if (otherItem !== item && otherItem.classList.contains('active')) {
+        otherItem.classList.remove('active');
+      }
+    });
+  };
+
   // Load the homepage script when component mounts
   useEffect(() => {
+    // Initialize FAQ accordion
+    const initFAQ = () => {
+      if (faqInitializedRef.current) return; // Prevent multiple initializations
+      
+      const faqItems = document.querySelectorAll('.faq-item');
+      if (!faqItems || faqItems.length === 0) return; // No items found yet
+      
+      faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        if (question) {
+          // Remove any existing listeners to prevent duplicates
+          const newQuestion = question.cloneNode(true);
+          question.parentNode.replaceChild(newQuestion, question);
+          
+          newQuestion.addEventListener('click', () => {
+            // Toggle active class on the clicked item
+            item.classList.toggle('active');
+            
+            // Close other items
+            faqItems.forEach(otherItem => {
+              if (otherItem !== item && otherItem.classList.contains('active')) {
+                otherItem.classList.remove('active');
+              }
+            });
+          });
+        }
+      });
+      
+      // Initialize the first FAQ item as open
+      if (faqItems.length > 0) {
+        faqItems[0].classList.add('active');
+      }
+      
+      faqInitializedRef.current = true;
+    };
+
     // Import scripts asynchronously
     const loadScripts = async () => {
       try {
@@ -13,37 +64,25 @@ const Homepage = () => {
         // eslint-disable-next-line no-unused-vars
         const commonScript = await import('../../scripts/common.js');
         console.log('Homepage scripts loaded successfully');
-        
-        // Initialize FAQ accordion
-        const faqItems = document.querySelectorAll('.faq-item');
-        
-        faqItems.forEach(item => {
-          const question = item.querySelector('.faq-question');
-          if (question) {
-            question.addEventListener('click', () => {
-              // Toggle active class on the clicked item
-              item.classList.toggle('active');
-              
-              // Close other items
-              faqItems.forEach(otherItem => {
-                if (otherItem !== item && otherItem.classList.contains('active')) {
-                  otherItem.classList.remove('active');
-                }
-              });
-            });
-          }
-        });
-        
-        // Initialize the first FAQ item as open
-        if (faqItems.length > 0) {
-          faqItems[0].classList.add('active');
-        }
       } catch (error) {
         console.error('Error loading scripts:', error);
       }
+      
+      // Initialize FAQ after scripts load or fail
+      initFAQ();
     };
     
     loadScripts();
+    
+    // Set a series of timeouts to ensure FAQ is initialized
+    const timeouts = [100, 500, 1000, 2000].map(time => {
+      return setTimeout(initFAQ, time);
+    });
+    
+  // Cleanup function
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+    };
   }, []);
 
   return (
@@ -90,8 +129,17 @@ const Homepage = () => {
                   <span>No credit card required</span>
                 </div>
               </div>
-              <div className="hero-image">
-                <img src="/images/illustrations/hero-illustration.svg" alt="MCP Configuration Tool Interface" />
+              <div className="ecosystem-message">
+                <h2>Unify Your AI Ecosystem</h2>
+                <p>
+                  MCP Config Tool serves as the bridge between Claude AI and your essential data sources. We seamlessly integrate your local file system, web search capabilities, and various AI models developed by industry leaders—all through one intuitive interface.
+                </p>
+                <p>
+                  We don't create these services—we connect them intelligently. Our tool provides detailed information to help you select the perfect components for your specific needs, empowering you to build a customized AI solution without technical complexity.
+                </p>
+                <p>
+                  Join our growing community of users who are breaking down silos between AI technologies and unlocking new possibilities through thoughtful integration.
+                </p>
               </div>
             </div>
           </div>
@@ -103,21 +151,41 @@ const Homepage = () => {
             <div className="benefits-grid">
               <div className="benefit-card">
                 <div className="benefit-icon">
-                  <img src="/images/icons/icon-simplicity.svg" alt="Simplicity Icon" />
+                  <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#3A86FF" />
+                    <rect x="25" y="30" width="50" height="40" rx="5" fill="white" />
+                    <circle cx="50" cy="75" r="5" fill="white" />
+                    <path d="M33,42 h15" stroke="#3A86FF" stroke-width="3" stroke-linecap="round" />
+                    <path d="M33,50 h34" stroke="#3A86FF" stroke-width="3" stroke-linecap="round" />
+                    <path d="M33,58 h34" stroke="#3A86FF" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="62" cy="42" r="6" fill="#3A86FF" />
+                    <path d="M62,39 v6" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <path d="M59,42 h6" stroke="white" stroke-width="2" stroke-linecap="round" />
+                  </svg>
                 </div>
                 <h3>Easy to Use</h3>
                 <p>Intuitive interface designed for users of all technical levels. Configure Claude without writing a single line of code.</p>
               </div>
               <div className="benefit-card">
                 <div className="benefit-icon">
-                  <img src="/images/icons/icon-time.svg" alt="Time Icon" />
+                  <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#3A86FF" />
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="white" stroke-width="4" />
+                    <path d="M50,30 L50,50 L65,55" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
                 </div>
                 <h3>Save Time</h3>
                 <p>Configure Claude AI in minutes instead of hours. Our streamlined process gets you up and running quickly.</p>
               </div>
               <div className="benefit-card">
                 <div className="benefit-icon">
-                  <img src="/images/icons/icon-enhance.svg" alt="Enhance Icon" />
+                  <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#3A86FF" />
+                    <path d="M30,60 L50,30 L70,60" stroke="white" stroke-width="4" fill="none" />
+                    <path d="M40,45 L60,45" stroke="white" stroke-width="4" />
+                    <path d="M35,52 L65,52" stroke="white" stroke-width="4" />
+                    <path d="M30,60 L70,60" stroke="white" stroke-width="4" />
+                  </svg>
                 </div>
                 <h3>Enhance Capabilities</h3>
                 <p>Unlock Claude's full potential with optimized configurations. Get more value from your AI assistant.</p>
@@ -133,25 +201,25 @@ const Homepage = () => {
               <div className="step">
                 <div className="step-number">1</div>
                 <div className="step-content">
-                  <h3>Choose Your Tools</h3>
-                  <p>Select which capabilities you want to enable for Claude, such as web search, file system access, or Hugging Face models.</p>
-                  <img src="/images/illustrations/step1-illustration.svg" alt="Step 1: Choose Your Tools" />
+                  <h3>Choose Your Configuration</h3>
+                  <p>Select between a Basic setup with Web Search and File System access, or an Advanced setup with additional AI models from Hugging Face.</p>
+                  <img src="/images/illustrations/step1-illustration.svg" alt="Step 1: Choose Your Configuration" />
                 </div>
               </div>
               <div className="step">
                 <div className="step-number">2</div>
                 <div className="step-content">
-                  <h3>Configure Settings</h3>
-                  <p>Customize the settings for each tool to match your specific needs and preferences.</p>
-                  <img src="/images/illustrations/step2-illustration.svg" alt="Step 2: Configure Settings" />
+                  <h3>Customize Your Tools</h3>
+                  <p>With Advanced setup, select from our curated collection of 10 specialized AI models based on your subscription tier.</p>
+                  <img src="/images/illustrations/step2-illustration.svg" alt="Step 2: Customize Your Tools" />
                 </div>
               </div>
               <div className="step">
                 <div className="step-number">3</div>
                 <div className="step-content">
-                  <h3>Enhance Claude</h3>
-                  <p>Export your configuration and connect it to Claude to start using the enhanced capabilities.</p>
-                  <img src="/images/illustrations/step3-illustration.svg" alt="Step 3: Enhance Claude" />
+                  <h3>Export & Enhance Claude</h3>
+                  <p>Export your configuration and connect it to Claude to start using your enhanced capabilities immediately.</p>
+                  <img src="/images/illustrations/step3-illustration.svg" alt="Step 3: Export & Enhance Claude" />
                 </div>
               </div>
             </div>
@@ -160,33 +228,80 @@ const Homepage = () => {
 
         <section className="features">
           <div className="container">
-            <h2 className="section-title">Key Features</h2>
-            <div className="features-grid">
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <img src="/images/icons/icon-web-search.svg" alt="Web Search Icon" />
+            <h2 className="section-title">Configuration Options</h2>
+            <div className="configuration-options">
+              <div className="option-card basic">
+                <div className="option-header">
+                  <h3>Basic Configuration</h3>
+                  <div className="option-badge free">Free</div>
                 </div>
-                <h3>Web Search</h3>
-                <p>Enable Claude to search the web for up-to-date information, enhancing responses with real-time data.</p>
-                <span className="feature-badge free">Free</span>
+                <p>The essential tools to enhance your Claude AI experience.</p>
+                <div className="features-grid">
+                  <div className="feature-card">
+                    <div className="feature-icon">
+                      <img src="/images/icons/icon-web-search.svg" alt="Web Search Icon" />
+                    </div>
+                    <h4>Web Search</h4>
+                    <p>Enable Claude to search the web for up-to-date information, enhancing responses with real-time data.</p>
+                  </div>
+                  <div className="feature-card">
+                    <div className="feature-icon">
+                      <img src="/images/icons/icon-file-system.svg" alt="File System Icon" />
+                    </div>
+                    <h4>File System Access</h4>
+                    <p>Allow Claude to read and write files on your system, making document analysis and creation seamless.</p>
+                  </div>
+                </div>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <img src="/images/icons/icon-file-system.svg" alt="File System Icon" />
-                </div>
-                <h3>File System Access</h3>
-                <p>Allow Claude to read and write files on your system, making document analysis and creation seamless.</p>
-                <span className="feature-badge free">Free</span>
+              
+              <div className="option-divider">
+                <span>and</span>
               </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <img src="/images/icons/icon-hugging-face.svg" alt="Hugging Face Icon" />
+              
+              <div className="option-card premium">
+                <div className="option-header">
+                  <h3>Advanced AI Models</h3>
+                  <div className="option-badge premium">Premium</div>
                 </div>
-                <h3>Hugging Face Integration</h3>
-                <p>Connect Claude to specialized Hugging Face models for enhanced capabilities and domain-specific tasks.</p>
-                <div className="feature-badges">
-                  <span className="feature-badge premium">Premium</span>
-                  <span className="feature-badge desktop-only">Desktop Only</span>
+                <p>Includes <strong>Basic Configuration</strong> plus specialized AI models from Hugging Face.</p>
+                <div className="feature-card hugging-face">
+                  <div className="feature-icon">
+                    <img src="/images/icons/icon-hugging-face.svg" alt="Hugging Face Icon" />
+                  </div>
+                  <h4>Hugging Face Integration</h4>
+                  <p>Connect Claude to specialized Hugging Face models for enhanced capabilities and domain-specific tasks.</p>
+                  <div className="plan-options">
+                    <div className="plan-option">
+                      <span className="plan-name">Basic Plan:</span>
+                      <span className="plan-detail">3 models</span>
+                    </div>
+                    <div className="plan-option">
+                      <span className="plan-name">Complete Plan:</span>
+                      <span className="plan-detail">10 models</span>
+                    </div>
+                  </div>
+                  <div className="desktop-only-badge">Desktop Only</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="pricing-hero-new">
+          <div className="container">
+            <div className="pricing-hero-content">
+              <h1>Simple, Transparent Pricing</h1>
+              <p className="pricing-tagline">Beta pricing - Choose the plan that's right for you</p>
+              
+              <div className="pricing-card">
+                <div className="pricing-card-header">
+                  <div className="pricing-card-icon">🚀</div>
+                  <h2>Beta Release Pricing</h2>
+                </div>
+                <div className="pricing-card-body">
+                  <div className="pricing-message">
+                    Lock in these <strong>special rates</strong> for 12 months after full release!
+                  </div>
                 </div>
               </div>
             </div>
@@ -195,13 +310,6 @@ const Homepage = () => {
 
         <section className="pricing">
           <div className="container">
-            <h2 className="section-title">Simple, Transparent Pricing</h2>
-            <p className="pricing-subtitle">Beta pricing - Lock in these rates for 12 months after full release!</p>
-            
-            <div className="beta-badge">
-              <span>Beta Pricing</span>
-            </div>
-            
             <div className="pricing-tiers">
               <div className="tier-card">
                 <div className="tier-header">
@@ -213,8 +321,9 @@ const Homepage = () => {
                 </div>
                 <div className="tier-features">
                   <ul>
-                    <li><span className="feature-check">✓</span> Access to 3 pre-configured model integrations</li>
-                    <li><span className="feature-check">✓</span> Basic search functionality</li>
+                    <li><span className="feature-check">✓</span> <strong>Basic Configuration</strong></li>
+                    <li><span className="feature-check">✓</span> Web Search functionality</li>
+                    <li><span className="feature-check">✓</span> File System access</li>
                     <li><span className="feature-check">✓</span> Community support</li>
                   </ul>
                 </div>
@@ -232,7 +341,8 @@ const Homepage = () => {
                 </div>
                 <div className="tier-features">
                   <ul>
-                    <li><span className="feature-check">✓</span> Access to 6 model configurations</li>
+                    <li><span className="feature-check">✓</span> <strong>Basic Configuration</strong></li>
+                    <li><span className="feature-check">✓</span> <strong>+ 3 Hugging Face Models</strong></li>
                     <li><span className="feature-check">✓</span> Saved configuration profiles (up to 5)</li>
                     <li><span className="feature-check">✓</span> Email support</li>
                   </ul>
@@ -252,10 +362,11 @@ const Homepage = () => {
                 </div>
                 <div className="tier-features">
                   <ul>
-                    <li><span className="feature-check">✓</span> Access to all 10 model configurations</li>
-                    <li><span className="feature-check">✓</span> Unlimited saved configuration profiles</li>
+                    <li><span className="feature-check">✓</span> <strong>Basic Configuration</strong></li>
+                    <li><span className="feature-check">✓</span> <strong>+ 10 Hugging Face Models</strong></li>
+                    <li><span className="feature-check">✓</span> Unlimited saved configurations</li>
                     <li><span className="feature-check">✓</span> Priority support</li>
-                    <li><span className="feature-check">✓</span> Early access to new features</li>
+                    <li><span className="feature-check">✓</span> Early access to new models</li>
                   </ul>
                 </div>
                 <div className="tier-action">
@@ -282,35 +393,79 @@ const Homepage = () => {
             <h2 className="section-title">Who Uses MCP Config Tool?</h2>
             <div className="use-cases-grid">
               <div className="use-case-card">
-                <div className="use-case-icon">
-                  <img src="/images/icons/icon-developer.svg" alt="Developer Icon" />
+                <div className="use-case-icon developer">
+                  <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#3A86FF" />
+                    <path d="M35,45 L25,50 L35,55" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M65,45 L75,50 L65,55" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M45,65 L55,35" stroke="white" stroke-width="4" stroke-linecap="round" />
+                  </svg>
                 </div>
-                <h3>Developers</h3>
-                <p>Integrate Claude AI into your applications with custom configurations tailored to your specific development needs.</p>
+                <div className="use-case-content">
+                  <h3>Developers</h3>
+                  <p>Integrate Claude AI into your applications with custom configurations tailored to your specific development needs.</p>
+                  <ul className="use-case-features">
+                    <li>Connect to local development environments</li>
+                    <li>Add AI capabilities to your applications</li>
+                    <li>Customize response handling</li>
+                  </ul>
+                </div>
               </div>
               <div className="use-case-card">
-                <div className="use-case-icon">
-                  <img src="/images/icons/icon-researcher.svg" alt="Researcher Icon" />
+                <div className="use-case-icon researcher">
+                  <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#8338EC" />
+                    <circle cx="40" cy="40" r="12" fill="none" stroke="white" stroke-width="4" />
+                    <path d="M48,48 L65,65" stroke="white" stroke-width="4" stroke-linecap="round" />
+                    <path d="M30,70 L70,70" stroke="white" stroke-width="4" stroke-linecap="round" />
+                    <path d="M40,60 L40,70" stroke="white" stroke-width="4" stroke-linecap="round" />
+                    <path d="M60,60 L60,70" stroke="white" stroke-width="4" stroke-linecap="round" />
+                  </svg>
                 </div>
-                <h3>Researchers</h3>
-                <p>Configure Claude for data analysis and research assistance, with specialized tools for academic and scientific work.</p>
+                <div className="use-case-content">
+                  <h3>Researchers</h3>
+                  <p>Configure Claude for data analysis and research assistance, with specialized tools for academic and scientific work.</p>
+                  <ul className="use-case-features">
+                    <li>Access specialized research models</li>
+                    <li>Process large datasets efficiently</li>
+                    <li>Create custom research workflows</li>
+                  </ul>
+                </div>
               </div>
               <div className="use-case-card">
-                <div className="use-case-icon">
-                  <img src="/images/icons/icon-creator.svg" alt="Creator Icon" />
+                <div className="use-case-icon creator">
+                  <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#FF006E" />
+                    <rect x="30" y="35" width="40" height="30" rx="2" fill="white" />
+                    <circle cx="50" cy="50" r="5" fill="#FF006E" />
+                    <path d="M35,70 L65,70" stroke="white" stroke-width="4" stroke-linecap="round" />
+                    <path d="M50,65 L50,75" stroke="white" stroke-width="4" stroke-linecap="round" />
+                    <path d="M30,40 L30,60" stroke="white" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2" />
+                    <path d="M70,40 L70,60" stroke="white" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2" />
+                  </svg>
                 </div>
-                <h3>Content Creators</h3>
-                <p>Set up Claude to assist with content creation and editing, with web search capabilities for fact-checking and research.</p>
+                <div className="use-case-content">
+                  <h3>Content Creators</h3>
+                  <p>Set up Claude to assist with content creation and editing across multiple media formats, with web search capabilities for research and fact-checking.</p>
+                  <ul className="use-case-features">
+                    <li>Generate blog posts and marketing content</li>
+                    <li>Enhance audio and video editing workflows</li>
+                    <li>Create optimized prompts for image generation</li>
+                    <li>Verify facts in real-time</li>
+                    <li>Streamline content production pipelines</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="faq">
+      <section className="faq">
           <div className="container">
             <h2 className="section-title">Frequently Asked Questions</h2>
             <div className="faq-accordion">
-              <div className="faq-item">
+              {/* Using onClick handlers directly on each item */}
+              <div className="faq-item active" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>What is MCP Configuration Tool?</h3>
                   <span className="faq-toggle">+</span>
@@ -319,7 +474,7 @@ const Homepage = () => {
                   <p>MCP Configuration Tool is a user-friendly interface that allows you to configure and enhance Claude AI's capabilities, including web search, file system access, and integration with specialized AI models from Hugging Face.</p>
                 </div>
               </div>
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Do I need coding skills to use this tool?</h3>
                   <span className="faq-toggle">+</span>
@@ -328,7 +483,7 @@ const Homepage = () => {
                   <p>No, our tool is designed to be user-friendly for people of all technical levels. No coding required!</p>
                 </div>
               </div>
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>How do I connect my configuration to Claude?</h3>
                   <span className="faq-toggle">+</span>
@@ -337,7 +492,7 @@ const Homepage = () => {
                   <p>After creating your configuration, you can export it as a JSON file and follow our simple instructions to connect it to your Claude instance.</p>
                 </div>
               </div>
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Is my data secure?</h3>
                   <span className="faq-toggle">+</span>
@@ -346,16 +501,16 @@ const Homepage = () => {
                   <p>Yes, we take data security seriously. Your configurations are stored securely, and we don't have access to your Claude conversations or file system.</p>
                 </div>
               </div>
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Can I try it for free?</h3>
                   <span className="faq-toggle">+</span>
                 </div>
                 <div className="faq-answer">
-                  <p>Absolutely! Our Free tier is completely free and includes essential features like web search and file system access.</p>
+                  <p>Absolutely! Our Free tier is completely free and includes essential features like web search and file system access. No subscription or credit card information required—simply sign up and get started.</p>
                 </div>
               </div>
-              <div className="faq-item">
+              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
                 <div className="faq-question">
                   <h3>Does Hugging Face integration work on web?</h3>
                   <span className="faq-toggle">+</span>
