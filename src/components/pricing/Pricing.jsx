@@ -1,8 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../styles/pricing.css';
 import '../../styles/common.css';
+import Header from '../../components/common/Header';
+import Footer from '../../components/common/Footer';
+import FAQSection from '../../components/common/FAQSection';
 
 const Pricing = () => {
+  // Theme state
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  // Authentication state (mock for now)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Add theme class to document
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+  
+  // Handle theme toggle
+  const handleThemeToggle = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+  
+  // Mock sign out function
+  const handleSignOut = async () => {
+    setIsAuthenticated(false);
+    return Promise.resolve();
+  };
+
   useEffect(() => {
     // Import the script using dynamic import
     const loadScripts = async () => {
@@ -20,58 +50,74 @@ const Pricing = () => {
     };
     
     loadScripts();
-    
-    // Re-initialize FAQ accordion after component update
-    setTimeout(() => {
-      const faqItems = document.querySelectorAll('.faq-item');
-      
-      faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        
-        question.addEventListener('click', () => {
-          // Toggle active class on the clicked item
-          item.classList.toggle('active');
-          
-          // Close other items
-          faqItems.forEach(otherItem => {
-            if (otherItem !== item && otherItem.classList.contains('active')) {
-              otherItem.classList.remove('active');
-            }
-          });
-        });
-      });
-      
-      // Initialize the first FAQ item as open
-      if (faqItems.length > 0) {
-        faqItems[0].classList.add('active');
-      }
-    }, 500); // Small delay to ensure DOM is ready
   }, []);
+
+  // MCP Config-specific navigation links
+  const navLinks = [
+    { to: '/', label: 'Home' },
+    { to: '/#features', label: 'Features' },
+    { to: '/pricing', label: 'Pricing' },
+    { to: '/docs', label: 'Documentation' }
+  ];
+  
+  // FAQ data
+  const faqData = [
+    {
+      question: "How does billing work?",
+      answer: "We bill monthly. You can upgrade, downgrade, or cancel your subscription at any time. Changes will be applied to your next billing cycle."
+    },
+    {
+      question: "Do you offer refunds?",
+      answer: "Yes, we offer a 14-day money-back guarantee on all paid plans. If you're not satisfied, simply contact our support team for a full refund."
+    },
+    {
+      question: "Can I switch between plans?",
+      answer: "Yes, you can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle."
+    },
+    {
+      question: "Is there a free trial for paid plans?",
+      answer: "We don't offer free trials, but we do have a free Starter plan that you can use indefinitely, and a 14-day money-back guarantee on all paid plans."
+    },
+    {
+      question: "Do you offer discounts for annual billing?",
+      answer: "Yes, we offer a 20% discount when you choose annual billing for any of our paid plans."
+    },
+    {
+      question: "What payment methods do you accept?",
+      answer: "We accept all major credit cards (Visa, Mastercard, American Express, Discover) and PayPal."
+    },
+    {
+      question: "Does Hugging Face integration work on web?",
+      answer: "Currently, Hugging Face integration with Claude is only available on desktop applications. We're working closely with Hugging Face to bring this functionality to web users as soon as possible."
+    }
+  ];
+
+  // Platform-specific footer links
+  const platformLinks = [
+    { to: '/features', label: 'Features' },
+    { to: '/pricing', label: 'Pricing' },
+    { to: '/docs', label: 'Documentation' },
+    { to: '/changelog', label: 'Changelog' }
+  ];
+  
+  const companyLinks = [
+    { to: '/about', label: 'About Us' },
+    { to: '/blog', label: 'Blog' },
+    { to: '/careers', label: 'Careers' },
+    { to: '/contact', label: 'Contact' }
+  ];
 
   return (
     <>
-      <header className="header">
-        <div className="container">
-          <div className="header-content">
-            <div className="logo">
-              <img src="/images/logos/logo.svg" alt="MCP Configuration Tool Logo" />
-              <span>MCP Config</span>
-            </div>
-            <nav className="main-nav">
-              <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/#features">Features</a></li>
-                <li><a href="/pricing" className="active">Pricing</a></li>
-                <li><a href="/docs">Documentation</a></li>
-              </ul>
-            </nav>
-            <div className="auth-buttons">
-              <a href="/login" className="btn btn-secondary">Log In</a>
-              <a href="/login" className="btn btn-primary">Sign Up Free</a>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Use shared Header with MCP Config specific props */}
+      <Header 
+        appName="MCP Config" 
+        navLinks={navLinks}
+        isAuthenticated={isAuthenticated}
+        onSignOut={handleSignOut}
+        onThemeToggle={handleThemeToggle}
+        theme={theme}
+      />
 
       <main>
         <section className="pricing-hero">
@@ -328,82 +374,8 @@ const Pricing = () => {
           </div>
         </section>
 
-        <section className="faq">
-          <div className="container">
-            <h2 className="section-title">Frequently Asked Questions</h2>
-            <div className="faq-accordion">
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>How does billing work?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>We bill monthly. You can upgrade, downgrade, or cancel your subscription at any time. Changes will be applied to your next billing cycle.</p>
-                </div>
-              </div>
-              
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>Do you offer refunds?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>Yes, we offer a 14-day money-back guarantee on all paid plans. If you're not satisfied, simply contact our support team for a full refund.</p>
-                </div>
-              </div>
-              
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>Can I switch between plans?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>Yes, you can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle.</p>
-                </div>
-              </div>
-              
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>Is there a free trial for paid plans?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>We don't offer free trials, but we do have a free Starter plan that you can use indefinitely, and a 14-day money-back guarantee on all paid plans.</p>
-                </div>
-              </div>
-              
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>Do you offer discounts for annual billing?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>Yes, we offer a 20% discount when you choose annual billing for any of our paid plans.</p>
-                </div>
-              </div>
-              
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>What payment methods do you accept?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>We accept all major credit cards (Visa, Mastercard, American Express, Discover) and PayPal.</p>
-                </div>
-              </div>
-              
-              <div className="faq-item" onClick={(e) => e.currentTarget.classList.toggle('active')}>
-                <div className="faq-question">
-                  <h3>Does Hugging Face integration work on web?</h3>
-                  <span className="faq-toggle">+</span>
-                </div>
-                <div className="faq-answer">
-                  <p>Currently, Hugging Face integration with Claude is only available on desktop applications. We're working closely with Hugging Face to bring this functionality to web users as soon as possible.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Using our new reusable FAQ component */}
+        <FAQSection title="Frequently Asked Questions" faqs={faqData} />
 
         <section className="cta">
           <div className="container">
@@ -420,56 +392,13 @@ const Pricing = () => {
         </section>
       </main>
 
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-logo">
-              <img src="/images/logos/logo.svg" alt="MCP Configuration Tool Logo" />
-              <span>MCP Config</span>
-            </div>
-            <div className="footer-links">
-              <div className="footer-links-column">
-                <h4>Product</h4>
-                <ul>
-                  <li><a href="/#features">Features</a></li>
-                  <li><a href="/pricing">Pricing</a></li>
-                  <li><a href="/docs">Documentation</a></li>
-                  <li><a href="/changelog">Changelog</a></li>
-                </ul>
-              </div>
-              <div className="footer-links-column">
-                <h4>Company</h4>
-                <ul>
-                  <li><a href="/about">About Us</a></li>
-                  <li><a href="/blog">Blog</a></li>
-                  <li><a href="/careers">Careers</a></li>
-                  <li><a href="/contact">Contact</a></li>
-                </ul>
-              </div>
-              <div className="footer-links-column">
-                <h4>Resources</h4>
-                <ul>
-                  <li><a href="/help">Help Center</a></li>
-                  <li><a href="/community">Community</a></li>
-                  <li><a href="/tutorials">Tutorials</a></li>
-                  <li><a href="/api">API</a></li>
-                </ul>
-              </div>
-              <div className="footer-links-column">
-                <h4>Legal</h4>
-                <ul>
-                  <li><a href="/privacy">Privacy Policy</a></li>
-                  <li><a href="/terms">Terms of Service</a></li>
-                  <li><a href="/cookies">Cookie Policy</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="footer-bottom">
-            <p>&copy; 2025 MCP Configuration Tool. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Use shared Footer with MCP Config specific props */}
+      <Footer 
+        appName="MCP Config"
+        platformLinks={platformLinks}
+        companyLinks={companyLinks}
+        isAuthenticated={isAuthenticated}
+      />
       
       {/* Live Chat Button */}
       <div className="live-chat-button">

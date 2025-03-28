@@ -9,6 +9,7 @@
   --secondary: #8338EC;
   --secondary-dark: #6D28D9;
   --neutral-bg: #F8F9FA;
+  --neutral-lightest: #F9FAFB;
   --neutral-light: #E9ECEF;
   --neutral-medium: #CED4DA;
   --neutral-dark: #6C757D;
@@ -107,7 +108,7 @@ img {
 
 /* Container */
 .container {
-  width: 100%;
+  width: 90%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
@@ -211,8 +212,54 @@ img {
   gap: var(--space-xxl);
 }
 
+/* Value Proposition Section */
+.value-proposition {
+  padding: 60px 0;
+  background-color: var(--white);
+  border-top: 1px solid var(--neutral-light);
+}
+
+.value-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.value-content h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--text);
+  text-align: center;
+}
+
+.value-description {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+@media (min-width: 768px) {
+  .value-description {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.value-description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* Ecosystem Section */
+.ecosystem-section {
+  padding: 60px 0;
+  background-color: var(--neutral-lightest);
+  border-top: 1px solid var(--neutral-light);
+  border-bottom: 1px solid var(--neutral-light);
+}
+
 .hero-text {
   flex: 1;
+  text-align: left; /* Left align instead of center */
 }
 
 .hero-subtitle {
@@ -225,25 +272,30 @@ img {
   display: flex;
   gap: var(--space-md);
   margin-bottom: var(--space-lg);
+  justify-content: flex-start; /* Left align buttons */
 }
 
-.ecosystem-message {
-  flex: 1;
+.ecosystem-section .ecosystem-message {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: var(--space-xl);
   background-color: rgba(58, 134, 255, 0.05);
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
   border-left: 4px solid var(--primary);
 }
 
-.ecosystem-message h2 {
+.ecosystem-section .ecosystem-message h2 {
   color: var(--primary);
   margin-bottom: var(--space-md);
   font-size: 1.75rem;
+  text-align: center;
 }
 
-.ecosystem-message p {
+.ecosystem-section .ecosystem-message p {
   margin-bottom: var(--space-md);
   line-height: 1.6;
+  text-align: left;
 }
 
 .trust-indicator {
@@ -251,6 +303,7 @@ img {
   gap: var(--space-lg);
   color: var(--text-light);
   font-size: 0.9rem;
+  justify-content: flex-start; /* Left align trust indicators */
 }
 
 .trust-indicator span {
@@ -274,9 +327,11 @@ section {
   margin-bottom: var(--space-xl);
 }
 
-/* Benefits Section */
-.benefits {
-  background-color: var(--neutral-bg);
+/* Why Choose Section */
+.why-choose {
+  background-color: var(--white);
+  padding: var(--space-xxl) 0;
+  border-top: 1px solid var(--neutral-light);
 }
 
 .benefits-grid {
@@ -305,22 +360,45 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgba(58, 134, 255, 0.1);
+  border-radius: 50%;
+  color: var(--primary);
+}
+
+/* Step Images */
+.step-image {
+  margin-top: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--white);
+  overflow: hidden;
+}
+
+.step-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
 }
 
 /* How It Works Section */
 .how-it-works {
   background-color: var(--white);
+  padding: var(--space-xxl) 0;
+  border-top: 1px solid var(--neutral-light);
 }
 
 .steps {
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
+  margin-top: var(--space-xl);
 }
 
 .step {
   display: flex;
   gap: var(--space-lg);
+  align-items: flex-start;
 }
 
 .step-number {
@@ -334,16 +412,26 @@ section {
   justify-content: center;
   font-weight: 700;
   flex-shrink: 0;
+  font-size: 1.2rem;
 }
 
 .step-content {
   flex: 1;
 }
 
-.step-content img {
-  margin-top: var(--space-md);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+.step-content h3 {
+  font-size: 1.3rem;
+  margin-bottom: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .step {
+    flex-direction: column;
+  }
+  
+  .step-number {
+    margin-bottom: var(--space-md);
+  }
 }
 
 /* Configuration Options Section */
@@ -507,21 +595,11 @@ section {
   background-color: var(--neutral-bg);
 }
 
-/* Feature Icon */
-.feature-icon {
-  width: 60px;
-  height: 60px;
-  margin-bottom: var(--space-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--neutral-light);
-  border-radius: 50%;
-}
-
-.feature-icon img {
+/* Feature Icon SVG */
+.feature-icon-svg {
   width: 30px;
   height: 30px;
+  color: var(--primary);
 }
 /* Pricing Hero New Section */
 .pricing-hero-new {

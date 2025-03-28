@@ -1,398 +1,380 @@
-import React, { useEffect } from 'react';
-import '../../styles/dashboard.css';
+import React, { useState } from 'react';
+import './Dashboard.css';
+import './dashboard-footer.css';
+import Header from '../common/Header';
+import WelcomeBanner from './WelcomeBanner';
+import ServiceCard from './ServiceCard';
+import PricingTier from './PricingTier';
+import ModelCard from './ModelCard';
+import ExampleShowcase from './ExampleShowcase';
+import TestimonialCard from './TestimonialCard';
+import EmptyState from './EmptyState';
+import ComingSoon from './ComingSoon';
+
+// Import assets
+import santaBeachImage from '../../assets/images/Santa.webp';
+import holidayBeachMusic from '../../assets/audio/tropical-christma.wav';
+import abstractVideo from '../../assets/videos/abstract.mp4';
 
 const Dashboard = () => {
-  // Load the dashboard script when component mounts
-  useEffect(() => {
-    // Import the script
-    import('../../scripts/dashboard.js');
-  }, []);
+  // Log that the dashboard is loaded
+  console.log('Dashboard loaded successfully');
+  // State for active example in the showcase
+  const [activeExample, setActiveExample] = useState('santa-beach');
+  
+  // State for configurations (currently empty)
+  const [configurations] = useState([]);
+  
+  // Available services data
+  const services = [
+    {
+      id: 'filesystem',
+      title: 'File System Integration',
+      icon: 'folder',
+      description: 'Securely access local files for your AI assistant',
+      bulletPoints: [
+        'Secure local file access',
+        'Desktop integration',
+        'Directory selection'
+      ],
+      compatibility: 'Desktop Only'
+    },
+    {
+      id: 'websearch',
+      title: 'Web Search',
+      icon: 'search',
+      description: 'Enable web search capabilities for your AI assistant',
+      bulletPoints: [
+        'Real-time information',
+        'Customizable search parameters',
+        'Safe search options'
+      ],
+      compatibility: 'All Platforms'
+    }
+  ];
+  
+  // Pricing plans data
+  const pricingPlans = [
+    {
+      id: 'free',
+      name: 'Free',
+      price: 0,
+      features: [
+        'Web Search integration',
+        'File System access',
+        'Basic configurations'
+      ],
+      highlight: false,
+      badge: null
+    },
+    {
+      id: 'basic',
+      name: 'Basic',
+      price: 2,
+      features: [
+        'Everything in Free',
+        '3 premium models',
+        'Configuration sharing'
+      ],
+      highlight: false,
+      badge: 'Beta Price'
+    },
+    {
+      id: 'complete',
+      name: 'Complete',
+      price: 5,
+      features: [
+        'Everything in Basic',
+        '10 premium models',
+        'Advanced configurations',
+        'Priority support'
+      ],
+      highlight: true,
+      badge: 'Most Popular'
+    }
+  ];
+  
+  // Premium models data
+  const premiumModels = [
+    {
+      id: 'flux1-dev',
+      name: 'Flux.1-dev-infer',
+      category: 'Image Generation',
+      description: 'Create stunning images from text descriptions',
+      premium: true
+    },
+    {
+      id: 'whisper-large',
+      name: 'Whisper-large-v3-turbo',
+      category: 'Audio Transcription',
+      description: 'Transcribe audio to text with high accuracy',
+      premium: true
+    },
+    {
+      id: 'qwen2-72b',
+      name: 'Qwen2-72B-Instruct',
+      category: 'Language Model',
+      description: 'Advanced language model for complex tasks',
+      premium: true
+    }
+  ];
+  
+  // Examples for showcase
+  const examples = [
+  {
+  id: 'santa-beach',
+  title: 'Santa on the Beach',
+  model: 'Flux.1-dev-infer',
+  prompt: 'Santa Claus relaxing on a tropical beach, wearing sunglasses and shorts, photorealistic style',
+  assetPath: santaBeachImage,
+  type: 'image'
+  },
+  {
+  id: 'holiday-music',
+  title: 'Holiday Beach Music',
+  model: 'MusicGen',
+  prompt: 'Create upbeat holiday music with a tropical beach vibe',
+  assetPath: holidayBeachMusic,
+  type: 'audio'
+  },
+  {
+    id: 'abstract-video',
+    title: 'Abstract Visualization',
+    model: 'VideoGen',
+    prompt: 'Create an abstract visualization with dynamic patterns and vibrant colors',
+    assetPath: abstractVideo,
+    type: 'video'
+  }
+  ];
+  
+  // Testimonials data
+  const testimonials = [
+    {
+      id: 1,
+      name: 'Alex Chen',
+      role: 'Product Designer',
+      company: 'CreativeWorks',
+      model: 'Flux.1-dev-infer',
+      testimonial: "The image generation models have transformed our product design workflow. We can iterate on concepts faster than ever before."
+    },
+    {
+      id: 2,
+      name: 'Sarah Johnson',
+      role: 'Content Manager',
+      company: 'MediaHub',
+      model: 'Whisper-large-v3-turbo',
+      testimonial: "We use the audio transcription model to automatically create transcripts for all our podcast episodes. It's been a game-changer for our workflow."
+    },
+    {
+      id: 3,
+      name: 'Michael Rodriguez',
+      role: 'Software Developer',
+      company: 'TechSolutions',
+      model: 'Qwen2-72B-Instruct',
+      testimonial: "Integrating the language model into our customer support system has helped us provide faster and more accurate responses."
+    }
+  ];
 
+  const handleExampleClick = (id) => {
+    setActiveExample(id);
+  };
+  
   return (
-    <>
-      <header className="main-header">
-        <div className="container">
-          <div className="header-content">
-            <div className="logo">
-              <img src="/images/logos/logo.svg" alt="MCP Configuration Tool Logo" />
-              <span>MCP Config</span>
-            </div>
-            <nav className="main-nav">
-              <ul>
-                <li><a href="/dashboard" className="active">Dashboard</a></li>
-                <li><a href="/configurations">Configurations</a></li>
-                <li><a href="/servers">Servers</a></li>
-                <li><a href="/docs">Documentation</a></li>
-              </ul>
-            </nav>
-            <div className="user-menu">
-              <div className="subscription-badge free">Free</div>
-              <div className="user-dropdown">
-                <button className="user-dropdown-toggle">
-                  <div className="user-avatar">JS</div>
-                  <span className="user-name">John Smith</span>
-                  <span className="dropdown-arrow">▼</span>
-                </button>
-                <div className="user-dropdown-menu">
-                  <a href="/profile">Profile</a>
-                  <a href="/settings">Account Settings</a>
-                  <a href="/subscription">Subscription</a>
-                  <a href="/help">Help & Support</a>
-                  <a href="/logout" className="logout">Log Out</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="dashboard-container">
+      <Header 
+        appName="MCP Configuration Tool" 
+        navLinks={[
+          { to: '/', label: 'Home' },
+          { to: '/dashboard', label: 'Dashboard' },
+          { to: '/pricing', label: 'Pricing' },
+          { to: '/docs', label: 'Documentation' }
+        ]}
+        isAuthenticated={true}
+        onSignOut={() => {
+          console.log('Sign out clicked');
+          window.location.href = '/';
+        }}
+      />
+      
+      <div className="header-actions">
+        <a 
+          href="/"
+          className="direct-sign-out"
+          onClick={(e) => {
+            e.preventDefault();
+            // Force redirect to home page
+            document.location.replace('/');
+          }}
+        >
+          Sign Out
+        </a>
+      </div>
+      
       <main className="dashboard">
-        <div className="container">
-          {/* Dashboard Header */}
-          <section className="dashboard-header">
-            <div className="welcome-section">
-              <h1>Welcome, John!</h1>
-              <p className="stats-summary">You have <span className="highlight">3 configurations</span> with <span className="highlight">5 servers</span> connected.</p>
-            </div>
-            <div className="dashboard-actions">
-              <button className="btn btn-primary create-config-btn">
-                <span className="icon">+</span> Create New Configuration
-              </button>
-              <div className="view-toggle">
-                <button className="view-toggle-btn active" data-view="grid">
-                  <span className="icon">⊞</span>
-                </button>
-                <button className="view-toggle-btn" data-view="list">
-                  <span className="icon">≡</span>
-                </button>
-              </div>
+        <div className="dashboard-content">
+          <WelcomeBanner 
+            title="Welcome to the MCP Configuration Tool" 
+            subtitle="Configure your AI assistant's capabilities"
+            badgeText="Beta Release"
+          />
+          
+          {/* Available Services Section */}
+          <section className="services-section">
+            <h2 className="section-title">Available Services</h2>
+            <div className="services-grid">
+              {services.map(service => (
+                <ServiceCard key={service.id} service={service} />
+              ))}
             </div>
           </section>
-
-          {/* Recent Configurations Section */}
-          <section className="recent-configurations">
-            <div className="section-header">
-              <h2>Recent Configurations</h2>
-              <a href="/configurations" className="view-all">View All</a>
+          
+          {/* Pricing Plans Section */}
+          <section className="pricing-section">
+            <h2 className="section-title">Pricing Plans</h2>
+            <div className="pricing-grid">
+              {pricingPlans.map(plan => (
+                <PricingTier key={plan.id} plan={plan} />
+              ))}
+            </div>
+          </section>
+          
+          {/* Premium Models Section */}
+          <section className="models-section">
+            <h2 className="section-title">Premium Models</h2>
+            <div className="models-grid">
+              {premiumModels.map(model => (
+                <ModelCard key={model.id} model={model} />
+              ))}
+            </div>
+          </section>
+          
+          {/* Your Configurations Section */}
+          <section className="configurations-section">
+            <h2 className="section-title">Your Configurations</h2>
+            {configurations.length === 0 ? (
+              <EmptyState 
+                message="You haven't created any configurations yet"
+                buttonText="Create New Configuration"
+                onButtonClick={() => console.log('Create new configuration')}
+              />
+            ) : (
+              <div className="configurations-grid">
+                {/* Configuration cards would go here */}
+              </div>
+            )}
+          </section>
+          
+          {/* Example Showcase Section */}
+          <section className="showcase-section">
+            <h2 className="section-title">See What You Can Create</h2>
+            <p className="section-description">
+              These examples showcase what's possible when you configure your MCP servers with premium models.
+            </p>
+            
+            <div className="examples-tabs">
+              {examples.map(example => (
+                <button 
+                  key={example.id}
+                  className={`example-tab ${activeExample === example.id ? 'active' : ''}`}
+                  onClick={() => handleExampleClick(example.id)}
+                >
+                  <span className="example-type">{example.type}</span>
+                  <span className="example-title">{example.title}</span>
+                </button>
+              ))}
             </div>
             
-            <div className="configurations-grid">
-              {/* Configuration Cards would be dynamically generated in React */}
-              {/* This is just a sample of the structure */}
-              <div className="config-card">
-                <div className="config-card-header">
-                  <h3 className="config-name">Web Research Assistant</h3>
-                  <div className="config-actions">
-                    <button className="action-btn edit-btn" title="Edit Configuration">
-                      <span className="icon">✎</span>
-                    </button>
-                    <button className="action-btn delete-btn" title="Delete Configuration">
-                      <span className="icon">🗑</span>
-                    </button>
-                    <button className="action-btn export-btn" title="Export Configuration">
-                      <span className="icon">↓</span>
-                    </button>
-                  </div>
+            <div className="example-content">
+              {examples.map(example => (
+                <div 
+                  key={example.id} 
+                  className={`example-container ${activeExample === example.id ? 'active' : 'hidden'}`}
+                >
+                  <ExampleShowcase example={example} />
                 </div>
-                <p className="config-description">Enhanced web search capabilities with file system access for research projects.</p>
-                <div className="config-meta">
-                  <div className="server-types">
-                    <span className="server-type web" title="Web Search">🌐</span>
-                    <span className="server-type file" title="File System">📁</span>
-                  </div>
-                  <div className="config-stats">
-                    <span className="server-count">2 servers</span>
-                    <span className="update-date">Updated: Mar 20, 2025</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Additional cards would be rendered dynamically */}
+              ))}
             </div>
           </section>
-
-          {/* Search and Filter Section */}
-          <section className="search-filter">
-            <div className="section-header">
-              <h2>All Configurations</h2>
-            </div>
-            <div className="filter-controls">
-              <div className="search-box">
-                <input type="text" placeholder="Search configurations..." className="search-input" />
-                <button className="search-btn">🔍</button>
-              </div>
-              <div className="filter-options">
-                <div className="filter-group">
-                  <label htmlFor="server-type">Server Type</label>
-                  <select id="server-type" className="filter-select">
-                    <option value="all">All Servers</option>
-                    <option value="web">Web Search</option>
-                    <option value="file">File System</option>
-                    <option value="huggingface">Hugging Face</option>
-                  </select>
-                </div>
-                <div className="filter-group">
-                  <label htmlFor="sort-by">Sort By</label>
-                  <select id="sort-by" className="filter-select">
-                    <option value="updated">Last Updated</option>
-                    <option value="created">Date Created</option>
-                    <option value="name">Name A-Z</option>
-                    <option value="servers">Number of Servers</option>
-                  </select>
-                </div>
-                <button className="btn btn-secondary clear-filters-btn">Clear Filters</button>
-              </div>
+          
+          {/* Testimonials Section */}
+          <section className="testimonials-section">
+            <h2 className="section-title">What Users Are Saying</h2>
+            <div className="testimonials-grid">
+              {testimonials.map(testimonial => (
+                <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+              ))}
             </div>
           </section>
-
-          {/* All Configurations Section */}
-          <section className="all-configurations">
-            <div className="configurations-grid">
-              {/* Configuration Cards would be dynamically generated in React */}
-              {/* This is just a sample of the structure */}
-              <div className="config-card">
-                <div className="config-card-header">
-                  <h3 className="config-name">Web Research Assistant</h3>
-                  <div className="config-actions">
-                    <button className="action-btn edit-btn" title="Edit Configuration">
-                      <span className="icon">✎</span>
-                    </button>
-                    <button className="action-btn delete-btn" title="Delete Configuration">
-                      <span className="icon">🗑</span>
-                    </button>
-                    <button className="action-btn export-btn" title="Export Configuration">
-                      <span className="icon">↓</span>
-                    </button>
-                  </div>
-                </div>
-                <p className="config-description">Enhanced web search capabilities with file system access for research projects.</p>
-                <div className="config-meta">
-                  <div className="server-types">
-                    <span className="server-type web" title="Web Search">🌐</span>
-                    <span className="server-type file" title="File System">📁</span>
-                  </div>
-                  <div className="config-stats">
-                    <span className="server-count">2 servers</span>
-                    <span className="update-date">Updated: Mar 20, 2025</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="config-card">
-                <div className="config-card-header">
-                  <h3 className="config-name">Data Analysis Suite</h3>
-                  <div className="config-actions">
-                    <button className="action-btn edit-btn" title="Edit Configuration">
-                      <span className="icon">✎</span>
-                    </button>
-                    <button className="action-btn delete-btn" title="Delete Configuration">
-                      <span className="icon">🗑</span>
-                    </button>
-                    <button className="action-btn export-btn" title="Export Configuration">
-                      <span className="icon">↓</span>
-                    </button>
-                  </div>
-                </div>
-                <p className="config-description">Comprehensive setup for data analysis with file system access and AI model integration.</p>
-                <div className="config-meta">
-                  <div className="server-types">
-                    <span className="server-type file" title="File System">📁</span>
-                    <span className="server-type huggingface" title="Hugging Face">🤗</span>
-                  </div>
-                  <div className="config-stats">
-                    <span className="server-count">2 servers</span>
-                    <span className="update-date">Updated: Mar 15, 2025</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="config-card">
-                <div className="config-card-header">
-                  <h3 className="config-name">Content Assistant</h3>
-                  <div className="config-actions">
-                    <button className="action-btn edit-btn" title="Edit Configuration">
-                      <span className="icon">✎</span>
-                    </button>
-                    <button className="action-btn delete-btn" title="Delete Configuration">
-                      <span className="icon">🗑</span>
-                    </button>
-                    <button className="action-btn export-btn" title="Export Configuration">
-                      <span className="icon">↓</span>
-                    </button>
-                  </div>
-                </div>
-                <p className="config-description">Web-enabled AI assistant for content creation and editing.</p>
-                <div className="config-meta">
-                  <div className="server-types">
-                    <span className="server-type web" title="Web Search">🌐</span>
-                    <span className="server-type huggingface" title="Hugging Face">🤗</span>
-                  </div>
-                  <div className="config-stats">
-                    <span className="server-count">2 servers</span>
-                    <span className="update-date">Updated: Mar 10, 2025</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Additional cards would be rendered dynamically */}
-            </div>
-            
-            {/* Pagination */}
-            <div className="pagination">
-              <button className="pagination-btn prev" disabled>Previous</button>
-              <div className="pagination-numbers">
-                <button className="pagination-number active">1</button>
-                <button className="pagination-number">2</button>
-                <button className="pagination-number">3</button>
-              </div>
-              <button className="pagination-btn next">Next</button>
-            </div>
-          </section>
-
-          {/* Quick Access Section */}
-          <section className="quick-access">
-            <div className="section-header">
-              <h2>Quick Access</h2>
-            </div>
-            <div className="quick-access-grid">
-              <div className="quick-access-card">
-                <div className="quick-access-icon">📁</div>
-                <h3>Configure File System</h3>
-                <p>Set up local file access for your Claude assistant.</p>
-                <button className="btn btn-primary">Configure</button>
-              </div>
-              <div className="quick-access-card">
-                <div className="quick-access-icon">🌐</div>
-                <h3>Configure Web Search</h3>
-                <p>Enable web browsing capabilities for Claude.</p>
-                <button className="btn btn-primary">Configure</button>
-              </div>
-              <div className="quick-access-card">
-                <div className="quick-access-icon">🤗</div>
-                <h3>Configure Hugging Face</h3>
-                <p>Connect specialized AI models from Hugging Face.</p>
-                <button className="btn btn-primary">Configure</button>
-              </div>
-              <div className="quick-access-card">
-                <div className="quick-access-icon">↓</div>
-                <h3>Export Configuration</h3>
-                <p>Export your configuration setup for desktop use.</p>
-                <button className="btn btn-primary">Export</button>
-              </div>
-            </div>
-          </section>
-
+          
           {/* Coming Soon Section */}
-          <section className="coming-soon">
-            <div className="section-header">
-              <h2>Coming Soon</h2>
-            </div>
-            <div className="coming-soon-grid">
-              <div className="coming-soon-card">
-                <div className="coming-soon-icon">📊</div>
-                <h3>Usage Analytics</h3>
-                <p>Detailed metrics on your configuration performance.</p>
-                <div className="coming-soon-badge">Coming in April</div>
-              </div>
-              <div className="coming-soon-card">
-                <div className="coming-soon-icon">🔌</div>
-                <h3>Plugin Marketplace</h3>
-                <p>Access a growing library of extensions and integrations.</p>
-                <div className="coming-soon-badge">Coming in May</div>
-              </div>
-              <div className="coming-soon-card">
-                <div className="coming-soon-icon">📱</div>
-                <h3>Mobile App</h3>
-                <p>Manage your configurations on the go with our mobile app.</p>
-                <div className="coming-soon-badge">Coming in June</div>
-              </div>
-              <div className="coming-soon-card">
-                <div className="coming-soon-icon">👥</div>
-                <h3>Team Collaboration</h3>
-                <p>Share and collaborate on configurations with your team.</p>
-                <div className="coming-soon-badge">Coming in July</div>
-              </div>
-            </div>
-            <div className="upgrade-prompt">
-              Unlock premium features by <a href="/subscription" className="upgrade-link">upgrading your account</a>.
-            </div>
-          </section>
+          <ComingSoon />
         </div>
       </main>
-
-      {/* Modal for creating a new configuration */}
-      <div className="modal" id="createConfigModal">
-        <div className="modal-overlay"></div>
-        <div className="modal-container">
-          <div className="modal-header">
-            <h2>Create New Configuration</h2>
-            <button className="modal-close-btn">&times;</button>
-          </div>
-          <div className="modal-body">
-            <form id="createConfigForm">
-              <div className="form-group">
-                <label htmlFor="configName">Configuration Name</label>
-                <input type="text" id="configName" placeholder="Enter a name for your configuration" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="configDescription">Description (Optional)</label>
-                <textarea id="configDescription" placeholder="Add a brief description"></textarea>
-              </div>
-              <div className="form-group">
-                <label>Start with a Template</label>
-                <div className="template-options">
-                  <div className="template-option">
-                    <input type="radio" name="template" id="template-none" value="none" checked />
-                    <label htmlFor="template-none">
-                      <div className="template-icon">✨</div>
-                      <div className="template-info">
-                        <h4>Blank Configuration</h4>
-                        <p>Start from scratch</p>
-                      </div>
-                    </label>
-                  </div>
-                  <div className="template-option">
-                    <input type="radio" name="template" id="template-web" value="web" />
-                    <label htmlFor="template-web">
-                      <div className="template-icon">🌐</div>
-                      <div className="template-info">
-                        <h4>Web Search</h4>
-                        <p>Basic web search capability</p>
-                      </div>
-                    </label>
-                  </div>
-                  <div className="template-option">
-                    <input type="radio" name="template" id="template-file" value="file" />
-                    <label htmlFor="template-file">
-                      <div className="template-icon">📁</div>
-                      <div className="template-info">
-                        <h4>File System</h4>
-                        <p>Local file access setup</p>
-                      </div>
-                    </label>
-                  </div>
-                  <div className="template-option">
-                    <input type="radio" name="template" id="template-ai" value="ai" />
-                    <label htmlFor="template-ai">
-                      <div className="template-icon">🤗</div>
-                      <div className="template-info">
-                        <h4>AI Models</h4>
-                        <p>Hugging Face integration</p>
-                      </div>
-                    </label>
-                  </div>
+      
+      <div style={{
+        padding: "1rem 0",
+        backgroundColor: "#ffffff",
+        marginTop: "0",
+        borderTop: "1px solid #e5e7eb"
+      }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1rem" }}>
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "1.5fr 1fr 1fr 1fr", 
+            gap: "1rem", 
+            marginBottom: "1rem" 
+          }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div style={{ marginRight: "0.5rem" }}>
+                  <img src="/logo.svg" alt="CodeQual" width="32" height="32" />
+                </div>
+                <div>
+                  <div style={{ fontWeight: "600", fontSize: "1.1rem", color: "#333" }}>CodeQual</div>
+                  <div style={{ fontSize: "0.9rem", color: "#666" }}>MCP Configuration Tool</div>
                 </div>
               </div>
-            </form>
+              <p style={{ fontSize: "0.9rem", color: "#666", marginTop: "0.5rem" }}>
+                AI-powered tools to improve code quality and save development time.
+              </p>
+            </div>
+            
+            <div>
+              <h3 style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "0.75rem", color: "#333" }}>PLATFORM</h3>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/features" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Features</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/pricing" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Pricing</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/docs" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Documentation</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/changelog" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Changelog</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "0.75rem", color: "#333" }}>COMPANY</h3>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/about" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>About Us</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/blog" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Blog</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/contact" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Contact</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "0.75rem", color: "#333" }}>LEGAL</h3>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/terms" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Terms of Service</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/privacy" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Privacy Policy</a></li>
+                <li style={{ marginBottom: "0.5rem" }}><a href="/security" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Security</a></li>
+              </ul>
+            </div>
           </div>
-          <div className="modal-footer">
-            <button className="btn btn-secondary modal-cancel-btn">Cancel</button>
-            <button className="btn btn-primary modal-create-btn">Create Configuration</button>
+          
+          <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: "1rem", marginTop: "1rem" }}>
+            <p style={{ fontSize: "0.9rem", color: "#666", margin: 0 }}>&copy; 2025 CodeQual, Inc. All rights reserved.</p>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export { Dashboard };
+export default Dashboard;

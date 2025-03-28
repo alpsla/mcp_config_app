@@ -1,0 +1,181 @@
+.footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 1.75rem 0;
+  margin-top: 0;
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.light-footer {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.light-footer .footer-heading,
+.light-footer .footer-company-name {
+  color: #333333;
+}
+
+.light-footer .footer-description,
+.light-footer .footer-link,
+.light-footer .footer-app-name,
+.light-footer .copyright {
+  color: #6b7280;
+}
+
+.light-footer .footer-link:hover {
+  color: #0066cc;
+}
+
+.light-footer .footer-bottom {
+  border-top: 1px solid #e5e7eb;
+}
+
+.footer .container {
+  width: 90%; /* Match header container width */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.footer-spacer {
+  height: var(--space-xxl);
+  display: none; /* Hide spacer to match the screenshot layout */
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+@media (min-width: 992px) {
+  .footer-grid {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+.footer-column {
+  margin-bottom: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .footer-column {
+    margin-bottom: 0;
+  }
+  
+  .logo-column {
+    grid-column: span 1;
+  }
+}
+
+/* Ensure consistent spacing between columns */
+.footer-column:not(:first-child) {
+  padding-left: 20px;
+}
+
+.footer-logo-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.footer-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.footer-logo-svg {
+  width: 30px;
+  height: 30px;
+}
+
+.footer-brand {
+  margin-left: var(--space-sm);
+}
+
+.footer-company-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+  display: block;
+}
+
+.footer-app-name {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.footer-description {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* Column Heading Alignment */
+.footer-heading {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-md);
+  text-transform: uppercase; /* Uppercase the headings to match screenshot */
+  letter-spacing: 0.5px; /* Add letter-spacing for the uppercase text */
+  margin-top: 0; /* Ensure consistent top alignment */
+}
+
+/* Link Alignment */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Consistent spacing between links */
+}
+
+.footer-links li {
+  margin-bottom: 0; /* Remove bottom margin and use gap instead */
+  line-height: 1.8; /* Improve line height for readability */
+}
+
+.footer-link {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--primary);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--neutral-light);
+  padding-top: 1rem;
+  text-align: left; /* Align left to match the footer columns */
+  margin-top: 1rem;
+}
+
+.copyright {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}

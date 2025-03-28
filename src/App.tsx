@@ -3,7 +3,7 @@ import SignIn from './components/auth/signin/SignIn';
 // SignUp component removed as per requirements
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
-import { Dashboard } from './components/dashboard/Dashboard';
+import Dashboard from './components/dashboard';
 import { useAuth } from './auth/AuthContext';
 import { AuthDiagnostic } from './components/diagnostic/AuthDiagnostic';
 import ErrorBoundary from './components/ErrorBoundary';

@@ -1,0 +1,36 @@
+.empty-state {
+  padding: 3rem;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px dashed var(--gray-300);
+}
+
+.empty-illustration {
+  margin-bottom: 1.5rem;
+}
+
+.empty-message {
+  color: var(--gray-600);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.action-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.action-button:hover {
+  background-color: var(--primary-dark);
+}
