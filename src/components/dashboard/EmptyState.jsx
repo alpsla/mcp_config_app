@@ -12,9 +12,32 @@ const EmptyState = ({ message, buttonText, onButtonClick }) => {
         </svg>
       </div>
       <p className="empty-message">{message}</p>
-      <button className="action-button" onClick={onButtonClick}>
-        {buttonText}
-      </button>
+      
+      <div className="preset-options">
+        <div className="preset-option">
+          <h4>Free Configuration</h4>
+          <p>File System + Web Search</p>
+          <button className="preset-button" onClick={() => onButtonClick('free')}>
+            Create Free Config
+          </button>
+        </div>
+        
+        <div className="preset-option basic">
+          <h4>Basic Configuration</h4>
+          <p>Free + 3 Premium Models</p>
+          <button className="preset-button basic" onClick={() => onButtonClick('basic')}>
+            Create Basic Config
+          </button>
+        </div>
+        
+        <div className="preset-option premium">
+          <h4>Complete Configuration</h4>
+          <p>Free + 10 Premium Models</p>
+          <button className="preset-button premium" onClick={() => onButtonClick('complete')}>
+            Create Complete Config
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

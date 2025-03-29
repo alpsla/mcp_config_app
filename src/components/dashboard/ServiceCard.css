@@ -54,17 +54,22 @@
 .service-description {
   color: var(--gray-700);
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .service-benefits {
   margin-bottom: 1.5rem;
-  padding-left: 1.5rem;
+  padding-left: 0;
+  list-style: none;
   flex-grow: 1;
+  text-align: center;
 }
 
 .service-benefits li {
   margin-bottom: 0.5rem;
   color: var(--gray-700);
+  position: relative;
+  padding-left: 0;
 }
 
 .configure-button {
@@ -76,7 +81,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  align-self: stretch;
+  align-self: center;
+  min-width: 150px;
 }
 
 .configure-button:hover {

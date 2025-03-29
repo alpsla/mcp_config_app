@@ -37,7 +37,7 @@ const Footer = ({
             <div className="footer-logo-container">
               <Link to={isAuthenticated ? "/dashboard" : "/"}>
                 <div className="footer-logo-wrapper">
-                  <CodeQualLogo className="footer-logo-svg" />
+                  <CodeQualLogo className="footer-logo-svg" style={{ width: '28px', height: '28px' }} />
                 </div>
               </Link>
               <div className="footer-brand">

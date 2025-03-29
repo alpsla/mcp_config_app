@@ -1,3 +1,25 @@
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #f9fafb;
+}
+
+.loading-screen p {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
 .app-container {
   display: flex;
   flex-direction: column;

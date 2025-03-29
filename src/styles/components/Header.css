@@ -24,6 +24,10 @@
   gap: 10px; /* Reduced gap for better spacing */
 }
 
+.flex-spacer {
+  flex: 1;
+}
+
 /* Logo styles */
 .logo-container {
   display: flex;

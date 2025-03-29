@@ -42,9 +42,7 @@ const ExampleShowcase = ({ example }) => {
         <p>{example.prompt}</p>
       </div>
       
-      <button className="generate-button">
-        Generate {example.type === 'image' ? 'Image' : example.type === 'audio' ? 'Audio' : 'Video'}
-      </button>
+      {/* Generate button removed as it's just a showcase */}
     </div>
   );
   
@@ -139,7 +137,7 @@ const ExampleShowcase = ({ example }) => {
           This example demonstrates how you can use the {example.model} model 
           when configured through your MCP server.
         </p>
-        <button className="try-button">Try It Yourself</button>
+        {/* 'Try It Yourself' button removed as it's just a showcase */}
       </div>
     </div>
   );

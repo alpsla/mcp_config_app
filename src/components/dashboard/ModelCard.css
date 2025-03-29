@@ -1,3 +1,50 @@
+.tier-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tier-free {
+  background-color: #10b981; /* Green */
+  color: white;
+}
+
+.tier-paid {
+  background-color: #6366f1; /* Indigo */
+  color: white;
+}
+
+.model-card.selected {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.3);
+}
+
+.model-select-button {
+  flex: 1;
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.model-select-button:hover {
+  background-color: var(--gray-300);
+}
+
+.model-select-button.selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.model-select-button.selected:hover {
+  background-color: var(--primary-dark);
+}
+
 .model-card {
   background: linear-gradient(135deg, white, var(--gray-100));
   border-radius: var(--border-radius);
@@ -66,6 +113,10 @@
   color: var(--gray-800);
   position: relative;
   z-index: 1;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .model-description {
@@ -78,7 +129,7 @@
 
 .model-card-footer {
   display: flex;
-  gap: 0.75rem;
+  justify-content: center;
   position: relative;
   z-index: 1;
 }
@@ -99,17 +150,41 @@
   background-color: var(--primary-dark);
 }
 
+.model-button:disabled {
+  background-color: var(--gray-300);
+  cursor: not-allowed;
+}
+
+.model-button.selected {
+  background-color: #10b981; /* Green */
+}
+
+.model-button.selected:hover {
+  background-color: #059669; /* Darker green */
+}
+
 .model-demo-button {
-  background-color: transparent;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  padding: 0.75rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
   border-radius: var(--border-radius);
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .model-demo-button:hover {
-  background-color: var(--primary-light);
+  background-color: var(--primary-dark);
+}
+
+.model-demo-button::before {
+  content: '▶';
+  font-size: 12px;
 }

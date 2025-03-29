@@ -61,14 +61,19 @@
 
 .model-badge {
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
+  top: -0.75rem;
+  right: -0.75rem;
   background-color: var(--primary-light);
   color: var(--primary-color);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 600;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 2;
 }
 
 .testimonial-quote {

@@ -4,22 +4,59 @@ import '../../styles/common.css';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import FAQSection from '../../components/common/FAQSection';
+import { useAuth } from '../../auth/AuthContext';
 
 const Homepage = () => {
-  // Authentication state (mock for now)
+  // Get real authentication state from context
+  const { authState, signOut } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // Remove theme state as dark mode is being removed
   
-  // Mock sign out function
+  // Real sign out function
   const handleSignOut = async () => {
-    setIsAuthenticated(false);
-    return Promise.resolve();
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
   
   // Set document to light theme by default
   useEffect(() => {
-    document.documentElement.classList.remove('dark');
+  document.documentElement.classList.remove('dark');
   }, []);
+  
+  // Force re-check auth state on component mount
+  useEffect(() => {
+    // Check authentication on page load
+    const checkAuthStatus = async () => {
+      try {
+        console.log('Homepage: Checking authentication status...');
+        const userIsAuthenticated = authState.user !== null;
+        
+        // Do we need to update our local state?
+        if (isAuthenticated !== userIsAuthenticated) {
+          console.log('Homepage: Updating authentication state:', { isAuthenticated: userIsAuthenticated });
+          setIsAuthenticated(userIsAuthenticated);
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        // If there's an error, assume not authenticated
+        setIsAuthenticated(false);
+      }
+    };
+    
+    checkAuthStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+  // Update authentication status whenever component mounts or authState changes
+  useEffect(() => {
+    // Get the real authentication status from AuthContext
+    const userIsAuthenticated = authState.user !== null;
+    setIsAuthenticated(userIsAuthenticated);
+    
+    console.log('Homepage: Authentication state updated', { isAuthenticated: userIsAuthenticated });
+  }, [authState]);
 
   // Load scripts when component mounts
   useEffect(() => {
@@ -39,12 +76,17 @@ const Homepage = () => {
   }, []);
 
   // MCP Config-specific navigation links
-  const navLinks = [
+  const baseNavLinks = [
     { to: '/', label: 'Home' },
     { to: '/#features', label: 'Features' },
     { to: '/pricing', label: 'Pricing' },
     { to: '/docs', label: 'Documentation' }
   ];
+  
+  // Add dashboard link if authenticated
+  const navLinks = isAuthenticated ? 
+    [{ to: '/dashboard', label: 'Dashboard' }, ...baseNavLinks.filter(link => link.to !== '/')] : 
+    baseNavLinks;
   
   // FAQ data
   const faqData = [
@@ -111,7 +153,11 @@ const Homepage = () => {
                   MCP Config Tool makes it easy to set up and manage your Claude AI configurations with a user-friendly interface. No coding required.
                 </p>
                 <div className="hero-cta">
-                  <a href="/login" className="btn btn-primary btn-large">Get Started Free</a>
+                  {isAuthenticated ? (
+                    <a href="/dashboard" className="btn btn-primary btn-large">Go to Dashboard</a>
+                  ) : (
+                    <a href="/login" className="btn btn-primary btn-large">Get Started Free</a>
+                  )}
                   <a href="/demo" className="btn btn-secondary btn-large">View Demo</a>
                 </div>
                 <div className="trust-indicator">
@@ -290,7 +336,11 @@ const Homepage = () => {
             <h2>Ready to Enhance Your Claude Experience?</h2>
             <p>Join thousands of users who are getting more value from Claude AI with our configuration tool.</p>
             <div className="cta-buttons">
-              <a href="/login" className="btn btn-primary btn-large">Get Started Free</a>
+              {isAuthenticated ? (
+                <a href="/dashboard" className="btn btn-primary btn-large">Go to Dashboard</a>
+              ) : (
+                <a href="/login" className="btn btn-primary btn-large">Get Started Free</a>
+              )}
               <a href="/pricing" className="btn btn-secondary btn-large">View Pricing</a>
             </div>
             <div className="trust-indicator">

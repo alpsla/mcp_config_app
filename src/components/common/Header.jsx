@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../../styles/components/Header.css';
 import CodeQualLogo from './CodeQualLogo';
+import { signOut } from '../../services/supabase/authService';
 
 // Temporary icon components until lucide-react is installed
 // Dark mode icons removed as requested
@@ -54,6 +55,81 @@ const Header = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Check if the current path is the dashboard
+  const isDashboard = location.pathname === '/dashboard';
+  
+  // Add home link to navLinks if we're on the dashboard
+  const enhancedNavLinks = isDashboard ? [
+    { to: '/', label: 'Home' },
+    ...navLinks.filter(link => link.to !== '/'),
+  ] : navLinks;
+  
+  // Handle sign out with proper auth flow
+  const handleSignOut = async (e) => {
+    // Store the original button element and text if coming from a button click
+    let originalButton = null;
+    let originalText = '';
+    
+    if (e) {
+      e.preventDefault();
+      // If we have an event object, store button reference
+      originalButton = e.currentTarget;
+      if (originalButton) {
+        originalText = originalButton.textContent || 'Sign Out';
+        originalButton.disabled = true;
+        originalButton.textContent = 'Signing out...';
+      }
+    }
+    
+    // Close mobile menu if open
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+    
+    console.log('Sign Out clicked from header');
+    
+    try {
+      // Clear auth tokens from local storage
+      localStorage.removeItem('supabase.auth.token');
+      sessionStorage.removeItem('supabase.auth.token');
+      
+      // Call the proper sign out function
+      const result = await signOut();
+      console.log('Sign out result:', result);
+      
+      // Call the parent component's onSignOut callback if it exists
+      if (onSignOut && typeof onSignOut === 'function') {
+        try {
+          await onSignOut();
+          console.log('onSignOut callback executed successfully');
+        } catch (callbackError) {
+          console.error('Error in onSignOut callback:', callbackError);
+        }
+      }
+      
+      // Force reload the page to ensure all auth state is cleared
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+      
+      // Reset button if there was an error
+      if (originalButton) {
+        originalButton.disabled = false;
+        originalButton.textContent = originalText;
+      }
+      
+      // Still try to redirect
+      window.location.href = '/';
+    }
+  };
+  
+  // Navigate to home page
+  const goToHomePage = (e) => {
+    e.preventDefault();
+    navigate('/');
+  };
   
   return (
     <header className={`header ${className}`}>
@@ -61,7 +137,7 @@ const Header = ({
         <div className="header-content">
           {/* Logo (left) */}
           <div className="logo-container">
-            <Link to={isAuthenticated ? "/dashboard" : "/"} className="logo-link">
+            <div className="logo-link" onClick={goToHomePage} style={{ cursor: 'pointer' }}>
               <div className="logo-wrapper">
                 <CodeQualLogo className="logo-svg" />
               </div>
@@ -71,13 +147,18 @@ const Header = ({
                   <span className="app-name">{appName}</span>
                 )}
               </div>
-            </Link>
+            </div>
           </div>
+          
+          {/* Spacer to push everything to the sides */}
+          <div className="flex-spacer"></div>
           
           {/* Navigation (center) */}
           <nav className="main-nav">
             <ul>
-              {navLinks.map((link, index) => (
+              {/* Filter out Home link if we're on Dashboard */}
+              {enhancedNavLinks
+                .map((link, index) => (
                 <li key={index}>
                   <Link 
                     to={link.to} 
@@ -89,6 +170,9 @@ const Header = ({
               ))}
             </ul>
           </nav>
+
+          {/* Spacer to push everything to the sides */}
+          <div className="flex-spacer"></div>
           
           {/* UI Controls (right) */}
           <div className="controls">
@@ -143,10 +227,7 @@ const Header = ({
               <div className="auth-buttons">
                 <button 
                   className="btn btn-primary"
-                  onClick={() => {
-                    console.log('Sign Out clicked from header');
-                    document.location.replace('/');
-                  }}
+                  onClick={handleSignOut}
                 >
                   <LogOut className="mr-1" />
                   Sign Out
@@ -167,7 +248,8 @@ const Header = ({
         <div className="mobile-menu">
           <nav className="container">
             <ul>
-              {navLinks.map((link, index) => (
+              {enhancedNavLinks
+                .map((link, index) => (
                 <li key={index}>
                   <Link 
                     to={link.to} 
@@ -183,11 +265,7 @@ const Header = ({
                 <li className="sign-out-item">
                   <button
                     className="sign-out-button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      console.log('Mobile Sign Out clicked');
-                      document.location.replace('/');
-                    }}
+                    onClick={handleSignOut}
                   >
                     <LogOut />
                     Sign Out
