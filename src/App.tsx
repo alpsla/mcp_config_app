@@ -3,7 +3,7 @@ import SignIn from './components/auth/signin/SignIn';
 // SignUp component removed as per requirements
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
-import { Dashboard } from './components/dashboard/Dashboard';
+import Dashboard from './components/dashboard';
 import { useAuth } from './auth/AuthContext';
 import { AuthDiagnostic } from './components/diagnostic/AuthDiagnostic';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -76,26 +76,38 @@ const AppContent: React.FC = () => {
           <Route path="/reset-password/debug" element={<DirectDebug />} />
           <Route path="/magic-link" element={<MagicLinkPage />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
-          <Route path="/login" element={<SignIn />} />
+          <Route path="/login" element={
+            authState.loading ? (
+              <div className="loading-screen">
+                <p>Loading...</p>
+              </div>
+            ) : (
+              authState.user ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <SignIn />
+              )
+            )
+          } />
           <Route path="/signup" element={<Navigate to="/login" replace />} />
           <Route path="/home" element={<Homepage />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/dashboard" element={
-            authState.user ? (
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
+            authState.loading ? (
+              <div className="loading-screen">
+                <p>Loading...</p>
+              </div>
             ) : (
-              <Navigate to="/login" replace />
+              authState.user ? (
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              ) : (
+                <Navigate to="/login" replace />
+              )
             )
           } />
-          <Route path="/" element={
-            authState.user ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Homepage />
-            )
-          } />
+          <Route path="/" element={<Homepage />} />
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

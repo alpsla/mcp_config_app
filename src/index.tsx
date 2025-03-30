@@ -4,6 +4,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
+// Load testing scripts in development mode
+if (process.env.NODE_ENV === 'development') {
+  // Use require instead of import to avoid TypeScript module errors
+  require('./scripts/testReturningUserFlow');
+  require('./scripts/testReturnUserInteractions');
+}
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

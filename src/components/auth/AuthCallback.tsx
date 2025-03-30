@@ -216,8 +216,8 @@ const AuthCallback: React.FC = () => {
         // Redirect to the app
         setStatus('Authentication successful! Redirecting...');
         
-        // Redirect to home page or the page user was trying to access
-        const redirectTo = sessionStorage.getItem('redirectAfterAuth') || '/';
+        // Redirect to dashboard instead of home page
+        const redirectTo = '/dashboard';
         setTimeout(() => {
           navigate(redirectTo);
         }, 1000);

@@ -1,0 +1,14 @@
+// This is a placeholder file to resolve linting errors
+// The actual dashboard implementation has been moved to Dashboard.jsx
+
+import React from 'react';
+
+const NewDashboard = () => {
+  return (
+    <div>
+      <p>This dashboard has been replaced. Please use the new Dashboard component.</p>
+    </div>
+  );
+};
+
+export default NewDashboard;
