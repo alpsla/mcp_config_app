@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/homepage.css';
 import '../../styles/common.css';
-import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
+import SharedHeader from '../../components/shared/SharedHeader';
+import SharedFooter from '../../components/shared/SharedFooter';
 import FAQSection from '../../components/common/FAQSection';
 import { useAuth } from '../../auth/AuthContext';
 
@@ -75,18 +75,8 @@ const Homepage = () => {
     loadScripts();
   }, []);
 
-  // MCP Config-specific navigation links
-  const baseNavLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/#features', label: 'Features' },
-    { to: '/pricing', label: 'Pricing' },
-    { to: '/docs', label: 'Documentation' }
-  ];
-  
-  // Add dashboard link if authenticated
-  const navLinks = isAuthenticated ? 
-    [{ to: '/dashboard', label: 'Dashboard' }, ...baseNavLinks.filter(link => link.to !== '/')] : 
-    baseNavLinks;
+  // MCP Config-specific navigation links - removed unused variables
+  // const navLinks = [...]
   
   // FAQ data
   const faqData = [
@@ -115,31 +105,26 @@ const Homepage = () => {
       answer: "Currently, Hugging Face integration with Claude is only available on desktop applications. We're working closely with Hugging Face to bring this functionality to web users as soon as possible."
     }
   ];
-
-  // Platform-specific footer links
-  const platformLinks = [
-    { to: '/features', label: 'Features' },
-    { to: '/pricing', label: 'Pricing' },
-    { to: '/docs', label: 'Documentation' },
-    { to: '/changelog', label: 'Changelog' }
-  ];
   
-  const companyLinks = [
-    { to: '/about', label: 'About Us' },
-    { to: '/blog', label: 'Blog' },
-    { to: '/careers', label: 'Careers' },
-    { to: '/contact', label: 'Contact' }
-  ];
+  // Platform-specific footer links - removed unused variables
+  // const platformLinks = [...]
+  
+  // const companyLinks = [...]
 
   return (
     <>
       {/* Use shared Header with MCP Config specific props */}
-      <Header 
-        appName="MCP Config" 
-        navLinks={navLinks}
+      <SharedHeader 
+        navLinks={[
+          { to: '/', label: 'Home' },
+          { to: '/dashboard', label: 'Dashboard' },
+          { to: '/features', label: 'Features' },
+          { to: '/pricing', label: 'Pricing' },
+          { to: '/documentation', label: 'Documentation' }
+        ]}
         isAuthenticated={isAuthenticated}
         onSignOut={handleSignOut}
-        className="fixed-header"
+        languageSelector={true}
       />
 
       <main>
@@ -352,13 +337,8 @@ const Homepage = () => {
         </section>
       </main>
 
-      {/* Use shared Footer with MCP Config specific props */}
-      <Footer 
-        appName="MCP Config"
-        platformLinks={platformLinks}
-        companyLinks={companyLinks}
-        isAuthenticated={isAuthenticated}
-      />
+      {/* Use shared Footer */}
+      <SharedFooter />
     </>
   );
 };

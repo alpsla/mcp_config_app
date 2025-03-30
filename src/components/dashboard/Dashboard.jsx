@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
 import './Dashboard.css';
-import './dashboard-footer.css';
-import Header from '../common/Header';
+import SharedHeader from '../shared/SharedHeader';
 import WelcomeBanner from './WelcomeBanner';
-import ServiceCard from './ServiceCard';
 import PricingTier from './PricingTier';
 import ModelCard from './ModelCard';
 import ExampleShowcase from './ExampleShowcase';
 import TestimonialCard from './TestimonialCard';
 // EmptyState import removed as we now use direct UI for subscription selection
 import ComingSoon from './ComingSoon';
-import { signOut } from '../../services/supabase/authService';
+import SharedFooter from '../shared/SharedFooter';
 
 // Import assets
 import santaBeachImage from '../../assets/images/Santa.webp';
@@ -19,6 +18,9 @@ import holidayBeachMusic from '../../assets/audio/tropical-christma.wav';
 import abstractVideo from '../../assets/videos/abstract.mp4';
 
 const Dashboard = () => {
+  // Get the auth state from context
+  const { authState, signOut: authSignOut } = useAuth();
+  const isAuthenticated = authState && authState.user !== null;
   // Log that the dashboard is loaded
   console.log('Dashboard loaded successfully');
   
@@ -107,12 +109,8 @@ const Dashboard = () => {
       
       console.log('Sign out clicked');
       
-      // Clear auth tokens from storage
-      localStorage.removeItem('supabase.auth.token');
-      sessionStorage.removeItem('supabase.auth.token');
-      
-      // Call the proper sign out function
-      await signOut();
+      // Call the auth context's signOut function
+      await authSignOut();
       
       // Redirect to home page after sign out
       navigate('/');
@@ -210,6 +208,9 @@ const Dashboard = () => {
   };
   
   // Available services data
+  // This variable is not directly used in this version of the dashboard
+  // but is kept for reference/future use
+  /*
   const services = [
     {
       id: 'filesystem',
@@ -236,6 +237,7 @@ const Dashboard = () => {
       compatibility: 'All Platforms'
     }
   ];
+  */
   
   // Pricing plans data
   const pricingPlans = [
@@ -410,15 +412,17 @@ const Dashboard = () => {
   
   return (
     <div className="dashboard-container">
-      <Header 
-        appName="MCP Configuration Tool" 
+      <SharedHeader 
         navLinks={[
+          { to: '/', label: 'Home' },
           { to: '/dashboard', label: 'Dashboard' },
+          { to: '/features', label: 'Features' },
           { to: '/pricing', label: 'Pricing' },
-          { to: '/docs', label: 'Documentation' }
+          { to: '/documentation', label: 'Documentation' }
         ]}
-        isAuthenticated={true}
+        isAuthenticated={isAuthenticated}
         onSignOut={handleSignOut}
+        languageSelector={true}
       />
       
       <main className="dashboard">
@@ -685,68 +689,7 @@ const Dashboard = () => {
         </div>
       </main>
       
-      <div style={{
-        padding: "1rem 0",
-        backgroundColor: "#ffffff",
-        marginTop: "0",
-        borderTop: "1px solid #e5e7eb"
-      }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1rem" }}>
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "1.5fr 1fr 1fr 1fr", 
-            gap: "1rem", 
-            marginBottom: "1rem" 
-          }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
-                <div style={{ marginRight: "0.5rem" }}>
-                  <img src="/logo.svg" alt="CodeQual" width="32" height="32" />
-                </div>
-                <div>
-                  <div style={{ fontWeight: "600", fontSize: "1.1rem", color: "#333" }}>CodeQual</div>
-                  <div style={{ fontSize: "0.9rem", color: "#666" }}>MCP Configuration Tool</div>
-                </div>
-              </div>
-              <p style={{ fontSize: "0.9rem", color: "#666", marginTop: "0.5rem" }}>
-                AI-powered tools to improve code quality and save development time.
-              </p>
-            </div>
-            
-            <div>
-              <h3 style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "0.75rem", color: "#333" }}>PLATFORM</h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/features" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Features</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/pricing" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Pricing</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/docs" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Documentation</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/changelog" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Changelog</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "0.75rem", color: "#333" }}>COMPANY</h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/about" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>About Us</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/blog" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Blog</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/contact" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Contact</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "0.75rem", color: "#333" }}>LEGAL</h3>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/terms" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Terms of Service</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/privacy" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Privacy Policy</a></li>
-                <li style={{ marginBottom: "0.5rem" }}><a href="/security" style={{ color: "#666", textDecoration: "none", fontSize: "0.9rem" }}>Security</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: "1rem", marginTop: "1rem" }}>
-            <p style={{ fontSize: "0.9rem", color: "#666", margin: 0 }}>&copy; 2025 CodeQual, Inc. All rights reserved.</p>
-          </div>
-        </div>
-      </div>
+      <SharedFooter />
     </div>
   );
 };

@@ -28,10 +28,27 @@ One-time payment processing for beta premium features
 2. Main Dashboard
 Visual Organization
 
-Current capabilities prominently featured
-"Coming Soon" section highlighting future features
-Recently used configurations display
-Quick access to create new configuration
+User Type Detection
+- First-time user experience (comprehensive with marketing/education)
+- Returning user experience (streamlined with focus on configurations)
+
+First-Time User Dashboard
+- Current capabilities prominently featured
+- Pricing and features comparison
+- Example use cases and templates
+- "Coming Soon" section highlighting future features
+- Quick access to create new configuration
+
+Returning User Dashboard
+- Existing configurations prominently displayed with:
+  - Configuration details preview
+  - Last used date
+  - Testing/validation button
+  - Quick action buttons (Edit, Duplicate, Export)
+- New/featured models section
+- Minimal upgrade path (if not on highest tier)
+- User feedback collection
+- Preference toggle for full dashboard view
 
 3. Core Configuration Interface
 Two-Panel Layout

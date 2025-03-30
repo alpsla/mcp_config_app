@@ -1,0 +1,1131 @@
+{/* Model Benefits Section */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-12">
+          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <svg className="w-6 h-6 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            What You Can Create With Premium Models
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-all border-t-4 border-purple-400">
+              <div className="flex items-start mb-4">
+                <div className="bg-purple-100 p-2 rounded-lg mr-3">
+                  <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-7a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-7a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 001-1v-1z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Interactive Game Prototypes</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Use Large World Model to generate interactive virtual environments from simple text prompts. Rapidly prototype game concepts without coding.
+              </p>
+              <div className="flex items-center justify-between mt-4">
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  Game developers • Educators • Creatives
+                </div>
+                <a href="https://largeworldmodel.github.io/" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                  <span>Learn more</span>
+                  <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            <div className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-all border-t-4 border-blue-400">
+              <div className="flex items-start mb-4">
+                <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Custom Music & Soundtracks</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Generate original background music for videos, presentations, or games with Meta MusicGen. Create specific moods or follow melody patterns.
+              </p>
+              <div className="flex items-center justify-between mt-4">
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  Content creators • Filmmakers • Marketers
+                </div>
+                <a href="https://huggingface.co/spaces/facebook/MusicGen" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                  <span>Learn more</span>
+                  <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            <div className="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-all border-t-4 border-green-400">
+              <div className="flex items-start mb-4">
+                <div className="bg-green-100 p-2 rounded-lg mr-3">
+                  <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Professional Visual Content</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Generate high-quality images for presentations, marketing materials, or creative projects with fine-tuned control over style and content.
+              </p>
+              <div className="flex items-center justify-between mt-4">
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  Designers • Marketers • Social media pros
+                </div>
+                <a href="https://huggingface.co/spaces/shuttle-ai/shuttle-3.1-aesthetic" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                  <span>Learn more</span>
+                  <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Example Creations Showcase Section */}
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-12">
+          <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
+            <h2 className="text-xl font-bold text-gray-900">See What You Can Create</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Examples of content created using our premium AI models
+            </p>
+          </div>
+          
+          <div className="px-4 py-5 sm:p-6">
+            {/* Interactive Text-to-Image Demo */}
+            <div className="mb-10 border rounded-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 border-b">
+                <h3 className="font-medium text-lg text-gray-900 mb-3">Create Images with Simple Prompts</h3>
+                
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    {/* Prompt Input Side */}
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Your Prompt</label>
+                      <textarea 
+                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 h-24"
+                        placeholder="Describe the image you want to create..."
+                        defaultValue="Generate an image of Santa Claus on the Beach giving Christmas gifts to the sea creatures"
+                      ></textarea>
+                      
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-200">
+                          Photorealistic
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 cursor-pointer hover:bg-purple-200">
+                          Animation
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer hover:bg-green-200">
+                          Digital Art
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 cursor-pointer hover:bg-yellow-200">
+                          Fantasy
+                        </span>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <button className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 items-center">
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14" />
+                          </svg>
+                          Generate Image
+                        </button>
+                      </div>
+                      
+                      <div className="mt-3 text-xs text-gray-500">
+                        <div className="flex items-center mb-1">
+                          <svg className="w-3 h-3 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
+                          <span>Try being specific about style, lighting, and details</span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="w-3 h-3 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                          </svg>
+                          <span>Generation takes about 5-10 seconds</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Generated Image Side */}
+                    <div className="flex-1 flex flex-col">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Generated Result</label>
+                      <div className="border border-gray-200 rounded-lg h-full flex items-center justify-center relative overflow-hidden">
+                        <img 
+                          src="/api/placeholder/400/320" 
+                          alt="Santa Claus on beach with sea creatures" 
+                          className="max-w-full max-h-full object-contain"
+                        />
+                        <div className="absolute top-2 right-2 bg-black/50 rounded-full p-1">
+                          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Music Generation Example */}
+              <div className="space-y-4 border rounded-lg overflow-hidden">
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+                  <h3 className="font-medium text-lg text-gray-900 flex items-center">
+                    <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mr-2">1</span>
+                    Music Generation with Meta MusicGen
+                  </h3>
+                
+                  <div className="mt-4 bg-white rounded-lg shadow-sm p-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                          <svg className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="ml-4 flex-1">
+                        <div className="text-sm font-medium text-gray-900">Christmas Music with Beach Vibes</div>
+                        <div className="mt-1 flex space-x-2">
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">Holiday</span>
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">Tropical</span>
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">30 sec</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4">
+                      <div className="relative pt-1">
+                        <div className="flex mb-2 items-center justify-between">
+                          <div>
+                            <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                              Playing
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs font-semibold inline-block text-blue-600">
+                              00:16 / 00:30
+                            </span>
+                          </div>
+                        </div>
+                        <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                          <div style={{width: "50%"}} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500 relative">
+                            <div className="absolute right-0 top-0 h-full w-1 bg-white opacity-50"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-center space-x-4">
+                        <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                          <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
+                          </svg>
+                        </button>
+                        <button className="p-3 rounded-full bg-blue-500 hover:bg-blue-600">
+                          <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
+                        <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                          <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
+                          </svg>
+                        </button>
+                      </div>
+                      
+                      <div className="mt-4 text-center">
+                        <a href="https://huggingface.co/spaces/facebook/MusicGen" className="text-xs text-blue-600 hover:text-blue-800 inline-flex items-center" target="_blank" rel="noopener">
+                          Create your own music
+                          <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Virtual World Video Example */}
+              <div className="space-y-4 border rounded-lg overflow-hidden">
+                <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b">
+                  <h3 className="font-medium text-lg text-gray-900 flex items-center">
+                    <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-purple-100 text-purple-800 text-sm font-medium mr-2">2</span>
+                    Virtual Worlds with LWM
+                  </h3>
+                  
+                  <div className="mt-4 bg-white rounded-lg shadow-sm p-4">
+                    <div className="relative rounded-lg overflow-hidden aspect-video bg-black">
+                      {/* Video thumbnail with play button overlay */}
+                      <div className="absolute inset-0">
+                        <img 
+                          src="/api/placeholder/640/360" 
+                          alt="Virtual world preview" 
+                          className="w-full h-full object-cover opacity-80"
+                        />
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="rounded-full bg-white/30 backdrop-blur-sm p-4">
+                          <svg className="h-12 w-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                        <div className="text-white text-sm font-medium">Tropical Island Adventure World</div>
+                        <div className="text-white/80 text-xs mt-1">Generated from text prompt: "Tropical beach with palm trees, clear water, and interactive sea creatures"</div>
+                      </div>
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      <div className="h-16 rounded bg-gray-100 overflow-hidden">
+                        <img src="/api/placeholder/100/60" alt="Scene preview 1" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="h-16 rounded bg-gray-100 overflow-hidden">
+                        <img src="/api/placeholder/100/60" alt="Scene preview 2" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="h-16 rounded bg-gray-100 overflow-hidden">
+                        <img src="/api/placeholder/100/60" alt="Scene preview 3" className="w-full h-full object-cover" />
+                      </div>
+                    </div>
+                    <div className="mt-4 text-center">
+                      <a href="https://largeworldmodel.github.io/" className="text-xs text-purple-600 hover:text-purple-800 inline-flex items-center" target="_blank" rel="noopener">
+                        Explore game worlds
+                        <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Santa on Beach Image Example */}
+            <div className="mt-8 border rounded-lg overflow-hidden">
+              <div className="p-4 bg-gradient-to-r from-red-50 to-green-50 border-b flex flex-col md:flex-row gap-4 items-center">
+                <div className="flex-1">
+                  <h3 className="font-medium text-lg text-gray-900 mb-3">Generated Example: Santa on the Beach</h3>
+                  <div className="bg-white p-3 rounded-lg shadow-sm">
+                    <div className="text-sm text-gray-700 mb-2">
+                      <span className="font-medium">Prompt Used:</span> "Generate an image of Santa Claus on the Beach giving Christmas gifts to the sea creatures"
+                    </div>
+                    <div className="text-xs text-gray-600 mb-4">
+                      This image was created using Flux.1-dev-infer, one of our premium models. Notice the detailed rendering of Santa, the tropical setting, and the various sea creatures receiving gifts.
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      <div className="flex items-start">
+                        <svg className="h-4 w-4 text-green-500 mt-0.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>High resolution (1024×1024)</span>
+                      </div>
+                      <div className="flex items-start">
+                        <svg className="h-4 w-4 text-green-500 mt-0.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Custom style options available</span>
+                      </div>
+                      <div className="flex items-start">
+                        <svg className="h-4 w-4 text-green-500 mt-0.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Unlimited generations with premium subscription</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 rounded-lg overflow-hidden border shadow-lg">
+                  <img 
+                    src="/api/placeholder/400/320" 
+                    alt="Santa Claus on the Beach giving Christmas gifts to sea creatures" 
+                    className="w-full h-auto"
+                  />
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <a href="https://huggingface.co/spaces/shuttle-ai/shuttle-3.1-aesthetic" className="text-sm font-medium bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md inline-flex items-center" target="_blank" rel="noopener">
+                  Try creating your own images
+                  <svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Testimonials Section */}
+        <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 rounded-lg mb-12 overflow-hidden border border-indigo-100">
+          <div className="px-4 py-5 sm:p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">What Our Users Are Creating</h2>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+                <div className="h-40 bg-gray-100 relative">
+                  <img src="/api/placeholder/400/200" alt="User creation example" className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                    MusicGen
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center mb-3">
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium">
+                      JD
+                    </div>
+                    <div className="ml-2">
+                      <div className="text-sm font-medium text-gray-900">John D.</div>
+                      <div className="text-xs text-gray-500">Music Producer</div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 italic">
+                    "I needed a quick soundtrack for a beach-themed promotional video. Generated the perfect tropical holiday music in minutes."
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+                <div className="h-40 bg-gray-100 relative">
+                  <img src="/api/placeholder/400/200" alt="User creation example" className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                    Flux.1
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center mb-3">
+                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-medium">
+                      SM
+                    </div>
+                    <div className="ml-2">
+                      <div className="text-sm font-medium text-gray-900">Sarah M.</div>
+                      <div className="text-xs text-gray-500">Digital Marketer</div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 italic">
+                    "Generated custom imagery for our holiday campaign in minutes. The quality is incredible and saves us thousands in design costs."
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+                <div className="h-40 bg-gray-100 relative">
+                  <img src="/api/placeholder/400/200" alt="User creation example" className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full">
+                    LWM
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center mb-3">
+                    <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-medium">
+                      RJ
+                    </div>
+                    <div className="ml-2">
+                      <div className="text-sm font-medium text-gray-900">Robert J.</div>
+                      <div className="text-xs text-gray-500">Game Developer</div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 italic">
+                    "Generated an entire game level prototype in an afternoon. Would have taken weeks to build manually."
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>bg-blue-50 cursor-pointer transition-colors">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-1">
+                        <span className="text-xs font-medium text-blue-700">Epic</span>
+                      </div>
+                      <span className="text-xs text-gray-500">Orchestral</span>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-20 bg-white rounded-lg p-2 flex flex-col items-center justify-center hover:bg-blue-50 cursor-pointer transition-colors">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-1">
+                        <span className="text-xs font-medium text-green-700">Calm</span>
+                      </div>
+                      <span className="text-xs text-gray-500">Ambient</span>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-20 bg-white rounded-lg p-2 flex flex-col items-center justify-center hover:bg-blue-50 cursor-pointer transition-colors">
+                      <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-1">
+                        <span className="text-xs font-medium text-red-700">Upbeat</span>
+                      </div>
+                      <span className="text-xs text-gray-500">Pop</span>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-20 bg-white rounded-lg p-2 flex flex-col items-center justify-center hover:bg-blue-50 cursor-pointer transition-colors">
+                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-1">
+                        <span className="text-xs font-medium text-yellow-700">Jazz</span>
+                      </div>
+                      <span className="text-xs text-gray-500">Smooth</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-4 text-center">
+                  <a href="https://huggingface.co/spaces/facebook/MusicGen" className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center" target="_blank" rel="noopener">
+                    Create your own music
+                    <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">Professional Visual Content</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Generate high-quality images for presentations, marketing materials, or creative projects with fine-tuned control over style and content.
+              </p>
+              <div className="flex items-center justify-between mt-4">
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  Designers • Marketers • Social media pros
+                </div>
+                <a href="https://huggingface.co/spaces/shuttle-ai/shuttle-3.1-aesthetic" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                  <span>Learn more</span>
+                  <svg className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414import React from 'react';
+
+const Dashboard = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - Same as home page */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <div className="flex items-center">
+            <img src="/api/placeholder/150/50" alt="CodeQual Logo" className="h-8 w-auto" />
+            <nav className="ml-10 flex space-x-8">
+              <a href="/" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">Home</a>
+              <a href="/pricing" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">Pricing</a>
+              <a href="/documentation" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">Documentation</a>
+            </nav>
+          </div>
+          <div>
+            <button className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">Sign Out</button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Dashboard Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section with Beta Badge */}
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-8">
+          <div className="px-4 py-5 sm:p-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Welcome to Your MCP Configuration Tool</h1>
+                <p className="mt-1 text-sm text-gray-600">
+                  Configure your Claude Desktop with our MCP servers to unlock powerful capabilities.
+                </p>
+              </div>
+              <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-md border-2 border-blue-500">
+                <span className="font-bold">Beta Release</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Available Beta Services */}
+        <div className="flex justify-between items-end mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Available Services</h2>
+          <span className="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full">
+            Included in Free Package
+          </span>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          {/* File System Integration */}
+          <div className="bg-white shadow overflow-hidden rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <div className="flex items-center justify-center h-48 bg-gray-100 rounded-lg mb-4">
+                <svg className="h-24 w-24 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900">File System Integration</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Give Claude access to your files and folders, allowing it to read, analyze, and work with your local documents.
+              </p>
+              <ul className="mt-4 space-y-2">
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="ml-2 text-sm text-gray-600">Process local documents</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="ml-2 text-sm text-gray-600">Analyze spreadsheets and data files</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="ml-2 text-sm text-gray-600">Work with code repositories</span>
+                </li>
+              </ul>
+              <div className="mt-6">
+                <a href="/configure/filesystem" className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  Configure File System
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          {/* Web Search */}
+          <div className="bg-white shadow overflow-hidden rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <div className="flex items-center justify-center h-48 bg-gray-100 rounded-lg mb-4">
+                <svg className="h-24 w-24 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900">Web Search</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Enable Claude to search the web for the most up-to-date information, enhancing responses with real-time data.
+              </p>
+              <ul className="mt-4 space-y-2">
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="ml-2 text-sm text-gray-600">Access current information beyond training data</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="ml-2 text-sm text-gray-600">Get accurate, cited responses</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="ml-2 text-sm text-gray-600">Customize search behavior</span>
+                </li>
+              </ul>
+              <div className="mt-6">
+                <a href="/configure/websearch" className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  Configure Web Search
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Package Selection with Pricing Plans */}
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Choose Your Plan</h2>
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-8">
+          <div className="px-4 py-5 border-b border-gray-200 sm:p-6">
+            <p className="text-sm text-gray-500 mb-4">
+              Select a plan to access additional features and models. Beta users lock in discounted rates for 12 months after full release.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Free Plan */}
+              <div className="border rounded-lg overflow-hidden hover:shadow-md transition-all">
+                <div className="bg-gray-50 px-4 py-4 border-b">
+                  <h3 className="text-lg font-medium text-gray-900">Free</h3>
+                  <div className="mt-2">
+                    <span className="text-3xl font-bold text-gray-900">$0</span>
+                    <span className="text-gray-500">/mo</span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Web Search Integration</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Basic File System Access</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Community Support</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-400">No model integrations</span>
+                    </li>
+                  </ul>
+                  <div className="mt-6">
+                    <button className="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                      Current Plan
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Basic Plan */}
+              <div className="border rounded-lg overflow-hidden hover:shadow-md transition-all">
+                <div className="bg-gray-50 px-4 py-4 border-b">
+                  <h3 className="text-lg font-medium text-gray-900">Basic</h3>
+                  <div className="flex justify-between items-center mt-1">
+                    <div>
+                      <span className="text-3xl font-bold text-gray-900">$2</span>
+                      <span className="text-gray-500">/mo</span>
+                    </div>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Beta Price</span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Everything in Free plan</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">6 model configurations</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Save up to 5 configuration profiles</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Email support</span>
+                    </li>
+                  </ul>
+                  <div className="mt-6">
+                    <button className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                      Upgrade Plan
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Complete Plan */}
+              <div className="border-2 border-blue-500 rounded-lg overflow-hidden hover:shadow-md transition-all relative">
+                <div className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-medium">
+                  MOST POPULAR
+                </div>
+                <div className="bg-blue-50 px-4 py-4 border-b border-blue-200">
+                  <h3 className="text-lg font-medium text-gray-900">Complete</h3>
+                  <div className="flex justify-between items-center mt-1">
+                    <div>
+                      <span className="text-3xl font-bold text-gray-900">$5</span>
+                      <span className="text-gray-500">/mo</span>
+                    </div>
+                    <span className="bg-blue-200 text-blue-800 text-xs font-medium px-2 py-1 rounded">Beta Price</span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Everything in Basic plan</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm font-medium text-gray-900">All 10 model configurations</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Unlimited saved profiles</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="ml-2 text-sm text-gray-600">Priority support</span>
+                    </li>
+                  </ul>
+                  <div className="mt-6">
+                    <button className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                      Upgrade Plan
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    <strong>Beta pricing:</strong> Lock in these discounted rates for 12 months after full release. The Complete tier ($5/mo) is 30% less than the future Professional tier ($7/mo).
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Hugging Face Models (Premium) */}
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Premium Hugging Face Models</h2>
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-12">
+          <div className="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900">Featured Premium Models</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Unlock these powerful AI models with a Premium subscription and transform your Claude experience.
+              </p>
+            </div>
+            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1.5 rounded">
+              Requires Paid Plan
+            </span>
+          </div>
+          
+          <div className="px-4 py-5 sm:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Model 1 - Image Generation */}
+              <div className="border rounded-lg overflow-hidden bg-gradient-to-br from-white to-green-50 hover:shadow-lg transition-all transform hover:-translate-y-1">
+                <div className="h-48 bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center relative">
+                  <img src="/api/placeholder/400/320" alt="Image Generation Example" className="h-full w-auto object-contain" />
+                  <div className="absolute top-0 right-0 bg-white/80 backdrop-blur-sm m-2 px-2 py-1 rounded-full">
+                    <div className="flex items-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                      <span className="text-xs font-medium">Live Demo</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Image Generation
+                    </span>
+                    <span className="text-xs text-gray-500">Premium</span>
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-1">Flux.1-dev-infer</h4>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Create stunning images from text descriptions. Perfect for visual content creation.
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <a href="https://huggingface.co/shuttle-ai/shuttle-3.1-aesthetic" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                      </svg>
+                      Model Details
+                    </a>
+                    <a href="https://huggingface.co/spaces/shuttle-ai/shuttle-3.1-aesthetic" className="text-xs text-green-600 hover:text-green-800 flex items-center" target="_blank" rel="noopener">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      </svg>
+                      Try Demo
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Model 2 - Audio/Music Generation */}
+              <div className="border rounded-lg overflow-hidden bg-gradient-to-br from-white to-blue-50 hover:shadow-lg transition-all transform hover:-translate-y-1">
+                <div className="h-48 bg-gradient-to-r from-blue-100 to-purple-100 flex items-center justify-center relative">
+                  <div className="flex flex-col items-center">
+                    <svg className="h-20 w-20 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                      d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                    <div className="mt-2 flex space-x-2">
+                      <span className="w-2 h-8 bg-blue-500 rounded-full animate-pulse"></span>
+                      <span className="w-2 h-4 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: "0.1s"}}></span>
+                      <span className="w-2 h-6 bg-blue-600 rounded-full animate-pulse" style={{animationDelay: "0.2s"}}></span>
+                      <span className="w-2 h-3 bg-blue-300 rounded-full animate-pulse" style={{animationDelay: "0.3s"}}></span>
+                      <span className="w-2 h-7 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: "0.4s"}}></span>
+                    </div>
+                  </div>
+                  <div className="absolute top-0 right-0 bg-white/80 backdrop-blur-sm m-2 px-2 py-1 rounded-full">
+                    <div className="flex items-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                      <span className="text-xs font-medium">Interactive</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      Music Generation
+                    </span>
+                    <span className="text-xs text-gray-500">Premium</span>
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-1">Meta MusicGen</h4>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Generate high-quality music from text descriptions or melodies. Create custom soundtracks for any project.
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <a href="https://huggingface.co/facebook/musicgen-large" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                      </svg>
+                      Model Details
+                    </a>
+                    <a href="https://huggingface.co/spaces/facebook/MusicGen" className="text-xs text-green-600 hover:text-green-800 flex items-center" target="_blank" rel="noopener">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      </svg>
+                      Try Demo
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Model 3 - Large World Model */}
+              <div className="border rounded-lg overflow-hidden bg-gradient-to-br from-white to-purple-50 hover:shadow-lg transition-all transform hover:-translate-y-1">
+                <div className="h-48 bg-gradient-to-r from-purple-100 to-indigo-100 flex items-center justify-center relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative w-32 h-32">
+                      <div className="absolute inset-0 bg-purple-200 rounded-lg transform rotate-45"></div>
+                      <div className="absolute inset-2 bg-purple-100 rounded-lg transform rotate-45 flex items-center justify-center">
+                        <svg className="h-16 w-16 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" 
+                          d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-indigo-200/70 to-transparent"></div>
+                  <div className="absolute top-0 right-0 bg-white/80 backdrop-blur-sm m-2 px-2 py-1 rounded-full">
+                    <div className="flex items-center">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full mr-1"></span>
+                      <span className="text-xs font-medium">Cutting Edge</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                      Virtual World
+                    </span>
+                    <span className="text-xs text-gray-500">Premium</span>
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-1">Large World Model</h4>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Generate interactive virtual worlds and game prototypes from simple descriptions. The future of AI game design.
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <a href="https://largeworldmodel.github.io/" className="text-xs text-blue-600 hover:text-blue-800 flex items-center" target="_blank" rel="noopener">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                      </svg>
+                      Project Page
+                    </a>
+                    <a href="https://github.com/LargeWorldModel/LWM" className="text-xs text-purple-600 hover:text-purple-800 flex items-center" target="_blank" rel="noopener">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 1.944A8.056 8.056 0 0 0 1.944 10a8.056 8.056 0 0 0 8.056 8.056A8.056 8.056 0 0 0 18.056 10 8.056 8.056 0 0 0 10 1.944ZM0 10a10 10 0 1 1 20 0 10 10 0 0 1-20 0Zm10-4.167A4.167 4.167 0 0 0 5.833 10c0 1.7 1.022 3.162 2.5 3.792v-2.684a1.25 1.25 0 0 1 1.334-1.25c.604 0 1.098.45 1.173 1.035h1.194A2.333 2.333 0 0 0 9.76 8.889a2.333 2.333 0 0 0-.258-.023v1.896a.417.417 0 0 1-.417.405c-.105 0-.201-.04-.274-.105a.399.399 0 0 1-.11-.3v-2.73c-1.464.648-2.5 2.117-2.5 3.83 0 2.3 1.866 4.168 4.167 4.168 2.3 0 4.166-1.867 4.166-4.167A4.167 4.167 0 0 0 10 5.833Z" clipRule="evenodd" />
+                      </svg>
+                      GitHub
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Upgrade to Access All Models
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Model Benefits Section */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-12">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">What You Can Create With Premium Models</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white p-5 rounded-lg shadow-sm">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Interactive Game Prototypes</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Use Large World Model to generate interactive virtual environments from simple text prompts. Rapidly prototype game concepts without coding.
+              </p>
+              <div className="text-xs text-gray-500">
+                Ideal for: Game developers, creative professionals, educators
+              </div>
+            </div>
+            
+            <div className="bg-white p-5 rounded-lg shadow-sm">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Custom Music and Soundtracks</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Generate original background music for videos, presentations, or games with Meta MusicGen. Create specific moods or follow melody patterns.
+              </p>
+              <div className="text-xs text-gray-500">
+                Ideal for: Content creators, filmmakers, marketers
+              </div>
+            </div>
+            
+            <div className="bg-white p-5 rounded-lg shadow-sm">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Professional Visual Content</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Generate high-quality images for presentations, marketing materials, or creative projects with fine-tuned control over style and content.
+              </p>
+              <div className="text-xs text-gray-500">
+                Ideal for: Designers, marketers, social media managers
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Your Configurations Section */}
+        <div className="bg-white shadow overflow-hidden rounded-lg mb-12">
+          <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
+            <h2 className="text-lg font-medium text-gray-900">Your Configurations</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Manage your saved MCP configurations and export them for use with Claude.
+            </p>
+          </div>
+          
+          <div className="px-4 py-5 sm:p-6">
+            <div className="text-center py-12">
+              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              </svg>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No configurations yet</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Get started by creating a new configuration.
+              </p>
+              <div className="mt-6">
+                <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <svg className="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Create New Configuration
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Coming Soon Features */}
+        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Coming in Full Release</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <svg className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <h3 className="ml-2 text-sm font-medium text-gray-900">Model Search</h3>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                Search for new models or updates to existing ones
+              </p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <svg className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <h3 className="ml-2 text-sm font-medium text-gray-900">Feedback System</h3>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                Share your interests to get personalized model recommendations
+              </p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <svg className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+                <h3 className="ml-2 text-sm font-medium text-gray-900">Usage Analytics</h3>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                Track your model usage and get performance insights
+              </p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <svg className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <h3 className="ml-2 text-sm font-medium text-gray-900">Team Features</h3>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                Share configurations and collaborate with your team
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Full Release Coming Soon</h3>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="bg-gray-50 p-3 rounded-md">
+                <h4 className="font-medium text-gray-900">Personal</h4>
+                <p className="text-lg font-bold mt-1">$3<span className="text-sm font-normal text-gray-500">/month</span></p>
+                <p className="text-xs text-gray-500 mt-1">or $29/year (20% savings)</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-md">
+                <h4 className="font-medium text-gray-900">Professional</h4>
+                <p className="text-lg font-bold mt-1">$7<span className="text-sm font-normal text-gray-500">/month</span></p>
+                <p className="text-xs text-gray-500 mt-1">or $67/year (20% savings)</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-md">
+                <h4 className="font-medium text-gray-900">Team</h4>
+                <p className="text-lg font-bold mt-1">$5<span className="text-sm font-normal text-gray-500">/user/month</span></p>
+                <p className="text-xs text-gray-500 mt-1">minimum 3 users</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-gray-600">
+              <strong>Beta users:</strong> Lock in your current pricing for 12 months after full release by subscribing during the beta period!
+            </p>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white mt-12">
+        <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+          <p className="text-center text-base text-gray-500">
+            &copy; 2025 CodeQual MCP Configuration Tool. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Dashboard;

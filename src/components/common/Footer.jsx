@@ -1,14 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../../styles/components/Footer.css';
-import CodeQualLogo from './CodeQualLogo';
+import './Footer.css';
 
-const Footer = ({
-  appName = 'MCP Config',
+const Footer = ({ 
+  appName = 'MCP Configuration Tool',
   platformLinks = [
     { to: '/features', label: 'Features' },
     { to: '/pricing', label: 'Pricing' },
-    { to: '/docs', label: 'Documentation' },
+    { to: '/documentation', label: 'Documentation' },
     { to: '/changelog', label: 'Changelog' }
   ],
   companyLinks = [
@@ -23,91 +21,57 @@ const Footer = ({
     { to: '/security', label: 'Security' }
   ],
   isAuthenticated = false,
-  className = '',
+  onSignOut = () => {}
 }) => {
-  const currentYear = new Date().getFullYear();
-  
   return (
-    <footer className={`footer light-footer ${className}`}>
+    <footer className="footer">
       <div className="container">
-        {/* Main Footer Grid */}
-        <div className="footer-grid">
-          {/* Column 1: Logo and description */}
-          <div className="footer-column logo-column">
-            <div className="footer-logo-container">
-              <Link to={isAuthenticated ? "/dashboard" : "/"}>
-                <div className="footer-logo-wrapper">
-                  <CodeQualLogo className="footer-logo-svg" style={{ width: '28px', height: '28px' }} />
-                </div>
-              </Link>
-              <div className="footer-brand">
-                <Link to={isAuthenticated ? "/dashboard" : "/"} className="footer-company-name">
-                  CodeQual
-                </Link>
-                {appName !== 'CodeQual' && (
-                  <div className="footer-app-name">{appName}</div>
-                )}
-              </div>
-            </div>
+        <div className="footer-content">
+          <div className="footer-branding">
+            <h3 className="footer-title">{appName}</h3>
             <p className="footer-description">
-              AI-powered tools to improve code quality and save development time.
+              Configure your AI assistant's capabilities with ease.
             </p>
           </div>
           
-          {/* Column 2: Platform Links */}
-          <div className="footer-column">
-            <h3 className="footer-heading">
-              PLATFORM
-            </h3>
-            <ul className="footer-links">
-              {platformLinks.map((link, index) => (
-                <li key={index}>
-                  <Link to={link.to} className="footer-link">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Column 3: Company Links */}
-          <div className="footer-column">
-            <h3 className="footer-heading">
-              COMPANY
-            </h3>
-            <ul className="footer-links">
-              {companyLinks.map((link, index) => (
-                <li key={index}>
-                  <Link to={link.to} className="footer-link">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Column 4: Legal Links */}
-          <div className="footer-column">
-            <h3 className="footer-heading">
-              LEGAL
-            </h3>
-            <ul className="footer-links">
-              {legalLinks.map((link, index) => (
-                <li key={index}>
-                  <Link to={link.to} className="footer-link">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="footer-links-container">
+            <div className="footer-link-group">
+              <h4 className="footer-heading">PLATFORM</h4>
+              <ul className="footer-links">
+                {platformLinks.map((link, index) => (
+                  <li key={`platform-${index}`}>
+                    <a href={link.to}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="footer-link-group">
+              <h4 className="footer-heading">COMPANY</h4>
+              <ul className="footer-links">
+                {companyLinks.map((link, index) => (
+                  <li key={`company-${index}`}>
+                    <a href={link.to}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="footer-link-group">
+              <h4 className="footer-heading">LEGAL</h4>
+              <ul className="footer-links">
+                {legalLinks.map((link, index) => (
+                  <li key={`legal-${index}`}>
+                    <a href={link.to}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
         
-        {/* Bottom section */}
         <div className="footer-bottom">
-          <p className="copyright">
-            &copy; {currentYear} CodeQual, Inc. All rights reserved.
-          </p>
+          <p className="copyright">© {new Date().getFullYear()} CodeQual, Inc. All rights reserved.</p>
         </div>
       </div>
     </footer>

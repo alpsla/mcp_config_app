@@ -1,0 +1,161 @@
+/* Shared Footer styles - Light theme with logo */
+.shared-footer {
+  background-color: #ffffff;
+  color: #111827;
+  padding: 3rem 0 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.shared-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.shared-footer-main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  gap: 2rem;
+}
+
+.shared-footer-branding {
+  flex: 1;
+  max-width: 280px;
+  margin-right: 1rem;
+}
+
+.shared-footer-branding-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.shared-footer-logo-img {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
+.shared-footer-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+}
+
+.shared-footer-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.shared-footer-sections {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 3;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.shared-footer-section {
+  flex: 1;
+  min-width: 140px;
+  padding-right: 1rem;
+}
+
+.shared-footer-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.shared-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shared-footer-links li {
+  margin-bottom: 0.75rem;
+}
+
+.shared-footer-links a {
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.shared-footer-links a:hover {
+  color: #111827;
+}
+
+.shared-footer-bottom {
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.shared-footer-copyright {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .shared-footer-main {
+    gap: 2rem;
+  }
+  
+  .shared-footer-branding {
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin-right: 0;
+  }
+  
+  .shared-footer-sections {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+  
+  .shared-footer-section {
+    flex: 1 1 auto;
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shared-footer-main {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .shared-footer-branding {
+    margin-bottom: 1rem;
+  }
+  
+  .shared-footer-sections {
+    gap: 2rem;
+  }
+  
+  .shared-footer-section {
+    flex: 1 1 calc(50% - 1rem);
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shared-footer-sections {
+    flex-direction: column;
+  }
+  
+  .shared-footer-section {
+    width: 100%;
+  }
+}
