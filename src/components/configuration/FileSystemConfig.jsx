@@ -53,20 +53,6 @@ const FileSystemConfig = ({ config = {}, updateConfig }) => {
     <div className="config-component">
       <h2 className="config-component-title">File System Access Configuration</h2>
       
-      {!isDesktop && (
-        <div className="config-desktop-only-warning">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <div className="config-desktop-warning-content">
-            <h3>Desktop Application Required</h3>
-            <p>File System Access is only available when using Claude Desktop application. The configuration can still be set up, but it will only work when exported to Claude Desktop.</p>
-          </div>
-        </div>
-      )}
-      
       <p className="config-component-description">
         Configure which directories on your computer Claude can access. Claude will only be able to read files from these directories.
       </p>

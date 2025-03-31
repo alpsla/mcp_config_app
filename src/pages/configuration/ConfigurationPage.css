@@ -211,33 +211,210 @@ input[type="checkbox"]:checked + .toggle-switch:after {
   margin: 0;
 }
 
+/* New requirement indicators that replace badges */
+.desktop-requirement,
+.subscription-requirement {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.desktop-requirement {
+  background-color: var(--neutral-light);
+  color: var(--text-light);
+}
+
+.subscription-requirement {
+  background-color: var(--neutral-light);
+  color: var(--text-light);
+}
+
+/* Hide the old badges completely */
 .desktop-only-badge, 
 .premium-badge {
+  display: none !important;
+}
+
+/* Subscription Button */
+.config-subscribe-prompt {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--secondary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.config-subscribe-prompt:hover {
+  background-color: var(--secondary-dark);
+}
+
+.config-tier-indicator {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Modal Styles */
+.config-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.config-modal {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.config-modal-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--neutral-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.config-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--neutral-dark);
+}
+
+.config-modal-body {
+  padding: var(--space-lg);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.config-modal-footer {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--neutral-light);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.config-modal-cancel {
+  padding: var(--space-sm) var(--space-lg);
+  background-color: var(--neutral-light);
+  color: var(--text);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.config-modal-cancel:hover {
+  background-color: var(--neutral-medium);
+}
+
+/* Subscription Tiers */
+.config-subscription-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.config-subscription-tier {
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.config-tier-recommended {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.config-tier-badge {
   position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  font-size: 0.7rem;
+  top: -10px;
+  right: 20px;
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 0.8rem;
   font-weight: 600;
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
 }
 
-.desktop-only-badge {
-  background-color: var(--warning);
+.config-subscription-tier h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
   color: var(--text);
 }
 
-.premium-badge {
-  background-color: var(--secondary);
-  color: var(--white);
+.config-tier-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-md);
 }
 
-.premium-badge-spaced {
-  margin-top: var(--space-sm);
-  margin-left: auto;
-  position: relative;
-  top: auto;
-  right: auto;
+.config-subscription-tier ul {
+  margin-bottom: var(--space-lg);
+  padding-left: var(--space-lg);
+}
+
+.config-subscription-tier li {
+  margin-bottom: var(--space-sm);
+  color: var(--text-light);
+}
+
+.config-subscribe-button {
+  margin-top: auto;
+  padding: var(--space-md);
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.config-subscribe-button:hover {
+  background-color: var(--primary-dark);
 }
 
 .config-actions {
@@ -412,12 +589,5 @@ input[type="checkbox"]:checked + .toggle-switch:after {
   .config-server-toggle {
     margin-right: 0;
     margin-bottom: var(--space-sm);
-  }
-  
-  .desktop-only-badge, 
-  .premium-badge {
-    position: static;
-    display: inline-block;
-    margin-top: var(--space-sm);
   }
 }

@@ -131,6 +131,27 @@ const WebSearchConfig: React.FC<WebSearchConfigProps> = ({
             )}
           </div>
 
+          <div className="platform-compatibility">
+            <h4>Platform Compatibility</h4>
+            <div className="platform-indicators">
+              <div className="platform-indicator">
+                <span className="platform-icon windows">🖥️</span>
+                <span className="platform-name">Windows</span>
+                <span className="compatibility-status">✓</span>
+              </div>
+              <div className="platform-indicator">
+                <span className="platform-icon macos">🖥️</span>
+                <span className="platform-name">macOS</span>
+                <span className="compatibility-status">✓</span>
+              </div>
+              <div className="platform-indicator">
+                <span className="platform-icon linux">🖥️</span>
+                <span className="platform-name">Linux</span>
+                <span className="compatibility-status">✓</span>
+              </div>
+            </div>
+          </div>
+
           <div className="feature-description">
             <h4>About Web Search</h4>
             <p>Web Search enables Claude to search the internet for up-to-date information.</p>

@@ -15,7 +15,6 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({
   const [isEnabled, setIsEnabled] = useState<boolean>(initialConfig.enabled);
   const [directory, setDirectory] = useState<string>(initialConfig.directory);
   const [showBrowser, setShowBrowser] = useState<boolean>(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isDesktop, setIsDesktop] = useState<boolean>(FileSystemService.isAvailable());
 
   const handleToggle = () => {
@@ -47,7 +46,7 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({
             <span>{isEnabled ? 'Enabled' : 'Disabled'}</span>
           </div>
         ) : (
-          <div className="desktop-badge">Desktop Only</div>
+          <div className="desktop-notice-indicator">Desktop Application Required</div>
         )}
       </div>
 
@@ -83,13 +82,25 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({
           )}
 
           {directory && (
-            <div className="compatibility-info">
-              <h4>Compatibility Information</h4>
-              <p>
-                {Platform.isWindows() && "Windows: ✓ Fully Compatible"}
-                {Platform.isMac() && "macOS: ✓ Fully Compatible"}
-                {Platform.isLinux() && "Linux: ✓ Fully Compatible"}
-              </p>
+            <div className="platform-compatibility">
+              <h4>Platform Compatibility</h4>
+              <div className="platform-indicators">
+                <div className="platform-indicator">
+                  <span className="platform-icon windows">🖥️</span>
+                  <span className="platform-name">Windows</span>
+                  <span className="compatibility-status">✓</span>
+                </div>
+                <div className="platform-indicator">
+                  <span className="platform-icon macos">🖥️</span>
+                  <span className="platform-name">macOS</span>
+                  <span className="compatibility-status">✓</span>
+                </div>
+                <div className="platform-indicator">
+                  <span className="platform-icon linux">🖥️</span>
+                  <span className="platform-name">Linux</span>
+                  <span className="compatibility-status">✓</span>
+                </div>
+              </div>
             </div>
           )}
 

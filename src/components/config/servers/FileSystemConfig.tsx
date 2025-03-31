@@ -123,8 +123,8 @@ export const FileSystemConfig: React.FC<FileSystemConfigProps> = ({
           </div>
 
           <div className="platform-compatibility">
-            <span className="platform-compatibility-icon">⚠️</span>
-            <span>File System access is only available in desktop environments.</span>
+            <span className="platform-compatibility-icon">ℹ️</span>
+            <span>File System access requires desktop environment</span>
           </div>
         </>
       )}

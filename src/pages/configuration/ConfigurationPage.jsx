@@ -8,14 +8,18 @@ import { useAuth } from '../../auth/AuthContext';
 import WebSearchConfig from '../../components/configuration/WebSearchConfig';
 import FileSystemConfig from '../../components/configuration/FileSystemConfig';
 import HuggingFaceConfig from '../../components/configuration/HuggingFaceConfig';
+import { UserConfigService } from '../../services/userConfigService';
 
 const ConfigurationPage = ({ history, onSaveConfiguration }) => {
   // Get authentication state from context
-  const { authState, signOut } = useAuth();
+  const { authState, signOut, getUserSubscriptionTier, updateSubscriptionTier } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   // Selected server state
   const [selectedServer, setSelectedServer] = useState(null);
+  
+  // Get current subscription tier
+  const subscriptionTier = getUserSubscriptionTier();
   
   // Server configurations state
   const [configurations, setConfigurations] = useState({
@@ -39,7 +43,9 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
   // Handle sign out
   const handleSignOut = async () => {
     try {
-      await signOut();
+      if (signOut) {
+        await signOut();
+      }
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -53,8 +59,21 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
     console.log('ConfigurationPage: Authentication state updated', { isAuthenticated: userIsAuthenticated });
   }, [authState]);
 
-  // Toggle server configuration
-  const toggleServerConfig = (serverType) => {
+  // Toggle server configuration - the critical function that handles toggle clicks
+  const toggleServerConfig = (serverType, event) => {
+    if (event) {
+      event.stopPropagation(); // Stop event propagation to prevent card click
+    }
+    
+    // Special handling for Hugging Face - check subscription
+    if (serverType === 'huggingFace' && !configurations.huggingFace.enabled && 
+        (subscriptionTier === 'none' || subscriptionTier === 'free')) {
+      // For non-subscribers, auto-upgrade for testing
+      handleSubscribeNow();
+      return;
+    }
+    
+    // Actually update the configuration state
     setConfigurations(prevConfig => ({
       ...prevConfig,
       [serverType]: {
@@ -69,6 +88,30 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
     } else if (selectedServer === serverType) {
       // If disabling the currently selected server, clear selection
       setSelectedServer(null);
+    }
+  };
+
+  // Handle subscription upgrade
+  const handleSubscribeNow = async () => {
+    try {
+      // For testing purposes, directly upgrade to basic tier
+      await updateSubscriptionTier('basic');
+      
+      // After upgrading, enable Hugging Face
+      setConfigurations(prevConfig => ({
+        ...prevConfig,
+        huggingFace: {
+          ...prevConfig.huggingFace,
+          enabled: true
+        }
+      }));
+      
+      // Also select Hugging Face
+      setSelectedServer('huggingFace');
+      
+      alert('Subscription upgraded to Basic tier. You can now use Hugging Face models.');
+    } catch (error) {
+      console.error('Error upgrading subscription:', error);
     }
   };
 
@@ -145,27 +188,42 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
   };
   
   // Save configuration and return to dashboard
-  const saveConfiguration = () => {
+  const saveConfiguration = async () => {
     // Generate the configuration JSON
     const configJSON = exportConfiguration();
     
-    // Call the parent component's save function if provided
-    if (onSaveConfiguration) {
-      onSaveConfiguration({
-        name: configName,
-        configuration: JSON.parse(configJSON)
-      });
-    }
-    
-    // Optionally navigate back to dashboard
-    if (history && history.push) {
-      history.push('/dashboard');
+    try {
+      if (authState.user?.id) {
+        await UserConfigService.saveConfiguration(
+          authState.user.id,
+          configName,
+          JSON.parse(configJSON)
+        );
+      }
+      
+      // Call the parent component's save function if provided
+      if (onSaveConfiguration) {
+        onSaveConfiguration({
+          name: configName,
+          configuration: JSON.parse(configJSON)
+        });
+      }
+      
+      // Navigate back to dashboard
+      if (history && history.push) {
+        history.push('/dashboard');
+      } else {
+        window.location.hash = '/dashboard';
+      }
+    } catch (error) {
+      console.error('Error saving configuration:', error);
+      alert('Failed to save configuration. Please try again.');
     }
   };
   
   // Helper functions to format args for each server type
   const formatWebSearchArgs = (config) => {
-    const args = ["--results-count", config.resultsCount || "3"];
+    const args = ["--results-count", String(config.resultsCount || "3")];
     
     if (config.safeSearch !== undefined) {
       args.push("--safe-search", config.safeSearch ? "true" : "false");
@@ -190,6 +248,10 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
     
     if (config.selectedModel) {
       args.push("--model", config.selectedModel);
+    }
+    
+    if (config.token) {
+      args.push("--token", config.token);
     }
     
     return args;
@@ -283,26 +345,22 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
               <div className="config-server-list">
                 <div 
                   className={`config-server-item ${configurations.webSearch.enabled ? 'enabled' : ''} ${selectedServer === 'webSearch' ? 'selected' : ''}`}
+                  onClick={() => setSelectedServer('webSearch')}
                 >
-                  <div 
-                    className="config-server-toggle"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent parent click
-                      toggleServerConfig('webSearch');
-                    }}
-                  >
+                  <div className="config-server-toggle">
                     <input 
                       type="checkbox" 
                       id="webSearch" 
                       checked={configurations.webSearch.enabled}
-                      onChange={() => toggleServerConfig('webSearch')}
+                      onChange={(e) => toggleServerConfig('webSearch', e)}
                     />
-                    <label htmlFor="webSearch" className="toggle-switch"></label>
+                    <label 
+                      htmlFor="webSearch" 
+                      className="toggle-switch"
+                      onClick={(e) => toggleServerConfig('webSearch', e)}
+                    ></label>
                   </div>
-                  <div 
-                    className="config-server-info"
-                    onClick={() => configurations.webSearch.enabled && setSelectedServer('webSearch')}
-                  >
+                  <div className="config-server-info">
                     <h3>Web Search</h3>
                     <p>Enable Claude to search the web for up-to-date information.</p>
                   </div>
@@ -310,26 +368,22 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
                 
                 <div 
                   className={`config-server-item ${configurations.fileSystem.enabled ? 'enabled' : ''} ${selectedServer === 'fileSystem' ? 'selected' : ''}`}
+                  onClick={() => setSelectedServer('fileSystem')}
                 >
-                  <div 
-                    className="config-server-toggle"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent parent click
-                      toggleServerConfig('fileSystem');
-                    }}
-                  >
+                  <div className="config-server-toggle">
                     <input 
                       type="checkbox" 
                       id="fileSystem" 
                       checked={configurations.fileSystem.enabled}
-                      onChange={() => toggleServerConfig('fileSystem')}
+                      onChange={(e) => toggleServerConfig('fileSystem', e)}
                     />
-                    <label htmlFor="fileSystem" className="toggle-switch"></label>
+                    <label 
+                      htmlFor="fileSystem" 
+                      className="toggle-switch"
+                      onClick={(e) => toggleServerConfig('fileSystem', e)}
+                    ></label>
                   </div>
-                  <div 
-                    className="config-server-info"
-                    onClick={() => configurations.fileSystem.enabled && setSelectedServer('fileSystem')}
-                  >
+                  <div className="config-server-info">
                     <h3>File System Access</h3>
                     <p>Allow Claude to access files on your computer.</p>
                   </div>
@@ -337,29 +391,29 @@ const ConfigurationPage = ({ history, onSaveConfiguration }) => {
                 
                 <div 
                   className={`config-server-item ${configurations.huggingFace.enabled ? 'enabled' : ''} ${selectedServer === 'huggingFace' ? 'selected' : ''}`}
+                  onClick={() => setSelectedServer('huggingFace')}
                 >
-                  <div 
-                    className="config-server-toggle"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent parent click
-                      toggleServerConfig('huggingFace');
-                    }}
-                  >
+                  <div className="config-server-toggle">
                     <input 
                       type="checkbox" 
                       id="huggingFace" 
                       checked={configurations.huggingFace.enabled}
-                      onChange={() => toggleServerConfig('huggingFace')}
+                      onChange={(e) => toggleServerConfig('huggingFace', e)}
                     />
-                    <label htmlFor="huggingFace" className="toggle-switch"></label>
+                    <label 
+                      htmlFor="huggingFace" 
+                      className="toggle-switch"
+                      onClick={(e) => toggleServerConfig('huggingFace', e)}
+                    ></label>
                   </div>
-                  <div 
-                    className="config-server-info"
-                    onClick={() => configurations.huggingFace.enabled && setSelectedServer('huggingFace')}
-                  >
+                  <div className="config-server-info">
                     <h3>Hugging Face Models</h3>
                     <p>Connect specialized AI models to extend Claude's capabilities.</p>
-                    <span className="premium-badge premium-badge-spaced">Premium</span>
+                    {(subscriptionTier === 'none' || subscriptionTier === 'free') && (
+                      <button className="subscription-button" onClick={handleSubscribeNow}>
+                        Subscribe Now
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

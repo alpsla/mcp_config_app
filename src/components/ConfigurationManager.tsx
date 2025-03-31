@@ -5,6 +5,7 @@ import HuggingFaceConfig from './HuggingFaceIntegration/HuggingFaceConfig';
 import { generateConfiguration, copyConfigurationToClipboard, downloadConfiguration } from '../services/configurationExport';
 import { FileSystemService } from '../services/fileSystemService';
 import { Platform } from '../utils/platform';
+import { useAuth } from '../auth/AuthContext';
 
 interface ConfigurationManagerProps {
   userLoggedIn: boolean;
@@ -30,6 +31,7 @@ interface ConfigurationState {
 }
 
 const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedIn }) => {
+  const { getUserSubscriptionTier } = useAuth();
   const [configuration, setConfiguration] = useState<ConfigurationState>({
     name: 'My Configuration'
   });
@@ -38,13 +40,17 @@ const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedI
   const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('filesystem');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userTier, setUserTier] = useState<'free' | 'standard' | 'premium'>('free');
   const [validationStatus, setValidationStatus] = useState<{
     isValid: boolean;
     message: string;
     details?: Record<string, any>;
   } | null>(null);
+  
+  // Get the user's subscription tier (none, basic, or complete)
+  const subscriptionTier = getUserSubscriptionTier();
+  
+  // Explicitly type the subscription tier for HuggingFaceConfig
+  const huggingFaceTier = subscriptionTier as 'none' | 'basic' | 'complete' | 'free' | 'standard' | 'premium';
   
   // Check if configuration has any servers enabled
   const hasEnabledServers = () => {
@@ -258,6 +264,11 @@ const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedI
     }));
   };
   
+  // Handle tab click with proper event handling
+  const handleTabClick = (tabName: string) => {
+    setActiveTab(tabName);
+  };
+  
   return (
     <div className="configuration-manager">
       <div className="manager-header">
@@ -276,21 +287,21 @@ const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedI
       <div className="integration-tabs">
         <div
           className={`tab ${activeTab === 'filesystem' ? 'active' : ''}`}
-          onClick={() => setActiveTab('filesystem')}
+          onClick={() => handleTabClick('filesystem')}
         >
           File System
           {configuration.filesystem?.enabled && <span className="enabled-indicator">✓</span>}
         </div>
         <div
           className={`tab ${activeTab === 'websearch' ? 'active' : ''}`}
-          onClick={() => setActiveTab('websearch')}
+          onClick={() => handleTabClick('websearch')}
         >
           Web Search
           {configuration.websearch?.enabled && <span className="enabled-indicator">✓</span>}
         </div>
         <div
           className={`tab ${activeTab === 'huggingface' ? 'active' : ''}`}
-          onClick={() => setActiveTab('huggingface')}
+          onClick={() => handleTabClick('huggingface')}
         >
           Hugging Face
           {configuration.huggingface?.enabled && <span className="enabled-indicator">✓</span>}
@@ -316,7 +327,7 @@ const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedI
           <HuggingFaceConfig 
             onConfigurationUpdate={handleHuggingFaceUpdate}
             initialConfig={configuration.huggingface}
-            userTier={userTier}
+            userTier={huggingFaceTier}
           />
         )}
       </div>
@@ -371,7 +382,7 @@ const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedI
         <h3>Getting Started</h3>
         <p>Enable the integrations you want to use with Claude:</p>
         <ul>
-          <li><strong>File System</strong>: Allows Claude to access files on your computer (Desktop only)</li>
+          <li><strong>File System</strong>: Allows Claude to access files on your computer</li>
           <li><strong>Web Search</strong>: Enables Claude to search the internet for up-to-date information</li>
           <li><strong>Hugging Face</strong>: Integrates models from Hugging Face with Claude</li>
         </ul>

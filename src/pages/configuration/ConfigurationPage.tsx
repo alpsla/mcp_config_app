@@ -32,11 +32,14 @@ interface ConfigurationsState {
 
 const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveConfiguration }) => {
   // Get authentication state from context
-  const { authState, signOut } = useAuth();
+  const { authState, signOut, getUserSubscriptionTier } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   
   // Selected server state
   const [selectedServer, setSelectedServer] = useState<string | null>(null);
+  
+  // Get current subscription tier
+  const subscriptionTier = getUserSubscriptionTier();
   
   // Server configurations state
   const [configurations, setConfigurations] = useState<ConfigurationsState>({
@@ -78,6 +81,14 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
 
   // Toggle server configuration
   const toggleServerConfig = (serverType: keyof ConfigurationsState) => {
+    // Special handling for Hugging Face - check subscription
+    if (serverType === 'huggingFace' && !configurations.huggingFace.enabled && 
+        (subscriptionTier === 'none' || subscriptionTier === 'free')) {
+      // Don't allow toggling for non-subscribers
+      alert('A subscription is required to use Hugging Face models.');
+      return;
+    }
+    
     setConfigurations(prevConfig => ({
       ...prevConfig,
       [serverType]: {
@@ -325,9 +336,12 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
               <div className="config-server-list">
                 <div 
                   className={`config-server-item ${configurations.webSearch.enabled ? 'enabled' : ''} ${selectedServer === 'webSearch' ? 'selected' : ''}`}
-                  onClick={() => toggleServerConfig('webSearch')}
+                  onClick={() => setSelectedServer('webSearch')}
                 >
-                  <div className="config-server-toggle">
+                  <div className="config-server-toggle" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleServerConfig('webSearch');
+                  }}>
                     <input 
                       type="checkbox" 
                       id="webSearch" 
@@ -344,9 +358,12 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
                 
                 <div 
                   className={`config-server-item ${configurations.fileSystem.enabled ? 'enabled' : ''} ${selectedServer === 'fileSystem' ? 'selected' : ''}`}
-                  onClick={() => toggleServerConfig('fileSystem')}
+                  onClick={() => setSelectedServer('fileSystem')}
                 >
-                  <div className="config-server-toggle">
+                  <div className="config-server-toggle" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleServerConfig('fileSystem');
+                  }}>
                     <input 
                       type="checkbox" 
                       id="fileSystem" 
@@ -358,15 +375,18 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
                   <div className="config-server-info">
                     <h3>File System Access</h3>
                     <p>Allow Claude to access files on your computer.</p>
-                    <span className="desktop-only-badge">Desktop Only</span>
+                    <p className="desktop-requirement">Requires desktop application</p>
                   </div>
                 </div>
                 
                 <div 
                   className={`config-server-item ${configurations.huggingFace.enabled ? 'enabled' : ''} ${selectedServer === 'huggingFace' ? 'selected' : ''}`}
-                  onClick={() => toggleServerConfig('huggingFace')}
+                  onClick={() => setSelectedServer('huggingFace')}
                 >
-                  <div className="config-server-toggle">
+                  <div className="config-server-toggle" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleServerConfig('huggingFace');
+                  }}>
                     <input 
                       type="checkbox" 
                       id="huggingFace" 
@@ -378,7 +398,9 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
                   <div className="config-server-info">
                     <h3>Hugging Face Models</h3>
                     <p>Connect specialized AI models to extend Claude's capabilities.</p>
-                    <span className="premium-badge">Premium</span>
+                    {(subscriptionTier === 'none' || subscriptionTier === 'free') && (
+                      <p className="subscription-requirement">Subscription required</p>
+                    )}
                   </div>
                 </div>
               </div>

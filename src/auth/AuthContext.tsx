@@ -303,25 +303,59 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       if (!authState.user) throw new Error('User not authenticated');
       
+      // Convert the tier to uppercase for storage in user metadata
       // In a real app, this would update the user's record in the database
-      console.log(`Updating subscription tier to: ${tier}`);
+      const tierValue = tier.toUpperCase();
+      console.log(`Updating subscription tier to: ${tierValue}`);
       
       // Update local state
       setAuthState(prev => ({
         ...prev,
         user: prev.user ? {
           ...prev.user,
-          subscriptionTier: tier as any
+          user_metadata: {
+            ...prev.user.user_metadata,
+            subscriptionTier: tierValue
+          }
         } : null
       }));
+      
+      // For testing purposes, let's just store in localStorage
+      localStorage.setItem('user_subscription_tier', tier);
     } catch (error) {
       console.error('Error updating subscription tier:', error);
     }
   };
   
-  // Get user's subscription tier (defaults to FREE if not set)
-  const getUserSubscriptionTier = () => {
-    return authState.user?.user_metadata?.subscriptionTier || 'FREE';
+  // Get user's subscription tier (defaults to 'none' if not set)
+  const getUserSubscriptionTier = (): string => {
+    // Check localStorage first (for testing)
+    const localTier = localStorage.getItem('user_subscription_tier');
+    if (localTier) {
+      return localTier;
+    }
+    
+    // Get from user metadata if available
+    const userTier = authState.user?.user_metadata?.subscriptionTier;
+    
+    // Map the enum values to the expected tier values
+    if (!userTier) return 'none';
+    
+    // Convert to lowercase for consistent comparison
+    const tier = String(userTier).toUpperCase();
+    
+    switch (tier) {
+      case 'FREE':
+        return 'none';
+      case 'BASIC':
+      case 'STARTER':
+      case 'STANDARD':
+        return 'basic';
+      case 'COMPLETE':
+        return 'complete';
+      default:
+        return 'none';
+    }
   };
 
   // Original signIn function kept for compatibility
@@ -356,6 +390,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
+      // Clear local storage items
+      localStorage.removeItem('user_subscription_tier');
+      
       setAuthState({
         user: null,
         session: null,
