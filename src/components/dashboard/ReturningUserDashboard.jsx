@@ -316,7 +316,10 @@ const ReturningUserDashboard = () => {
           <section className="configurations-section">
             <div className="section-header">
               <h2 className="section-title">Your Configurations</h2>
-              <button className="create-config-button">
+              <button 
+                className="create-config-button"
+                onClick={() => window.location.href = '#/configure'}
+              >
                 + New Configuration
               </button>
             </div>
@@ -365,7 +368,21 @@ const ReturningUserDashboard = () => {
               <p className="upgrade-description">
                 You're currently on the {user.tier} tier. Upgrade to unlock all 10 models and advanced features.
               </p>
-              <button className="upgrade-button">
+              <button 
+                className="upgrade-button"
+                onClick={() => {
+                  // In a real app, this would open a subscription management page
+                  const confirmUpgrade = window.confirm(`Upgrade to Complete plan for $5/month?`);
+                  if (confirmUpgrade) {
+                    // Mock subscription update
+                    setTimeout(() => {
+                      alert('Your subscription has been upgraded to Complete! Now you can access all models.');
+                      // Navigate to configuration page
+                      window.location.href = '#/configure';
+                    }, 500);
+                  }
+                }}
+              >
                 View Upgrade Options
               </button>
             </section>

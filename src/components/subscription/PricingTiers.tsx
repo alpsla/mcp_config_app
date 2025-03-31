@@ -4,8 +4,9 @@ import { useAuth } from '../../auth/AuthContext';
 import './PricingTiers.css';
 
 export const PricingTiers: React.FC = () => {
-  const { authState, updateSubscriptionTier } = useAuth();
+  const { authState, updateSubscriptionTier, getUserSubscriptionTier } = useAuth();
   const user = authState.user;
+  const userSubscriptionTier = getUserSubscriptionTier() as string;
   
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
@@ -76,10 +77,10 @@ export const PricingTiers: React.FC = () => {
         {subscriptionPlans.map((plan) => (
           <div 
             key={plan.id}
-            className={`pricing-tier ${selectedPlan === plan.id ? 'selected' : ''} ${user.subscriptionTier === plan.tier ? 'current' : ''}`}
+            className={`pricing-tier ${selectedPlan === plan.id ? 'selected' : ''} ${userSubscriptionTier === plan.tier ? 'current' : ''}`}
             onClick={() => handlePlanSelect(plan.id)}
           >
-            {user.subscriptionTier === plan.tier && (
+            {userSubscriptionTier === plan.tier && (
               <div className="current-plan-badge">Current Plan</div>
             )}
             <div className="tier-header">
@@ -104,15 +105,15 @@ export const PricingTiers: React.FC = () => {
             </ul>
             <button 
               className="btn btn-outline tier-select-btn"
-              disabled={user.subscriptionTier === plan.tier || processing}
+              disabled={userSubscriptionTier === plan.tier || processing}
             >
-              {user.subscriptionTier === plan.tier ? 'Current Plan' : 'Select Plan'}
+              {userSubscriptionTier === plan.tier ? 'Current Plan' : 'Select Plan'}
             </button>
           </div>
         ))}
       </div>
 
-      {selectedPlan && selectedPlan !== user.subscriptionTier && (
+      {selectedPlan && selectedPlan !== userSubscriptionTier && (
         <div className="pricing-action">
           <button 
             className="btn btn-primary"

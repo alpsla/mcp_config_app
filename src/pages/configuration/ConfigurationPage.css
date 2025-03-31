@@ -1,0 +1,593 @@
+/* MCP Configuration Tool Styles */
+:root {
+  /* Color Variables - Using the same palette as homepage.css */
+  --primary: #3A86FF;
+  --primary-dark: #2563EB;
+  --secondary: #8338EC;
+  --secondary-dark: #6D28D9;
+  --neutral-bg: #F8F9FA;
+  --neutral-lightest: #F9FAFB;
+  --neutral-light: #E9ECEF;
+  --neutral-medium: #CED4DA;
+  --neutral-dark: #6C757D;
+  --text: #212529;
+  --text-light: #495057;
+  --success: #38B000;
+  --warning: #FFBE0B;
+  --white: #FFFFFF;
+  
+  /* Spacing Variables */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  /* Shadow */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Configuration Layout */
+.config-main {
+  background-color: var(--neutral-bg);
+  min-height: calc(100vh - 140px); /* Adjust based on header/footer height */
+  padding: var(--space-xxl) 0;
+}
+
+.config-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.config-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.config-description {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  max-width: 800px;
+  margin-bottom: var(--space-xl);
+}
+
+.config-name-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.config-name-input label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.config-name-input input {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--neutral-medium);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  min-width: 250px;
+}
+
+/* Two-Panel Layout */
+.config-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+/* Left Panel: Server Selection */
+.config-left-panel {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  height: fit-content;
+}
+
+.config-panel-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+  color: var(--text);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--neutral-light);
+}
+
+.config-server-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.config-server-item {
+  display: flex;
+  background-color: var(--neutral-lightest);
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.config-server-item:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.config-server-item.enabled {
+  border-color: var(--primary);
+  background-color: rgba(58, 134, 255, 0.05);
+}
+
+.config-server-item.selected {
+  border-color: var(--primary);
+  border-width: 2px;
+  box-shadow: var(--shadow-md);
+}
+
+.config-server-toggle {
+  margin-right: var(--space-md);
+  display: flex;
+  align-items: center;
+}
+
+.config-server-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: var(--neutral-medium);
+  border-radius: 10px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.toggle-switch:after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s;
+}
+
+input[type="checkbox"]:checked + .toggle-switch {
+  background-color: var(--primary);
+}
+
+input[type="checkbox"]:checked + .toggle-switch:after {
+  left: 18px;
+}
+
+.config-server-info {
+  flex: 1;
+}
+
+.config-server-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-xs) 0;
+  color: var(--text);
+}
+
+.config-server-info p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* New requirement indicators that replace badges */
+.desktop-requirement,
+.subscription-requirement {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.desktop-requirement {
+  background-color: var(--neutral-light);
+  color: var(--text-light);
+}
+
+.subscription-requirement {
+  background-color: var(--neutral-light);
+  color: var(--text-light);
+}
+
+/* Hide the old badges completely */
+.desktop-only-badge, 
+.premium-badge {
+  display: none !important;
+}
+
+/* Subscription Button */
+.config-subscribe-prompt {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--secondary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.config-subscribe-prompt:hover {
+  background-color: var(--secondary-dark);
+}
+
+.config-tier-indicator {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--primary);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Modal Styles */
+.config-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.config-modal {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.config-modal-header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--neutral-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.config-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--neutral-dark);
+}
+
+.config-modal-body {
+  padding: var(--space-lg);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.config-modal-footer {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--neutral-light);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.config-modal-cancel {
+  padding: var(--space-sm) var(--space-lg);
+  background-color: var(--neutral-light);
+  color: var(--text);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.config-modal-cancel:hover {
+  background-color: var(--neutral-medium);
+}
+
+/* Subscription Tiers */
+.config-subscription-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.config-subscription-tier {
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.config-tier-recommended {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.config-tier-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.config-subscription-tier h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: var(--text);
+}
+
+.config-tier-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-md);
+}
+
+.config-subscription-tier ul {
+  margin-bottom: var(--space-lg);
+  padding-left: var(--space-lg);
+}
+
+.config-subscription-tier li {
+  margin-bottom: var(--space-sm);
+  color: var(--text-light);
+}
+
+.config-subscribe-button {
+  margin-top: auto;
+  padding: var(--space-md);
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.config-subscribe-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.config-actions {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-primary:disabled {
+  background-color: var(--neutral-medium);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--white);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(58, 134, 255, 0.05);
+}
+
+.btn-secondary:disabled {
+  color: var(--neutral-medium);
+  border-color: var(--neutral-medium);
+  cursor: not-allowed;
+}
+
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--neutral-medium);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-tertiary:hover {
+  background-color: var(--neutral-light);
+}
+
+.btn-export,
+.btn-save,
+.btn-cancel {
+  width: 100%;
+}
+
+/* Right Panel: Configuration Options */
+.config-right-panel {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  min-height: 400px;
+}
+
+/* Empty State */
+.config-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--text-light);
+}
+
+.config-empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-lg);
+  color: var(--neutral-medium);
+}
+
+.config-empty-state h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+  color: var(--text);
+}
+
+.config-empty-state p {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .config-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  .config-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .config-left-panel {
+    order: 2;
+  }
+  
+  .config-right-panel {
+    order: 1;
+    min-height: 300px;
+  }
+  
+  .config-server-item {
+    margin-bottom: var(--space-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .config-title {
+    font-size: 1.75rem;
+  }
+  
+  .config-description {
+    font-size: 1rem;
+  }
+  
+  .config-name-input {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .config-name-input input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .config-container {
+    width: 95%;
+    padding: 0 var(--space-md);
+  }
+  
+  .config-server-item {
+    flex-direction: column;
+  }
+  
+  .config-server-toggle {
+    margin-right: 0;
+    margin-bottom: var(--space-sm);
+  }
+}

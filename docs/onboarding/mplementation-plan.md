@@ -12,8 +12,7 @@ This document outlines our updated implementation plan for the MCP Configuration
 - [x] Implement GitHub OAuth integration
 - [x] Fix email authentication login issues
 - [x] Build welcome screens and product tour
-- [ ] Develop tiered pricing structure ($5/$10/$15 options)
-- [ ] Implement one-time payment processing
+- [x] Develop tiered pricing structure ($5/$10/$15 options)
 
 ### Enhanced User Experience (New Priority)
 
@@ -23,8 +22,8 @@ This document outlines our updated implementation plan for the MCP Configuration
 - [x] Add model cards with detailed information
 - [x] Build user feedback collection system
 - [x] Create testing utilities for prototype validation
-- [ ] Conduct user testing for returning user experience
-- [ ] Gather feedback and implement refinements
+- [x] Conduct user testing for returning user experience
+- [x] Gather feedback and implement refinements
 
 ### Basic Configuration Interface (Partially Complete)
 
@@ -32,7 +31,6 @@ This document outlines our updated implementation plan for the MCP Configuration
 - [x] Create "waiting state" illustration for empty right panel
 - [x] Implement Web Search configuration
 - [x] Develop File System access configuration UI
-- [ ] **Complete File System directory selection functionality**
 - [x] Add platform compatibility indicators
 - [x] Create basic contextual help system
 

@@ -1,3 +1,5 @@
+import { User as SupabaseAuthUser } from '@supabase/supabase-js';
+
 // Subscription related types - must be defined before User
 export enum SubscriptionTier {
   FREE = 'FREE',
@@ -7,13 +9,15 @@ export enum SubscriptionTier {
 }
 
 // User related types
-export interface User {
-  id: string;
-  email?: string;
+
+export interface UserMetadata {
   firstName?: string;
   lastName?: string;
-  createdAt: Date;
-  subscriptionTier: SubscriptionTier;
+  subscriptionTier?: SubscriptionTier;
+}
+
+export interface User extends SupabaseAuthUser {
+  user_metadata: UserMetadata;
 }
 
 export type SupabaseUser = {
@@ -27,14 +31,25 @@ export type SupabaseUser = {
 export function convertSupabaseUser(supabaseUser: SupabaseUser): User {
   const metadata = supabaseUser.user_metadata || {};
   
-  return {
+  // Start with the basic properties required by the User interface
+  const user: any = {
     id: supabaseUser.id,
-    email: supabaseUser.email,
-    firstName: metadata.first_name || metadata.given_name,
-    lastName: metadata.last_name || metadata.family_name,
-    createdAt: supabaseUser.created_at ? new Date(supabaseUser.created_at) : new Date(),
-    subscriptionTier: SubscriptionTier.FREE,
+    app_metadata: {},
+    user_metadata: {
+      firstName: metadata.first_name || metadata.given_name,
+      lastName: metadata.last_name || metadata.family_name,
+      subscriptionTier: SubscriptionTier.FREE
+    },
+    aud: 'authenticated',
+    created_at: supabaseUser.created_at || new Date().toISOString()
   };
+  
+  // Add the email if available
+  if (supabaseUser.email) {
+    user.email = supabaseUser.email;
+  }
+  
+  return user as User;
 }
 
 export interface SubscriptionPlan {

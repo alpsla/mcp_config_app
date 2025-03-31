@@ -110,14 +110,20 @@ export async function getCurrentUser(): Promise<User | null> {
             .single();
             
           // Return user with the new profile data
-          return {
-            id: userData.user.id,
-            email: userData.user.email || '',
+          const user: any = {
+          id: userData.user.id,
+          email: userData.user.email || '',
+          app_metadata: {},
+          user_metadata: {
             firstName: newProfileData?.first_name || firstName,
             lastName: newProfileData?.last_name || lastName,
-            createdAt: new Date(userData.user.created_at || new Date()),
-            subscriptionTier: newProfileData?.subscription_tier || SubscriptionTier.FREE
-          };
+              subscriptionTier: newProfileData?.subscription_tier || SubscriptionTier.FREE
+        },
+        aud: 'authenticated',
+        created_at: userData.user.created_at || new Date().toISOString()
+      };
+      
+      return user as User;
         } else {
           console.error('Failed to create profile in getCurrentUser:', profileResult.error);
         }
@@ -127,14 +133,20 @@ export async function getCurrentUser(): Promise<User | null> {
     }
     
     // Return user with merged profile data
-    return {
+    const user: any = {
       id: userData.user.id,
       email: userData.user.email || '',
-      firstName: profileData?.first_name,
-      lastName: profileData?.last_name,
-      createdAt: new Date(userData.user.created_at || new Date()),
-      subscriptionTier: profileData?.subscription_tier || SubscriptionTier.FREE
+      app_metadata: {},
+      user_metadata: {
+        firstName: profileData?.first_name,
+        lastName: profileData?.last_name,
+        subscriptionTier: profileData?.subscription_tier || SubscriptionTier.FREE
+      },
+      aud: 'authenticated',
+      created_at: userData.user.created_at || new Date().toISOString()
     };
+    
+    return user as User;
   } catch (error) {
     console.error('Get current user error:', error);
     return null;
@@ -179,14 +191,20 @@ const authService = {
     
     const metadata = supabaseUser.user_metadata || {};
     
-    return {
+    const user: any = {
       id: supabaseUser.id || '',
       email: supabaseUser.email || '',
-      firstName: metadata.first_name || metadata.given_name,
-      lastName: metadata.last_name || metadata.family_name,
-      createdAt: new Date(supabaseUser.created_at || new Date()),
-      subscriptionTier: SubscriptionTier.FREE
+      app_metadata: {},
+      user_metadata: {
+        firstName: metadata.first_name || metadata.given_name,
+        lastName: metadata.last_name || metadata.family_name,
+        subscriptionTier: SubscriptionTier.FREE
+      },
+      aud: 'authenticated',
+      created_at: supabaseUser.created_at || new Date().toISOString(),
     };
+    
+    return user as User;
   },
   
   /**
@@ -235,14 +253,20 @@ const authService = {
               .single();
               
             // Return user with the new profile data
-            return {
+            const user: any = {
               id: authUser.id,
               email: email,
-              firstName: newProfileData?.first_name || firstName,
-              lastName: newProfileData?.last_name || lastName,
-              createdAt: new Date(authUser.created_at || new Date()),
-              subscriptionTier: newProfileData?.subscription_tier || SubscriptionTier.FREE
+              app_metadata: {},
+              user_metadata: {
+                firstName: newProfileData?.first_name || firstName,
+                lastName: newProfileData?.last_name || lastName,
+                subscriptionTier: newProfileData?.subscription_tier || SubscriptionTier.FREE
+              },
+              aud: 'authenticated',
+              created_at: authUser.created_at || new Date().toISOString()
             };
+            
+            return user as User;
           } else {
             console.error('Failed to create profile in getUserProfile:', profileResult.error);
           }
@@ -252,14 +276,20 @@ const authService = {
       }
       
       // Return merged user data (auth + profile)
-      return {
+      const user: any = {
         id: authUser.id,
         email: authUser.email || '',
-        firstName: profileData?.first_name,
-        lastName: profileData?.last_name,
-        createdAt: new Date(authUser.created_at || new Date()),
-        subscriptionTier: profileData?.subscription_tier || SubscriptionTier.FREE
+        app_metadata: {},
+        user_metadata: {
+          firstName: profileData?.first_name,
+          lastName: profileData?.last_name,
+          subscriptionTier: profileData?.subscription_tier || SubscriptionTier.FREE
+        },
+        aud: 'authenticated',
+        created_at: authUser.created_at || new Date().toISOString()
       };
+      
+      return user as User;
     } catch (error) {
       console.error('Error getting user profile:', error);
       return this.mapSupabaseUser(authUser);
@@ -596,9 +626,13 @@ const authService = {
         user: {
           id: userData.user.id,
           email: userData.user.email || '',
-          createdAt: new Date(userData.user.created_at || new Date()),
-          subscriptionTier: profileData?.subscription_tier || SubscriptionTier.FREE
-        }
+          app_metadata: {},
+          user_metadata: {
+            subscriptionTier: profileData?.subscription_tier || SubscriptionTier.FREE
+          },
+          aud: 'authenticated',
+          created_at: userData.user.created_at || new Date().toISOString()
+        } as User
       };
     } catch (error: any) {
       console.error('Update subscription error:', error);
@@ -611,6 +645,7 @@ const authService = {
  * Send a magic link for passwordless login
  */
 export async function sendMagicLink(email: string) {
+  console.log('sendMagicLink called with email:', email);
   checkSupabaseConfig();
   
   try {
@@ -620,7 +655,7 @@ export async function sendMagicLink(email: string) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/auth/callback#/dashboard`,
         shouldCreateUser: true,  // Always create a new user account if it doesn't exist
         ...(emailTemplate && { emailTemplate })
       }
@@ -765,15 +800,19 @@ export async function signUpWithEmail(email: string, password: string, firstName
     }
     
     return {
-      success: true,
-      user: data.user ? {
-        id: data.user.id,
-        email,
-        firstName: firstName || undefined,
-        lastName: lastName || undefined,
-        createdAt: new Date(),
+    success: true,
+    user: data.user ? {
+    id: data.user.id,
+    email,
+    app_metadata: {},
+    user_metadata: {
+      firstName: firstName,
+      lastName: lastName,
         subscriptionTier: SubscriptionTier.FREE
-      } : null,
+          },
+          aud: 'authenticated',
+          created_at: data.user.created_at || new Date().toISOString()
+        } as User : null,
       session: data.session,
       requiresEmailConfirmation: true,
       message: 'Please check your email to confirm your account before logging in.'

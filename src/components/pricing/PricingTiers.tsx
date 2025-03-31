@@ -9,17 +9,17 @@ interface PricingTiersProps {
 }
 
 const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectTier }) => {
-  const { authState } = useAuth();
+  const { getUserSubscriptionTier } = useAuth();
   
   // Get all tiers from the subscription plans
   const tiers = subscriptionPlans.map(plan => plan.tier);
 
   const isCurrentTier = (tier: SubscriptionTier): boolean => {
-    return authState.user?.subscriptionTier === tier;
+    return getUserSubscriptionTier() === tier;
   };
 
   const isUpgradeTier = (tier: SubscriptionTier): boolean => {
-    if (!authState.user) return false;
+    const currentTier = getUserSubscriptionTier() as SubscriptionTier;
     
     const tierValues = {
       [SubscriptionTier.FREE]: 0,
@@ -28,7 +28,7 @@ const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectTier }) => {
       [SubscriptionTier.COMPLETE]: 3
     };
     
-    return tierValues[tier] > tierValues[authState.user.subscriptionTier];
+    return tierValues[tier] > tierValues[currentTier];
   };
 
   const getTierTitle = (tier: SubscriptionTier): string => {

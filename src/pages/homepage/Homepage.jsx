@@ -139,11 +139,15 @@ const Homepage = () => {
                 </p>
                 <div className="hero-cta">
                   {isAuthenticated ? (
-                    <a href="/dashboard" className="btn btn-primary btn-large">Go to Dashboard</a>
+                    <a href="#/dashboard" className="btn btn-primary btn-large">Go to Dashboard</a>
                   ) : (
-                    <a href="/login" className="btn btn-primary btn-large">Get Started Free</a>
+                    <a href="#/signin" className="btn btn-primary btn-large" onClick={(e) => {
+                      e.preventDefault();
+                      console.log('Get Started button clicked');
+                      window.location.hash = '/signin';
+                    }}>Get Started Free</a>
                   )}
-                  <a href="/demo" className="btn btn-secondary btn-large">View Demo</a>
+                  <a href="#/demo" className="btn btn-secondary btn-large">View Demo</a>
                 </div>
                 <div className="trust-indicator">
                   <span>Free Starter Plan</span>
@@ -322,9 +326,13 @@ const Homepage = () => {
             <p>Join thousands of users who are getting more value from Claude AI with our configuration tool.</p>
             <div className="cta-buttons">
               {isAuthenticated ? (
-                <a href="/dashboard" className="btn btn-primary btn-large">Go to Dashboard</a>
+                <a href="#/dashboard" className="btn btn-primary btn-large">Go to Dashboard</a>
               ) : (
-                <a href="/login" className="btn btn-primary btn-large">Get Started Free</a>
+                <a href="#/signin" className="btn btn-primary btn-large" onClick={(e) => {
+                  e.preventDefault();
+                  console.log('CTA Sign In button clicked');
+                  window.location.hash = '/signin';
+                }}>Get Started Free</a>
               )}
               <a href="/pricing" className="btn btn-secondary btn-large">View Pricing</a>
             </div>

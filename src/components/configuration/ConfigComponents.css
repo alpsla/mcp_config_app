@@ -1,0 +1,624 @@
+/* Configuration Components Shared Styles */
+
+/* Component Container */
+.config-component {
+  width: 100%;
+}
+
+.config-component-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #212529;
+}
+
+.config-component-description {
+  font-size: 1rem;
+  color: #495057;
+  margin-bottom: 2rem;
+  max-width: 700px;
+}
+
+/* Form Elements */
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.config-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.config-form-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #212529;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-value-display {
+  font-size: 0.9rem;
+  color: #3A86FF;
+  font-weight: 600;
+  background-color: rgba(58, 134, 255, 0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.config-form-input,
+.config-form-select {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #CED4DA;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #212529;
+  background-color: #F9FAFB;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.config-form-input:focus,
+.config-form-select:focus {
+  border-color: #3A86FF;
+  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+  outline: none;
+}
+
+.config-form-helper {
+  font-size: 0.85rem;
+  color: #495057;
+  margin-top: 0.25rem;
+}
+
+/* Toggle Groups */
+.config-toggle-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.config-toggle-label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.config-toggle-container {
+  position: relative;
+}
+
+/* Toggle Switch */
+.config-toggle-container input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: #CED4DA;
+  border-radius: 10px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.toggle-switch:after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s;
+}
+
+input[type="checkbox"]:checked + .toggle-switch {
+  background-color: #3A86FF;
+}
+
+input[type="checkbox"]:checked + .toggle-switch:after {
+  left: 18px;
+}
+
+/* Sliders */
+.config-slider-container {
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.config-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #CED4DA;
+  outline: none;
+}
+
+.config-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3A86FF;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.config-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3A86FF;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: none;
+}
+
+.config-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.config-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.config-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #6C757D;
+}
+
+/* Advanced Options */
+.config-advanced-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #3A86FF;
+  cursor: pointer;
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.config-advanced-toggle:hover {
+  background-color: #E9ECEF;
+}
+
+.config-advanced-options {
+  border-left: 2px solid #3A86FF;
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Coming Soon Features */
+.config-coming-soon {
+  opacity: 0.7;
+  position: relative;
+}
+
+.config-coming-soon-badge {
+  display: inline-block;
+  background-color: #8338EC;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+/* Directory Input and Browser */
+.config-directory-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-directory-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.config-directory-browse-btn {
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #F8F9FA;
+  border: 1px solid #CED4DA;
+  color: #212529;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.config-directory-browse-btn:hover {
+  background-color: #E9ECEF;
+}
+
+.config-directory-add-btn {
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #3A86FF;
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.config-directory-add-btn:hover {
+  background-color: #2563EB;
+}
+
+.config-directory-add-btn:disabled {
+  background-color: #CED4DA;
+  cursor: not-allowed;
+}
+
+/* Selected Directories List */
+.config-selected-directories {
+  margin-top: 1.5rem;
+}
+
+.config-selected-directory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.config-selected-directory-path {
+  font-size: 0.9rem;
+  color: #212529;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.config-remove-directory {
+  background: none;
+  border: none;
+  color: #6C757D;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.config-remove-directory:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #DC3545;
+}
+
+/* Security Notice */
+.config-security-notice {
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.config-security-icon {
+  color: #3A86FF;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.config-security-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #212529;
+}
+
+.config-security-content p {
+  font-size: 0.85rem;
+  color: #495057;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Desktop Warning */
+.config-desktop-only-warning {
+  background-color: rgba(255, 190, 11, 0.1);
+  border-left: 3px solid #FFBE0B;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  border-radius: 8px;
+}
+
+.config-desktop-warning-content h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #212529;
+}
+
+.config-desktop-warning-content p {
+  font-size: 0.85rem;
+  color: #495057;
+  margin: 0;
+}
+
+/* Hugging Face Token Input */
+.config-token-input-container {
+  position: relative;
+}
+
+.config-token-input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.config-token-visibility-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6C757D;
+}
+
+.config-token-security-note {
+  background-color: rgba(255, 190, 11, 0.1);
+  border-left: 3px solid #FFBE0B;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #212529;
+}
+
+/* Token Status */
+.config-token-status {
+  margin-top: 0.5rem;
+}
+
+.config-token-valid,
+.config-token-invalid {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.config-token-valid {
+  color: #38B000;
+  background-color: rgba(56, 176, 0, 0.1);
+}
+
+.config-token-invalid {
+  color: #DC3545;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Model Grid */
+.config-model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.config-model-card {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #E9ECEF;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.config-model-card:hover {
+  border-color: #3A86FF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.config-model-card.selected {
+  border-color: #3A86FF;
+  border-width: 2px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.config-model-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.config-model-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  background-color: #E9ECEF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.config-model-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #212529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.config-model-description {
+  font-size: 0.8rem;
+  color: #6C757D;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.4em;
+}
+
+.config-model-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: #6C757D;
+}
+
+.config-model-tier-badge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.config-model-tier-starter {
+  background-color: #38B000;
+  color: white;
+}
+
+.config-model-tier-standard {
+  background-color: #3A86FF;
+  color: white;
+}
+
+.config-model-tier-complete {
+  background-color: #8338EC;
+  color: white;
+}
+
+/* Platform Compatibility */
+.config-platform-compatibility {
+  margin-top: 2rem;
+  background-color: #F9FAFB;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.config-platform-compatibility h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #212529;
+}
+
+.config-platform-icons {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.config-platform-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #6C757D;
+  opacity: 0.7;
+}
+
+.config-platform-icon.compatible {
+  color: #38B000;
+  opacity: 1;
+}
+
+.config-platform-note {
+  font-size: 0.85rem;
+  color: #6C757D;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Status Indicators */
+.config-component-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #E9ECEF;
+}
+
+.config-status {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #6C757D;
+}
+
+.config-status-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.config-status-success {
+  background-color: #38B000;
+}
+
+.config-status-warning {
+  background-color: #FFBE0B;
+}
+
+.config-status-error {
+  background-color: #DC3545;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .config-model-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .config-form-label {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .config-value-display {
+    margin-top: 0.25rem;
+  }
+  
+  .config-toggle-label-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .config-toggle-container {
+    margin-top: 0.25rem;
+  }
+  
+  .config-security-notice {
+    flex-direction: column;
+  }
+}

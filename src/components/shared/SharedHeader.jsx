@@ -16,22 +16,27 @@ const SharedHeader = ({
 }) => {
 
   // Force a complete sign-out and page reload
-  const handleSignOut = () => {
+  const handleSignOut = (e) => {
+    e.preventDefault();
+    console.log('Sign Out clicked');
+    
     // Clear any tokens from storage (this is the key part)
     localStorage.clear();
     sessionStorage.clear();
     
-    // Force a page reload to the home page
-    window.location.href = '/';
+    // Use hash-based navigation
+    window.location.hash = '/';
     
-    // Return false to prevent default form submission
-    return false;
+    // If onSignOut was provided, call it
+    if (onSignOut) {
+      onSignOut();
+    }
   };
 
   return (
     <header className="shared-header">
       <div className="shared-header-container">
-        <a href={isAuthenticated ? '/dashboard' : '/'} className="shared-header-logo">
+        <a href="#/" className="shared-header-logo">
           <CodeQualLogo className="shared-header-logo-img" />
           <div className="shared-header-branding">
             <h1 className="shared-header-app-name">CodeQual</h1>
@@ -42,17 +47,17 @@ const SharedHeader = ({
         <nav className="shared-header-nav">
           <ul className="shared-header-nav-list">
             {isAuthenticated ? 
-              // Authenticated user sees Dashboard first
-              navLinks.filter(link => link.to !== '/').map((link, index) => (
+              // Authenticated user sees all links including Home
+              navLinks.map((link, index) => (
                 <li key={index} className="shared-header-nav-item">
-                  <a href={link.to} className="shared-header-nav-link">{link.label}</a>
+                  <a href={`#${link.to}`} className="shared-header-nav-link">{link.label}</a>
                 </li>
               ))
               : 
               // Non-authenticated user sees Home first
               navLinks.map((link, index) => (
                 <li key={index} className="shared-header-nav-item">
-                  <a href={link.to} className="shared-header-nav-link">{link.label}</a>
+                  <a href={`#${link.to}`} className="shared-header-nav-link">{link.label}</a>
                 </li>
               ))
             }
@@ -70,13 +75,15 @@ const SharedHeader = ({
           )}
           
           {isAuthenticated ? (
-            <form onSubmit={handleSignOut} action="/" method="get">
-              <button type="submit" className="shared-header-sign-out">
-                Sign Out
-              </button>
-            </form>
+            <button className="shared-header-sign-out" onClick={handleSignOut}>
+              Sign Out
+            </button>
           ) : (
-            <a href="/login" className="shared-header-sign-in">
+            <a href="#/signin" className="shared-header-sign-in" onClick={(e) => {
+              e.preventDefault();
+              console.log('SharedHeader: Sign In link clicked');
+              window.location.hash = '/signin';
+            }}>
               Sign In
             </a>
           )}

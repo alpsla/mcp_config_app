@@ -4,6 +4,8 @@ import { useAuth } from '../../auth/AuthContext';
 import './Dashboard.css';
 import SharedHeader from '../shared/SharedHeader';
 import WelcomeBanner from './WelcomeBanner';
+// PricingTier not used after removing pricing section
+// eslint-disable-next-line no-unused-vars
 import PricingTier from './PricingTier';
 import ModelCard from './ModelCard';
 import ExampleShowcase from './ExampleShowcase';
@@ -128,7 +130,8 @@ const Dashboard = () => {
   
   // Handle model selection toggle - removed unused function
   
-  // Handler for configuration actions
+  // Handler for configuration actions (still needed for model selection)
+  // eslint-disable-next-line no-unused-vars
   const handleConfigurationAction = (type) => {
     // Set the user's tier based on selection
     setUserTier(type);
@@ -202,9 +205,19 @@ const Dashboard = () => {
   const showSubscriptionConfirmation = (tier) => {
     // In a real implementation, this would open a payment processing flow
     // For now, we'll simulate with a confirmation dialog
-    return window.confirm(
+    const confirmed = window.confirm(
       `You're about to subscribe to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan for ${tier === 'basic' ? '2' : '5'}/month. Proceed?`
     );
+    
+    if (confirmed) {
+      // If user confirms subscription, navigate to configuration page
+      console.log(`Subscription to ${tier} tier confirmed, navigating to configuration page`);
+      setTimeout(() => {
+        window.location.href = '#/configure';
+      }, 500); // Add a small delay to make it feel like processing happened
+    }
+    
+    return confirmed;
   };
   
   // Available services data
@@ -239,7 +252,8 @@ const Dashboard = () => {
   ];
   */
   
-  // Pricing plans data
+  // Pricing plans data - kept for reference but not used after removing pricing section
+  // eslint-disable-next-line no-unused-vars
   const pricingPlans = [
     {
       id: 'free',
@@ -475,15 +489,7 @@ const Dashboard = () => {
             </div>
           </section>
           
-          {/* Pricing Plans Section */}
-          <section className="pricing-section">
-            <h2 className="section-title">Pricing Plans</h2>
-            <div className="pricing-grid">
-              {pricingPlans.map(plan => (
-                <PricingTier key={plan.id} plan={plan} />
-              ))}
-            </div>
-          </section>
+          {/* Pricing Plans Section removed to avoid duplication */}
           
           {/* Available Models Section - Now before Your Configurations */}
           <section className="models-section">
@@ -551,7 +557,11 @@ const Dashboard = () => {
                       <li>1 Free model (Web Search Integration)</li>
                       <li className="feature-not-included">No Hugging Face models</li>
                     </ul>
-                    <button className="plan-button" onClick={() => handleConfigurationAction('free')}>
+                    <button className="plan-button" onClick={() => {
+                      // Navigate to the configuration page with proper hash-based URL
+                      console.log('Navigating to configuration page from Free Plan selection');
+                      window.location.href = '#/configure';
+                    }}>
                       Select Free Plan
                     </button>
                   </div>
@@ -566,7 +576,7 @@ const Dashboard = () => {
                       <li>1 Free model (Web Search Integration)</li>
                       <li>3 Hugging Face models</li>
                     </ul>
-                    <button className="plan-button" onClick={() => handleConfigurationAction('basic')}>
+                    <button className="plan-button" onClick={() => showSubscriptionConfirmation('basic')}>
                       Select Basic Plan
                     </button>
                   </div>
@@ -583,7 +593,7 @@ const Dashboard = () => {
                       <li>10 Hugging Face models</li>
                       <li>Priority Support</li>
                     </ul>
-                    <button className="plan-button" onClick={() => handleConfigurationAction('complete')}>
+                    <button className="plan-button" onClick={() => showSubscriptionConfirmation('complete')}>
                       Select Complete Plan
                     </button>
                   </div>

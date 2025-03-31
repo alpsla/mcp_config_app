@@ -6,7 +6,7 @@ export const signInWithOAuthHelper = async (provider: string, redirectTo: string
   return await supabase.auth.signInWithOAuth({
     provider: provider as any,
     options: {
-      redirectTo
+      redirectTo: `${redirectTo}#/dashboard`
     }
   });
 };
