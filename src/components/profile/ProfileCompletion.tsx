@@ -23,9 +23,9 @@ const ProfileCompletion: React.FC = () => {
   // Pre-fill with any existing data
   useEffect(() => {
     if (authState.user) {
-      // Set from authState if available
-      setFirstName(authState.user.firstName || '');
-      setLastName(authState.user.lastName || '');
+    // Set from authState if available
+    setFirstName(authState.user.user_metadata?.firstName || '');
+    setLastName(authState.user.user_metadata?.lastName || '');
       
       // Also try to get directly from database for most current data
       const fetchProfileData = async () => {

@@ -1,0 +1,423 @@
+/* MCP Configuration Tool Styles */
+:root {
+  /* Color Variables - Using the same palette as homepage.css */
+  --primary: #3A86FF;
+  --primary-dark: #2563EB;
+  --secondary: #8338EC;
+  --secondary-dark: #6D28D9;
+  --neutral-bg: #F8F9FA;
+  --neutral-lightest: #F9FAFB;
+  --neutral-light: #E9ECEF;
+  --neutral-medium: #CED4DA;
+  --neutral-dark: #6C757D;
+  --text: #212529;
+  --text-light: #495057;
+  --success: #38B000;
+  --warning: #FFBE0B;
+  --white: #FFFFFF;
+  
+  /* Spacing Variables */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  /* Shadow */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Configuration Layout */
+.config-main {
+  background-color: var(--neutral-bg);
+  min-height: calc(100vh - 140px); /* Adjust based on header/footer height */
+  padding: var(--space-xxl) 0;
+}
+
+.config-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.config-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.config-description {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  max-width: 800px;
+  margin-bottom: var(--space-xl);
+}
+
+.config-name-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.config-name-input label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.config-name-input input {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--neutral-medium);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  min-width: 250px;
+}
+
+/* Two-Panel Layout */
+.config-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+/* Left Panel: Server Selection */
+.config-left-panel {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  height: fit-content;
+}
+
+.config-panel-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+  color: var(--text);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--neutral-light);
+}
+
+.config-server-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.config-server-item {
+  display: flex;
+  background-color: var(--neutral-lightest);
+  border: 1px solid var(--neutral-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.config-server-item:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.config-server-item.enabled {
+  border-color: var(--primary);
+  background-color: rgba(58, 134, 255, 0.05);
+}
+
+.config-server-item.selected {
+  border-color: var(--primary);
+  border-width: 2px;
+  box-shadow: var(--shadow-md);
+}
+
+.config-server-toggle {
+  margin-right: var(--space-md);
+  display: flex;
+  align-items: center;
+}
+
+.config-server-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  background-color: var(--neutral-medium);
+  border-radius: 10px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.toggle-switch:after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s;
+}
+
+input[type="checkbox"]:checked + .toggle-switch {
+  background-color: var(--primary);
+}
+
+input[type="checkbox"]:checked + .toggle-switch:after {
+  left: 18px;
+}
+
+.config-server-info {
+  flex: 1;
+}
+
+.config-server-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-xs) 0;
+  color: var(--text);
+}
+
+.config-server-info p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin: 0;
+}
+
+.desktop-only-badge, 
+.premium-badge {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.desktop-only-badge {
+  background-color: var(--warning);
+  color: var(--text);
+}
+
+.premium-badge {
+  background-color: var(--secondary);
+  color: var(--white);
+}
+
+.premium-badge-spaced {
+  margin-top: var(--space-sm);
+  margin-left: auto;
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+.config-actions {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-primary:disabled {
+  background-color: var(--neutral-medium);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--white);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(58, 134, 255, 0.05);
+}
+
+.btn-secondary:disabled {
+  color: var(--neutral-medium);
+  border-color: var(--neutral-medium);
+  cursor: not-allowed;
+}
+
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--neutral-medium);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-tertiary:hover {
+  background-color: var(--neutral-light);
+}
+
+.btn-export,
+.btn-save,
+.btn-cancel {
+  width: 100%;
+}
+
+/* Right Panel: Configuration Options */
+.config-right-panel {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  min-height: 400px;
+}
+
+/* Empty State */
+.config-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--text-light);
+}
+
+.config-empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-lg);
+  color: var(--neutral-medium);
+}
+
+.config-empty-state h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+  color: var(--text);
+}
+
+.config-empty-state p {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .config-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  .config-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .config-left-panel {
+    order: 2;
+  }
+  
+  .config-right-panel {
+    order: 1;
+    min-height: 300px;
+  }
+  
+  .config-server-item {
+    margin-bottom: var(--space-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .config-title {
+    font-size: 1.75rem;
+  }
+  
+  .config-description {
+    font-size: 1rem;
+  }
+  
+  .config-name-input {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .config-name-input input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .config-container {
+    width: 95%;
+    padding: 0 var(--space-md);
+  }
+  
+  .config-server-item {
+    flex-direction: column;
+  }
+  
+  .config-server-toggle {
+    margin-right: 0;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .desktop-only-badge, 
+  .premium-badge {
+    position: static;
+    display: inline-block;
+    margin-top: var(--space-sm);
+  }
+}

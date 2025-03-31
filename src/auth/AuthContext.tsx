@@ -1,496 +1,427 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  getCurrentUser, 
-  getCurrentSession, 
-  signInWithEmail, 
-  signOut,
-  signInWithSocialProvider,
-  resendVerificationEmail
-} from '../services/supabase/authService';
-import { supabase } from '../services/supabase/supabaseClient';
-import { robustLogin as robustLoginService, forceResendVerification } from '../services/auth/robustAuthService';
-import { User, SubscriptionTier } from '../types';
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js';
+import { Database } from '../supabase-types';
+import authService from '../services/supabase/authService';
 
-// Define the shape of our auth state
-export interface AuthState {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-  isAuthenticated: boolean;
-  session: any | null;
-  requiresEmailConfirmation: boolean;
-  confirmationMessage: string | null;
-}
+// Create Supabase client
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
-// Define the shape of our auth context
 interface AuthContextType {
-  authState: AuthState;
+  authState: {
+    user: User | null;
+    session: Session | null;
+    loading: boolean;
+    error?: string;
+    isAuthenticated?: boolean;
+    requiresEmailConfirmation?: boolean;
+    confirmationMessage?: string;
+  };
+  signIn: (options: { email?: string; provider?: string }) => Promise<{ data: any; error: any }>;
+  signOut: () => Promise<void>;
+  socialLogin: (provider: 'google' | 'github') => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  socialLogin: (provider: 'google' | 'github' | 'facebook') => Promise<void>;
-  updateSubscriptionTier: (tier: SubscriptionTier) => Promise<void>;
-  clearError: () => void;
-  resendVerification: (email: string) => Promise<{ success: boolean, message: string }>;
   robustLogin: (email: string, password: string) => Promise<void>;
+  resendVerification: (email: string) => Promise<{message: string}>;
+  clearError: () => void;
+  updateSubscriptionTier: (tier: string) => Promise<void>;
+  getUserSubscriptionTier: () => string;
+  supabase: SupabaseClient<Database>;
 }
 
-// Create the auth context with default values
-const AuthContext = createContext<AuthContextType>({
-  authState: {
-    user: null,
-    loading: true,
-    error: null,
-    isAuthenticated: false,
-    session: null,
-    requiresEmailConfirmation: false,
-    confirmationMessage: null
-  },
-  login: async () => {},
-  logout: async () => {},
-  // signup and register functions removed
-  socialLogin: async () => {},
-  updateSubscriptionTier: async () => {},
-  clearError: () => {},
-  resendVerification: async () => ({ success: false, message: '' }),
-  robustLogin: async () => {}
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Custom hook to use the auth context
-export const useAuth = () => useContext(AuthContext);
-
-// Auth provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthState>({
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [authState, setAuthState] = useState<{
+    user: User | null;
+    session: Session | null;
+    loading: boolean;
+    error?: string;
+    isAuthenticated?: boolean;
+    requiresEmailConfirmation?: boolean;
+    confirmationMessage?: string;
+  }>({
     user: null,
-    loading: true,
-    error: null,
-    isAuthenticated: false,
     session: null,
-    requiresEmailConfirmation: false,
-    confirmationMessage: null
+    loading: true,
   });
 
-  // Clear any error message
-  const clearError = () => {
-    setAuthState(prevState => ({
-      ...prevState,
-      error: null
-    }));
-  };
-
-  // Function to login with enhanced error handling
-  const login = async (email: string, password: string) => {
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null,
-      requiresEmailConfirmation: false,
-      confirmationMessage: null
-    }));
-
-    try {
-      // First try the more robust login implementation
-      const robustResponse = await robustLoginService(email, password);
-      
-      if (robustResponse.success) {
-        // Get user profile data
-        const userData = await getCurrentUser();
-        
-        if (!userData) {
-          // This indicates a serious problem - user authenticated but profile not available
-          console.error('Authentication succeeded but profile retrieval failed - critical error');
-          throw new Error('Profile could not be retrieved after login. Please try again.');
-        }
-        
-        setAuthState({
-          user: userData,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
-          session: robustResponse.session,
-          requiresEmailConfirmation: false,
-          confirmationMessage: null
-        });
-        return;
-      }
-      
-      // If robust login failed, fall back to standard login flow
-      const response = await signInWithEmail(email, password);
-      
-      if (response.error) {
-        // Check if this is an email verification issue
-        if (response.requiresEmailConfirmation || robustResponse.requiresEmailConfirmation) {
-          setAuthState(prevState => ({
-            ...prevState,
-            loading: false,
-            error: null,
-            requiresEmailConfirmation: true,
-            confirmationMessage: 'Your email is not yet verified. Please check your inbox for the verification email.'
-          }));
-          return;
-        }
-        throw new Error(response.error || robustResponse.error || 'Login failed');
-      }
-
-      // Check again to make sure we have a user profile
-      if (!response.user) {
-        console.error('Login succeeded but no user profile returned');
-        throw new Error('Login successful but your profile could not be loaded. Please try again.');
-      }
-
-      setAuthState({
-        user: response.user,
-        loading: false,
-        error: null,
-        isAuthenticated: true,
-        session: response.session,
-        requiresEmailConfirmation: false,
-        confirmationMessage: null
-      });
-    } catch (error: any) {
-      // Check if the error message indicates an email verification issue
-      if (error.message && (
-          error.message.includes('Email not confirmed') || 
-          error.message.includes('not verified') || 
-          error.message.toLowerCase().includes('verify'))) {
-        setAuthState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: null,
-          requiresEmailConfirmation: true,
-          confirmationMessage: 'Your email is not yet verified. Please check your inbox for the verification email.'
-        }));
-        return;
-      }
-      
-      // Special case for missing profile errors
-      if (error.message && error.message.includes('profile')) {
-        setAuthState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: 'Login successful but your profile could not be loaded. Try again or use the "Diagnose & Fix" option if issues persist.',
-          requiresEmailConfirmation: false,
-          confirmationMessage: null
-        }));
-        return;
-      }
-      
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message,
-        requiresEmailConfirmation: false,
-        confirmationMessage: null
-      }));
-    }
-  };
-
-  // Function to attempt a more robust login with diagnostic and recovery
-  const robustLogin = async (email: string, password: string) => {
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null,
-      requiresEmailConfirmation: false,
-      confirmationMessage: null
-    }));
-
-    try {
-      // Use the enhanced login function from emailAuthFix
-      const response = await robustLoginService(email, password);
-      
-      if (response.success) {
-        // Get user profile to ensure complete data
-        const user = await getCurrentUser();
-        
-        setAuthState({
-          user: user,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
-          session: response.session,
-          requiresEmailConfirmation: false,
-          confirmationMessage: null
-        });
-        return;
-      }
-      
-      // Handle specific errors
-      if (response.requiresEmailConfirmation) {
-        setAuthState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: null,
-          requiresEmailConfirmation: true,
-          confirmationMessage: 'Email verification required. Please check your inbox or click to resend the verification email.'
-        }));
-        return;
-      }
-      
-      // General error case
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: response.error || 'Login failed',
-        isAuthenticated: false
-      }));
-    } catch (error: any) {
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message || 'An unexpected error occurred during login',
-        isAuthenticated: false
-      }));
-    }
-  };
-
-  // Signup and register functions removed as per requirements
-
-  // Function to handle social login
-  const socialLogin = async (provider: 'google' | 'github' | 'facebook') => {
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null
-    }));
-
-    try {
-      // @ts-ignore - Ignoring type checking for signInWithSocialProvider
-      await signInWithSocialProvider(provider);
-      // Note: The actual auth state update will happen in the useEffect below
-      // when the session changes after the OAuth redirect
-    } catch (error: any) {
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message
-      }));
-    }
-  };
-
-  // Function to logout
-  const logout = async () => {
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null
-    }));
-
-    try {
-      await signOut();
-      setAuthState({
-        user: null,
-        loading: false,
-        error: null,
-        isAuthenticated: false,
-        session: null,
-        requiresEmailConfirmation: false,
-        confirmationMessage: null
-      });
-    } catch (error: any) {
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message
-      }));
-    }
-  };
-
-  // Function to update subscription tier
-  const updateSubscriptionTier = async (tier: SubscriptionTier) => {
-    if (!authState.user) {
-      setAuthState(prevState => ({
-        ...prevState,
-        error: 'User must be logged in to update subscription'
-      }));
-      return;
-    }
-
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null
-    }));
-
-    try {
-      // This is a placeholder - you'll need to implement the actual update
-      // in the databaseService
-      // const result = await updateUserSubscription(authState.user.id, tier);
-      
-      // For now, just update the local state
-      if (authState.user) {
-        const updatedUser = {
-          ...authState.user,
-          subscriptionTier: tier
-        };
-
-        setAuthState(prevState => ({
-          ...prevState,
-          user: updatedUser,
-          loading: false
-        }));
-      }
-    } catch (error: any) {
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message
-      }));
-    }
-  };
-
-  // Function to resend verification email with robust fallback
-  const resendVerification = async (email: string): Promise<{ success: boolean, message: string }> => {
-    setAuthState(prevState => ({
-      ...prevState,
-      loading: true,
-      error: null
-    }));
-
-    try {
-      // First try the enhanced version which has multiple fallbacks
-      const robustResult = await forceResendVerification(email);
-      
-      if (robustResult.success) {
-        setAuthState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: null,
-          confirmationMessage: robustResult.message || 'Verification email has been resent. Please check your inbox.'
-        }));
-        
-        return robustResult;
-      }
-      
-      // If the enhanced version fails, try the standard method
-      const result = await resendVerificationEmail(email);
-      
-      if (result.error) {
-        setAuthState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: result.error || null
-        }));
-        return { success: false, message: result.error };
-      }
-
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: null,
-        confirmationMessage: result.message || 'Verification email has been resent. Please check your inbox.'
-      }));
-      
-      return { 
-        success: true, 
-        message: result.message || 'Verification email has been resent. Please check your inbox.' 
-      };
-    } catch (error: any) {
-      setAuthState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: error.message
-      }));
-      return { success: false, message: error.message };
-    }
-  };
-
-  // Effect to initialize auth state
+  // Initialize authentication state
   useEffect(() => {
-    const initializeAuth = async () => {
+    const initAuth = async () => {
+      console.log('Initializing auth state');
       try {
-        // Get current session
-        const sessionData = await getCurrentSession();
+        // Check for existing session
+        const { data, error } = await supabase.auth.getSession();
         
-        // If we have a session, get the user
-        if (sessionData.session) {
+        if (error) {
+          console.error('Error getting initial session:', error);
+          throw error;
+        }
+        
+        if (data.session) {
+          console.log('Session found during initialization');
           try {
-            const user = await getCurrentUser();
+            // Get full user profile
+            const user = await authService.getUserProfile(data.session.user);
             
-            // If we have a user but it's missing critical data, double-check the profile
-            if (user && (!user.firstName || !user.lastName || !user.email)) {
-              console.log('AuthContext: User profile is missing data, checking database directly...');
+            if (user) {
+              setAuthState({
+                user: user,
+                session: data.session,
+                loading: false,
+                isAuthenticated: true,
+                error: undefined
+              });
               
-              // Get direct profile data
-              const { data: profileData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', user.id)
-                .single();
-              
-              if (profileData) {
-                console.log('AuthContext: Found profile data in database:', profileData);
-                
-                // Update user with data from profile
-                user.firstName = profileData.first_name || user.firstName;
-                user.lastName = profileData.last_name || user.lastName;
-                user.email = profileData.email || user.email;
-                user.subscriptionTier = profileData.subscription_tier || user.subscriptionTier;
+              // If we're on the home page, redirect to dashboard
+              if (window.location.hash === '#/' || window.location.hash === '') {
+                console.log('User authenticated, redirecting to dashboard');
+                window.location.hash = '/dashboard';
               }
+            } else {
+              console.error('User profile not found during initialization');
+              setAuthState({
+                user: null,
+                session: null,
+                loading: false,
+                isAuthenticated: false,
+                error: 'Failed to load user profile'
+              });
             }
-            
-            setAuthState({
-              user,
-              loading: false,
-              error: null,
-              isAuthenticated: !!user,
-              session: sessionData.session,
-              requiresEmailConfirmation: false,
-              confirmationMessage: null
-            });
-          } catch (userError) {
-            console.error('AuthContext: Error getting user:', userError);
+          } catch (profileError) {
+            console.error('Error getting user profile during initialization:', profileError);
             setAuthState({
               user: null,
-              loading: false,
-              error: 'Error loading user profile. Please try logging in again.',
-              isAuthenticated: false,
               session: null,
-              requiresEmailConfirmation: false,
-              confirmationMessage: null
+              loading: false,
+              isAuthenticated: false,
+              error: 'Error loading user profile'
             });
           }
         } else {
+          console.log('No session found during initialization');
           setAuthState({
             user: null,
-            loading: false,
-            error: null,
-            isAuthenticated: false,
             session: null,
-            requiresEmailConfirmation: false,
-            confirmationMessage: null
+            loading: false,
+            isAuthenticated: false,
+            error: undefined
           });
         }
-      } catch (error: any) {
+      } catch (error) {
+        console.error('Error initializing auth:', error);
         setAuthState({
           user: null,
-          loading: false,
-          error: error.message,
-          isAuthenticated: false,
           session: null,
-          requiresEmailConfirmation: false,
-          confirmationMessage: null
+          loading: false,
+          isAuthenticated: false,
+          error: undefined
         });
       }
     };
+    
+    initAuth();
+    
+    // Set up auth state change listener
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
+        
+        if (session) {
+          // User is authenticated
+          try {
+            // Get user profile if session exists
+            const user = await authService.getUserProfile(session.user);
+            
+            setAuthState({
+              user,
+              session,
+              loading: false,
+              isAuthenticated: true,
+              error: undefined
+            });
+            
+            // Redirect to dashboard if not already there
+            if (!window.location.hash.includes('/dashboard')) {
+              console.log('User authenticated, redirecting to dashboard');
+              setTimeout(() => {
+                window.location.hash = '/dashboard';
+              }, 300);
+            }
+          } catch (error) {
+            console.error('Error processing authenticated user:', error);
+            setAuthState({
+              user: null,
+              session: null,
+              loading: false,
+              isAuthenticated: false,
+              error: 'Error processing authentication'
+            });
+          }
+        } else {
+          // User is not authenticated
+          setAuthState({
+            user: null,
+            session: null,
+            loading: false,
+            isAuthenticated: false,
+            error: undefined
+          });
+        }
+      }
+    );
+    
+    // Clean up listener on unmount
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, []);
 
-    initializeAuth();
+  // Sign in with email (magic link) or OAuth provider
+  // Social login function
+  const socialLogin = async (provider: 'google' | 'github') => {
+    try {
+      console.log(`Initiating ${provider} sign in...`);
+      await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          scopes: provider === 'google' ? 'email profile' : undefined
+        }
+      });
+    } catch (error) {
+      console.error(`Error signing in with ${provider}:`, error);
+      setAuthState(prev => ({
+        ...prev,
+        error: `Error signing in with ${provider}: ${(error as Error).message}`
+      }));
+    }
+  };
+
+  // Password login
+  const login = async (email: string, password: string) => {
+    try {
+      setAuthState(prev => ({ ...prev, loading: true, error: undefined }));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setAuthState({
+        user: data.user,
+        session: data.session,
+        loading: false,
+        isAuthenticated: !!data.user
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: (error as Error).message
+      }));
+    }
+  };
+
+  // More robust login function with additional error handling
+  const robustLogin = async (email: string, password: string) => {
+    try {
+      setAuthState(prev => ({ ...prev, loading: true, error: undefined }));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setAuthState({
+        user: data.user,
+        session: data.session,
+        loading: false,
+        isAuthenticated: !!data.user
+      });
+    } catch (error) {
+      console.error('Robust login error:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: (error as Error).message
+      }));
+    }
+  };
+
+  // Resend verification email
+  const resendVerification = async (email: string): Promise<{message: string}> => {
+    try {
+      setAuthState(prev => ({ ...prev, loading: true }));
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+      
+      if (error) throw error;
+      
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        confirmationMessage: 'Verification email resent. Please check your inbox.'
+      }));
+      
+      return { message: 'Verification email resent. Please check your inbox.' };
+    } catch (error) {
+      console.error('Error resending verification:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: (error as Error).message
+      }));
+      throw error;
+    }
+  };
+
+  // Clear error state
+  const clearError = () => {
+    setAuthState(prev => ({
+      ...prev,
+      error: undefined
+    }));
+  };
+
+  // Update user's subscription tier
+  const updateSubscriptionTier = async (tier: string) => {
+    try {
+      if (!authState.user) throw new Error('User not authenticated');
+      
+      // In a real app, this would update the user's record in the database
+      console.log(`Updating subscription tier to: ${tier}`);
+      
+      // Update local state
+      setAuthState(prev => ({
+        ...prev,
+        user: prev.user ? {
+          ...prev.user,
+          subscriptionTier: tier as any
+        } : null
+      }));
+    } catch (error) {
+      console.error('Error updating subscription tier:', error);
+    }
+  };
+  
+  // Get user's subscription tier (defaults to FREE if not set)
+  const getUserSubscriptionTier = () => {
+    return authState.user?.user_metadata?.subscriptionTier || 'FREE';
+  };
+
+  // Original signIn function kept for compatibility
+  const signIn = async (options: { email?: string; provider?: string }) => {
+    try {
+      if (options.email && !options.provider) {
+        // Sign in with magic link
+        return await supabase.auth.signInWithOtp({
+          email: options.email,
+          options: {
+            emailRedirectTo: window.location.origin
+          }
+        });
+      } else if (options.provider) {
+        // Sign in with OAuth provider
+        return await supabase.auth.signInWithOAuth({
+          provider: options.provider as any,
+          options: {
+            redirectTo: window.location.origin
+          }
+        });
+      } else {
+        throw new Error('Invalid sign in options');
+      }
+    } catch (error) {
+      console.error('Error signing in:', error);
+      return { data: null, error };
+    }
+  };
+
+  // Sign out
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      setAuthState({
+        user: null,
+        session: null,
+        loading: false,
+      });
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  // Handle OAuth callbacks
+  const handleAuthCallback = async () => {
+    console.log('Auth callback handler initiated');
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error('Auth callback error:', error.message);
+        return;
+      }
+      
+      if (data.session?.user) {
+        console.log('Session found in callback, redirecting to dashboard');
+        // Force a redirect to the dashboard
+        window.location.hash = '/dashboard';
+      } else {
+        console.warn('No session found in callback');
+      }
+    } catch (error) {
+      console.error('Error in auth callback handler:', error);
+    }
+  };
+
+  // Check if we're in a callback URL and handle it
+  useEffect(() => {
+    if (window.location.pathname.includes('/auth/callback')) {
+      console.log('Auth callback URL detected');
+      handleAuthCallback();
+    }
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         authState,
-        login,
-        logout,
+        signIn,
+        signOut,
         socialLogin,
-        updateSubscriptionTier,
-        clearError,
+        login,
+        robustLogin,
         resendVerification,
-        robustLogin
+        clearError,
+        updateSubscriptionTier,
+        getUserSubscriptionTier,
+        supabase,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

@@ -15,8 +15,14 @@ const AUTH_ENDPOINTS = {
 const mockUser: User = {
   id: 'mock-user-id',
   email: 'user@example.com',
-  createdAt: new Date(),
-  subscriptionTier: SubscriptionTier.STARTER
+  app_metadata: {},
+  user_metadata: {
+    firstName: 'Test',
+    lastName: 'User',
+    subscriptionTier: SubscriptionTier.STARTER
+  },
+  aud: 'authenticated',
+  created_at: new Date().toISOString()
 };
 
 // Helper function for API requests

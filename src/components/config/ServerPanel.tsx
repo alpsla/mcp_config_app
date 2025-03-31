@@ -12,9 +12,9 @@ export const ServerPanel: React.FC<ServerPanelProps> = ({
   selectedServer, 
   onServerSelect 
 }) => {
-  const { authState } = useAuth();
+  const { authState, getUserSubscriptionTier } = useAuth();
   const user = authState.user;
-  const userTier = user?.subscriptionTier || SubscriptionTier.FREE;
+  const userTier = getUserSubscriptionTier() as SubscriptionTier;
 
   const isHuggingFaceEnabled = userTier !== SubscriptionTier.FREE;
   

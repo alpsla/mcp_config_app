@@ -1,0 +1,64 @@
+.configure-button {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  display: block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.configure-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-color: #3A86FF;
+}
+
+.configure-button-content {
+  display: flex;
+  align-items: center;
+}
+
+.configure-button-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(58, 134, 255, 0.1);
+  color: #3A86FF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.configure-button-text {
+  flex: 1;
+}
+
+.configure-button-text h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+}
+
+.configure-button-text p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .configure-button {
+    padding: 1rem;
+  }
+  
+  .configure-button-icon {
+    width: 40px;
+    height: 40px;
+  }
+}

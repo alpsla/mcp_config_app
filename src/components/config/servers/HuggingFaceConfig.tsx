@@ -12,8 +12,8 @@ export const HuggingFaceConfig: React.FC<HuggingFaceConfigProps> = ({
   config, 
   onChange 
 }) => {
-  const { authState } = useAuth();
-  const userTier = authState.user?.subscriptionTier || SubscriptionTier.FREE;
+  const { getUserSubscriptionTier } = useAuth();
+  const userTier = getUserSubscriptionTier() as SubscriptionTier;
 
   const handleToggleEnabled = () => {
     onChange({

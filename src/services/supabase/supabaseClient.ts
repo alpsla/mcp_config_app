@@ -4,6 +4,12 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
 
+// Debug environment variables
+console.log('Environment variables check:',
+  'REACT_APP_SUPABASE_URL:', process.env.REACT_APP_SUPABASE_URL ? '✓ Set' : '✗ Missing',
+  'REACT_APP_SUPABASE_ANON_KEY:', process.env.REACT_APP_SUPABASE_ANON_KEY ? '✓ Set' : '✗ Missing'
+);
+
 // Create a single instance of the Supabase client
 let supabaseInstance: SupabaseClient | null = null;
 
@@ -13,6 +19,7 @@ let supabaseInstance: SupabaseClient | null = null;
  */
 export const getSupabaseClient = (): SupabaseClient => {
   if (!supabaseInstance) {
+    console.log('Initializing Supabase client - first time');
     // Check if the required environment variables are available
     if (!supabaseUrl || !supabaseAnonKey) {
       console.warn(

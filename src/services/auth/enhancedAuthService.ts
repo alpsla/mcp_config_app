@@ -186,7 +186,8 @@ export const enhancedAuthService = {
         // Convert user to our app's type with known profile
         const user = convertSupabaseUser(authData.user);
         if (profile) {
-          user.subscriptionTier = profile.subscription_tier || 'FREE';
+          // Update the subscription tier in user metadata
+          user.user_metadata.subscriptionTier = profile.subscription_tier || 'FREE';
         }
         
         return { 
