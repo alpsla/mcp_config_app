@@ -7,7 +7,7 @@ import ReturningUserDashboard from './components/dashboard/ReturningUserDashboar
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ConfigurationManager from './components/ConfigurationManager';
 import Homepage from './pages/homepage/Homepage';
-import ConfigurationPage from './pages/configuration/ConfigurationPage';
+import SimpleConfigWrapper from './pages/configuration/SimpleConfigWrapper';
 import RouteHandler, { navigate } from './utils/RouteHandler';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './supabase-types';
@@ -204,6 +204,7 @@ interface ConfigureWrapperProps {
 }
 
 // Configure a wrapper around the Configuration page to handle navigation
+// ConfigureWrapper component no longer needs handleSaveConfiguration
 const ConfigureWrapper: React.FC<ConfigureWrapperProps> = () => {
   const { authState } = useAuth();
   
@@ -216,18 +217,8 @@ const ConfigureWrapper: React.FC<ConfigureWrapperProps> = () => {
     }
   }, [authState]);
   
-  const handleSaveConfiguration = (config: any) => {
-    console.log('Saving configuration:', config);
-    // Here you would normally save the configuration to your backend
-    // Then navigate back to the dashboard
-    navigate('/dashboard');
-  };
-  
   return (
-    <ConfigurationPage 
-      history={{ push: navigate }}
-      onSaveConfiguration={handleSaveConfiguration}
-    />
+    <SimpleConfigWrapper />
   );
 };
 

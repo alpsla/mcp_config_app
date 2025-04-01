@@ -210,10 +210,16 @@ const Dashboard = () => {
     );
     
     if (confirmed) {
-      // If user confirms subscription, navigate to configuration page
+      // If user confirms subscription, store tier and navigate
       console.log(`Subscription to ${tier} tier confirmed, navigating to configuration page`);
+      
+      // Store the tier in localStorage for more reliable persistence
+      localStorage.setItem('user_subscription_tier', tier);
+      
+      // Use hash-based navigation and force scroll to top
       setTimeout(() => {
-        window.location.href = '#/configure';
+        window.location.hash = '/configure';
+        setTimeout(() => window.scrollTo(0, 0), 100);
       }, 500); // Add a small delay to make it feel like processing happened
     }
     
@@ -558,9 +564,13 @@ const Dashboard = () => {
                       <li className="feature-not-included">No Hugging Face models</li>
                     </ul>
                     <button className="plan-button" onClick={() => {
-                      // Navigate to the configuration page with proper hash-based URL
+                      // Use direct hash-based URL navigation with scroll behavior
                       console.log('Navigating to configuration page from Free Plan selection');
-                      window.location.href = '#/configure';
+                      // Store the tier in localStorage for more reliable persistence
+                      localStorage.setItem('user_subscription_tier', 'none');
+                      window.location.hash = '/configure';
+                      // Force scroll to top
+                      setTimeout(() => window.scrollTo(0, 0), 100);
                     }}>
                       Select Free Plan
                     </button>
