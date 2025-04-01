@@ -1,192 +1,260 @@
 import React, { useState, useEffect } from 'react';
-import './ConfigComponents.css';
-import { Platform } from '../../utils/platform';
-import { FileSystemService } from '../../services/fileSystemService';
+import { Button, Modal, Input, Alert } from '../ui';
+import { FolderIcon, PlusIcon, TrashIcon, InfoIcon } from '../icons';
 
-const FileSystemConfig = ({ config = {}, updateConfig }) => {
-  // Initialize state with values from props or defaults
+/**
+ * FileSystemConfiguration component for managing directory access
+ * 
+ * @param {Object} props
+ * @param {Array} props.directories - List of directories currently configured
+ * @param {Function} props.updateConfig - Callback to update the configuration
+ */
+const FileSystemConfig = ({ 
+  config = { directories: [] },
+  updateConfig
+}) => {
   const [directories, setDirectories] = useState(config.directories || []);
-  const [currentDirectory, setCurrentDirectory] = useState('');
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [newDirectory, setNewDirectory] = useState('');
+  const [directoryBrowserError, setDirectoryBrowserError] = useState(null);
+  const [showDirectoryModal, setShowDirectoryModal] = useState(false);
+  const [availableDirectories, setAvailableDirectories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // When component mounts, check if running in desktop environment
-  useEffect(() => {
-    setIsDesktop(FileSystemService.isAvailable());
-  }, []);
-  
   // Update parent component when directories change
   useEffect(() => {
     updateConfig({
+      ...config,
       directories
     });
-  }, [directories, updateConfig]);
+  }, [directories]);
 
-  // Handle adding a new directory
-  const handleAddDirectory = () => {
-    if (!currentDirectory || directories.includes(currentDirectory)) return;
-    
-    setDirectories([...directories, currentDirectory]);
-    setCurrentDirectory('');
-  };
-  
-  // Handle removing a directory
-  const handleRemoveDirectory = (dirToRemove) => {
-    setDirectories(directories.filter(dir => dir !== dirToRemove));
-  };
-  
-  // Handle directory selection (mock functionality)
-  const handleBrowseDirectory = async () => {
+  // Function to browse the filesystem and get available directories
+  const handleBrowseClick = async () => {
     try {
-      // In a real implementation, this would open a directory picker dialog
-      // For now, we'll just simulate it with a mock directory
-      if (isDesktop) {
-        const homeDir = await FileSystemService.getHomeDirectory();
-        const mockSelectedDir = `${homeDir}${Platform.getPathSeparator()}Documents${Platform.getPathSeparator()}sample-folder-${Math.floor(Math.random() * 1000)}`;
-        setCurrentDirectory(mockSelectedDir);
-      }
+      setIsLoading(true);
+      
+      // In a real implementation, use filesystem APIs
+      // For demo purposes, simulate loading directories
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const sampleDirectories = [
+        '/Users/username/Documents',
+        '/Users/username/Downloads',
+        '/Users/username/Desktop',
+        'C:\\Users\\username\\Documents',
+        'C:\\Users\\username\\Downloads'
+      ];
+      
+      setAvailableDirectories(sampleDirectories);
+      setShowDirectoryModal(true);
+      setIsLoading(false);
     } catch (error) {
-      console.error('Error browsing directory:', error);
+      console.error('Error browsing directories:', error);
+      setDirectoryBrowserError('Failed to browse directories. Please ensure you have the necessary permissions.');
+      setIsLoading(false);
     }
   };
 
+  // Function to select a directory from the browser
+  const handleDirectorySelect = (dir) => {
+    setNewDirectory(dir);
+    setShowDirectoryModal(false);
+  };
+
+  // Function to add a directory to the configuration
+  const handleAddDirectoryClick = () => {
+    if (!newDirectory) return;
+    
+    // Check if directory is already in the list
+    if (directories.includes(newDirectory)) {
+      setDirectoryBrowserError('This directory is already in your configuration.');
+      return;
+    }
+    
+    setDirectories([...directories, newDirectory]);
+    setNewDirectory('');
+  };
+
+  // Function to remove a directory from the list
+  const handleRemoveDirectory = (dir) => {
+    setDirectories(directories.filter(d => d !== dir));
+  };
+
+  // Function to expand a directory and show its subdirectories
+  const handleExpandDirectory = async (dir) => {
+    try {
+      setIsLoading(true);
+      
+      // In a real implementation, use filesystem APIs
+      // For demo purposes, simulate loading subdirectories
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const subdirs = [
+        `${dir}/Documents`,
+        `${dir}/Downloads`,
+        `${dir}/Pictures`,
+        `${dir}/Desktop`
+      ];
+      
+      setAvailableDirectories(subdirs);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error expanding directory:', error);
+      setDirectoryBrowserError('Failed to expand directory.');
+      setIsLoading(false);
+    }
+  };
+
+  // Function to navigate up one level in the directory hierarchy
+  const handleNavigateUp = async () => {
+    // In a real implementation, navigate to parent directory
+    // For demo purposes, go back to root directories
+    handleBrowseClick();
+  };
+
   return (
-    <div className="config-component">
-      <h2 className="config-component-title">File System Access Configuration</h2>
-      
-      <p className="config-component-description">
-        Configure which directories on your computer Claude can access. Claude will only be able to read files from these directories.
-      </p>
-      
-      <div className="config-form">
-        <div className="config-form-group">
-          <label className="config-form-label">
-            Add Directory
-          </label>
-          
-          <div className="config-directory-input">
-            <div className="config-directory-input-group">
-              <input 
-                type="text" 
-                className="config-form-input" 
-                value={currentDirectory}
-                onChange={(e) => setCurrentDirectory(e.target.value)}
-                placeholder="/path/to/directory"
-              />
-              <button 
-                type="button" 
-                className="config-directory-browse-btn"
-                onClick={handleBrowseDirectory}
-                disabled={!isDesktop}
-              >
-                Browse
-              </button>
-            </div>
-            <button 
-              type="button" 
-              className="config-directory-add-btn"
-              disabled={!currentDirectory}
-              onClick={handleAddDirectory}
-            >
-              Add Directory
-            </button>
-          </div>
-          
-          <p className="config-form-helper">
-            Enter the full path to a directory or use the Browse button to select it.
-          </p>
-        </div>
+    <div className="file-system-configuration">
+      <div className="file-system-header">
+        <h3>File System Access</h3>
+        <p>Allow Claude to access specific directories on your computer.</p>
+      </div>
+
+      {directoryBrowserError && (
+        <Alert 
+          type="error" 
+          message={directoryBrowserError} 
+          onClose={() => setDirectoryBrowserError(null)} 
+        />
+      )}
+
+      <div className="directory-input-container">
+        <Input
+          type="text"
+          value={newDirectory}
+          onChange={(e) => setNewDirectory(e.target.value)}
+          placeholder="Directory path"
+          className="directory-input"
+        />
+        <Button 
+          onClick={handleBrowseClick} 
+          className="browse-button"
+          disabled={isLoading}
+        >
+          Browse
+        </Button>
+        <Button
+          onClick={handleAddDirectoryClick}
+          className="add-button"
+          disabled={!newDirectory}
+        >
+          <PlusIcon /> Add
+        </Button>
+      </div>
+
+      <div className="directories-list">
+        <h4>Configured Directories</h4>
         
-        {directories.length > 0 && (
-          <div className="config-selected-directories">
-            <label className="config-form-label">
-              Selected Directories
-            </label>
-            
+        {directories.length === 0 ? (
+          <div className="no-directories">
+            <p>No directories configured. Add directories to allow Claude to access files.</p>
+          </div>
+        ) : (
+          <ul className="directory-items">
             {directories.map((dir, index) => (
-              <div key={index} className="config-selected-directory-item">
-                <div className="config-selected-directory-path">
-                  {dir}
-                </div>
-                <button 
-                  type="button" 
-                  className="config-remove-directory"
+              <li key={index} className="directory-item">
+                <FolderIcon className="folder-icon" />
+                <span className="directory-path">{dir}</span>
+                <Button
+                  className="remove-button"
                   onClick={() => handleRemoveDirectory(dir)}
-                  aria-label="Remove directory"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
+                  <TrashIcon />
+                </Button>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
-        
-        <div className="config-security-notice">
-          <div className="config-security-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-          </div>
-          <div className="config-security-content">
-            <h4>Security Information</h4>
-            <p>
-              Claude will only be able to access files in the directories you specify. Access is read-only, which means Claude can read files but cannot modify, delete, or create files.
-            </p>
-            <p>
-              For your security, avoid adding directories containing sensitive information, such as financial records or private documents.
-            </p>
-          </div>
+      </div>
+
+      <div className="tools-list">
+        <h4>Tools that will be available:</h4>
+        <div className="tools-grid">
+          {[
+            'create_directory',
+            'directory_tree',
+            'edit_file',
+            'get_file_info',
+            'list_allowed_directories',
+            'list_directory',
+            'move_file',
+            'read_file',
+            'read_multiple_files',
+            'search_files',
+            'write_file'
+          ].map(tool => (
+            <div key={tool} className="tool-item">
+              <span className="tool-icon">⚙️</span> {tool}
+            </div>
+          ))}
         </div>
       </div>
-      
-      <div className="config-platform-compatibility">
-        <h4>Platform Compatibility</h4>
-        <div className="config-platform-icons">
-          <div className={`config-platform-icon ${Platform.isWindows() ? 'compatible' : ''}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-              <line x1="8" y1="21" x2="16" y2="21"></line>
-              <line x1="12" y1="17" x2="12" y2="21"></line>
-            </svg>
-            <span>Windows</span>
+
+      {/* Directory Browser Modal */}
+      <Modal
+        isOpen={showDirectoryModal}
+        onClose={() => setShowDirectoryModal(false)}
+        title="Select Directory"
+      >
+        <div className="directory-browser">
+          <div className="directory-browser-header">
+            <Button onClick={handleNavigateUp} disabled={isLoading}>
+              Up
+            </Button>
+            <div className="current-path">
+              {/* In a real implementation, this would show the current path */}
+              Select a directory
+            </div>
           </div>
-          <div className={`config-platform-icon ${Platform.isMacOS() ? 'compatible' : ''}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-            <span>macOS</span>
-          </div>
-          <div className={`config-platform-icon ${Platform.isLinux() ? 'compatible' : ''}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="4" y1="9" x2="20" y2="9"></line>
-              <line x1="4" y1="15" x2="20" y2="15"></line>
-              <line x1="10" y1="3" x2="8" y2="21"></line>
-              <line x1="16" y1="3" x2="14" y2="21"></line>
-            </svg>
-            <span>Linux</span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="config-component-footer">
-        <div className="config-status">
-          {directories.length > 0 ? (
-            <>
-              <div className="config-status-icon config-status-success"></div>
-              <span>File System Access is properly configured</span>
-            </>
+
+          {isLoading ? (
+            <div className="loading-directories">Loading directories...</div>
           ) : (
-            <>
-              <div className="config-status-icon config-status-warning"></div>
-              <span>No directories selected. Claude will not have file access.</span>
-            </>
+            <ul className="browser-directory-list">
+              {availableDirectories.map((dir, index) => (
+                <li 
+                  key={index} 
+                  className="browser-directory-item"
+                >
+                  <div 
+                    className="browser-directory-name"
+                    onClick={() => handleDirectorySelect(dir)}
+                  >
+                    <FolderIcon /> {dir.split('/').pop() || dir}
+                  </div>
+                  <Button 
+                    className="expand-button"
+                    onClick={() => handleExpandDirectory(dir)}
+                  >
+                    Expand
+                  </Button>
+                </li>
+              ))}
+            </ul>
           )}
+
+          <div className="browser-actions">
+            <Button onClick={() => setShowDirectoryModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleDirectorySelect(newDirectory)}
+              disabled={!newDirectory}
+            >
+              Select "{newDirectory}"
+            </Button>
+          </div>
         </div>
-      </div>
+      </Modal>
     </div>
   );
 };

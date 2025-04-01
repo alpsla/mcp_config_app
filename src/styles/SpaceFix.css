@@ -1,0 +1,49 @@
+/* Fix the excessive space between content and footer */
+
+/* Make the main container use flexbox for proper layout */
+.mcp-studio-container {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  margin-bottom: 0 !important;
+  min-height: auto !important; /* Prevent forcing unnecessary height */
+}
+
+/* Add more content to the progress section */
+.progress-bar, .compact-progress-bar, .horizontal-progress-bar, .exact-progress-bar {
+  margin-bottom: 1rem !important; /* Reduced spacing */
+  background-color: transparent !important;
+}
+
+/* Add progress description */
+.progress-description {
+  display: flex !important;
+  justify-content: space-between !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.9rem !important;
+  color: #666 !important;
+}
+
+/* Adjust step content margin */
+.step-content {
+  margin-bottom: 0 !important;
+  padding-bottom: 1rem !important;
+  flex-grow: 1 !important;
+}
+
+/* Adjust service grid spacing */
+.services-grid {
+  margin-bottom: 1.5rem !important;
+  gap: 0.75rem !important;
+}
+
+/* Make action buttons have less bottom space */
+.step-actions {
+  margin-top: 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Adjust step description */
+.step-description {
+  margin-bottom: 1.5rem !important;
+}

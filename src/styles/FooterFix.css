@@ -1,0 +1,64 @@
+/* Desktop notice container */
+.desktop-notice-container {
+  position: relative !important;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+  z-index: 10 !important;
+  background-color: transparent !important;
+}
+
+/* Desktop notice styling */
+.desktop-notice {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  padding: 0.75rem 1rem !important;
+  background-color: #f3f4f6 !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.875rem !important;
+  color: #4b5563 !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+/* Make sure the shared footer appears properly */
+.shared-footer {
+  margin-top: 0 !important;
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+.mcp-studio-main {
+  min-height: calc(100vh - 80px) !important; /* Main content takes up available space */
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+}
+
+.step-content {
+  margin-bottom: 0 !important;
+}
+
+/* Force height for proper spacing */
+.services-grid {
+  margin-bottom: 0 !important;
+}
+
+/* Reduce all other potential spacing */
+.configuration-layout, 
+.selection-step,
+.step-actions {
+  margin-bottom: 0 !important;
+}
+
+/* Desktop notice styling */
+.desktop-notice {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}

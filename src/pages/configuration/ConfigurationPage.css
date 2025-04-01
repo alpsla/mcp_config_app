@@ -126,28 +126,32 @@
 .config-server-item {
   display: flex;
   background-color: var(--neutral-lightest);
-  border: 1px solid var(--neutral-light);
+  border: 2px solid var(--neutral-light);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
+  margin-bottom: var(--space-md);
 }
 
 .config-server-item:hover {
   border-color: var(--primary);
-  box-shadow: var(--shadow-sm);
+  background-color: rgba(58, 134, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .config-server-item.enabled {
   border-color: var(--primary);
-  background-color: rgba(58, 134, 255, 0.05);
+  background-color: rgba(58, 134, 255, 0.1);
 }
 
 .config-server-item.selected {
   border-color: var(--primary);
   border-width: 2px;
   box-shadow: var(--shadow-md);
+  background-color: rgba(58, 134, 255, 0.15);
 }
 
 .config-server-toggle {
@@ -172,6 +176,8 @@
   border-radius: 10px;
   transition: all 0.3s;
   cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-switch:after {
@@ -184,6 +190,7 @@
   top: 2px;
   left: 2px;
   transition: all 0.3s;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 input[type="checkbox"]:checked + .toggle-switch {
@@ -192,6 +199,54 @@ input[type="checkbox"]:checked + .toggle-switch {
 
 input[type="checkbox"]:checked + .toggle-switch:after {
   left: 18px;
+}
+
+/* Status Indicator */
+.config-server-status {
+  margin-right: var(--space-md);
+  display: flex;
+  align-items: center;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 70px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-indicator::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.status-indicator.active {
+  background-color: rgba(56, 176, 0, 0.15);
+  color: var(--success);
+}
+
+.status-indicator.active::before {
+  background-color: var(--success);
+  box-shadow: 0 0 0 2px rgba(56, 176, 0, 0.2);
+}
+
+.status-indicator.inactive {
+  background-color: var(--neutral-light);
+  color: var(--neutral-dark);
+}
+
+.status-indicator.inactive::before {
+  background-color: var(--neutral-dark);
 }
 
 .config-server-info {
@@ -208,7 +263,24 @@ input[type="checkbox"]:checked + .toggle-switch:after {
 .config-server-info p {
   font-size: 0.9rem;
   color: var(--text-light);
-  margin: 0;
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.config-server-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 500;
+  opacity: 0.85;
+  transition: all 0.2s ease;
+}
+
+.config-server-item:hover .config-server-action {
+  opacity: 1;
+  transform: translateX(var(--space-xs));
 }
 
 /* New requirement indicators that replace badges */
@@ -238,22 +310,60 @@ input[type="checkbox"]:checked + .toggle-switch:after {
 }
 
 /* Subscription Button */
-.config-subscribe-prompt {
+.config-subscribe-prompt,
+.subscription-button {
   display: inline-block;
-  margin-top: var(--space-sm);
-  padding: var(--space-xs) var(--space-md);
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   background-color: var(--secondary);
   color: var(--white);
   border: none;
   border-radius: var(--radius-sm);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  z-index: 10;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.config-subscribe-prompt:hover {
+.config-subscribe-prompt:hover,
+.subscription-button:hover {
   background-color: var(--secondary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Main Subscribe Button - more prominent */
+#main-subscribe-button {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  font-size: 1rem;
+  text-align: center;
+  background-color: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  position: relative;
+  z-index: 20;
+}
+
+#main-subscribe-button:hover {
+  background-color: var(--secondary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+#main-subscribe-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .config-tier-indicator {
