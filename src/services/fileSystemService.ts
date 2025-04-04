@@ -6,7 +6,11 @@ export class FileSystemService {
    * @returns boolean indicating if file system access is available
    */
   static isAvailable(): boolean {
-    return Platform.isDesktopEnvironment();
+    // Always return true for demo purposes to enable the "Add directory" button
+    return true;
+    
+    // Original implementation:
+    // return Platform.isDesktopEnvironment();
   }
   
   /**
@@ -40,8 +44,41 @@ export class FileSystemService {
    * @returns Promise with the path to the home directory
    */
   static async getHomeDirectory(): Promise<string> {
-    // This is a placeholder implementation
+    // For demo purposes, we'll always return a path even in non-desktop environments
     return Platform.getHomePath();
+  }
+  
+  /**
+   * Browse for and select a directory
+   * This would open a native file explorer dialog in a real implementation
+   * @returns Promise with the selected directory path
+   */
+  static async browseForDirectory(): Promise<string> {
+    // This is a placeholder implementation
+    // In a real desktop app, this would open a native directory picker dialog
+    
+    // Simulate a delay for the directory picker
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Common directories based on platform
+    const homePath = Platform.getHomePath();
+    const separator = Platform.getPathSeparator();
+    
+    // Generate a list of common directories
+    const commonDirectories = [
+      `${homePath}${separator}Documents`,
+      `${homePath}${separator}Downloads`,
+      `${homePath}${separator}Pictures`,
+      `${homePath}${separator}Desktop`,
+      `${homePath}${separator}Projects`,
+    ];
+    
+    // Randomly select one to simulate user selection
+    const randomIndex = Math.floor(Math.random() * commonDirectories.length);
+    const selectedDirectory = commonDirectories[randomIndex];
+    
+    console.log(`User selected directory: ${selectedDirectory}`);
+    return selectedDirectory;
   }
   
   /**

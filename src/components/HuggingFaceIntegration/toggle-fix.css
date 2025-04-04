@@ -1,0 +1,88 @@
+/* Fix for toggle slider causing layout issues */
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+  z-index: 1; /* Ensure proper z-index */
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  z-index: 2; /* Higher than parent */
+}
+
+input:checked + .toggle-slider {
+  background-color: #4e5dde;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Critical fix to prevent the toggle from expanding and covering the screen */
+.toggle-slider {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 50px !important; /* Constrain maximum size */
+  max-height: 24px !important;
+  overflow: hidden !important;
+}
+
+/* Container fixes */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 10; /* Ensure visibility */
+}
+
+/* Override any incorrect positioning */
+.huggingface-config .config-header,
+.huggingface-config .toggle-container,
+.huggingface-config .toggle-switch,
+.huggingface-config .toggle-slider {
+  position: relative !important;
+  z-index: auto !important;
+  overflow: visible !important;
+}
+
+/* Ensure the toggle doesn't have any overlay behavior */
+.toggle-slider::before,
+.toggle-slider::after {
+  position: absolute !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  content: "" !important;
+  background-color: white !important;
+  z-index: 2 !important;
+}

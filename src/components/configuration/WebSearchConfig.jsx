@@ -14,26 +14,43 @@ const WebSearchConfig = ({
   
   // Update parent component when config changes
   useEffect(() => {
-    updateConfig({
-      ...config,
-      resultsCount,
-      safeSearch,
-      useTrustedSources
-    });
-  }, [resultsCount, safeSearch, useTrustedSources]);
+    // Only update if values actually changed AND config exists
+    if (config && (config.resultsCount !== resultsCount ||
+        config.safeSearch !== safeSearch ||
+        config.useTrustedSources !== useTrustedSources)) {
+      // Create a copy of config to avoid reference issues
+      const updatedConfig = {
+        ...config,
+        resultsCount,
+        safeSearch,
+        useTrustedSources
+      };
+      
+      // Use setTimeout to break potential re-render cycles
+      setTimeout(() => {
+        updateConfig(updatedConfig);
+      }, 0);
+    }
+  }, [config, updateConfig, resultsCount, safeSearch, useTrustedSources]);
   
   // Handle results count change
   const handleResultsCountChange = (value) => {
     setResultsCount(value);
+    // Use setTimeout to prevent potential infinite re-renders
+    setTimeout(() => {}, 0);
   };
   
   // Toggle handlers
   const handleSafeSearchToggle = () => {
     setSafeSearch(!safeSearch);
+    // Use setTimeout to prevent potential infinite re-renders
+    setTimeout(() => {}, 0);
   };
   
   const handleTrustedSourcesToggle = () => {
     setUseTrustedSources(!useTrustedSources);
+    // Use setTimeout to prevent potential infinite re-renders
+    setTimeout(() => {}, 0);
   };
   
   // Number selector component

@@ -1,0 +1,317 @@
+.enhanced-huggingface-config {
+  position: relative;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Subscription Banner Styles */
+.subscription-banner {
+  background: linear-gradient(135deg, #4e5dde, #7b61ff);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+  color: white;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.subscription-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" width="100" height="100"/><path fill="rgba(255,255,255,0.05)" d="M30,10L80,90L130,10Z"/><path fill="rgba(255,255,255,0.05)" d="M-20,90L30,10L80,90Z"/></svg>') repeat;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.banner-content {
+  flex: 2;
+  position: relative;
+  z-index: 1;
+}
+
+.banner-content h3 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.banner-content p {
+  margin-bottom: 24px;
+  line-height: 1.5;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.subscribe-button {
+  background-color: white;
+  color: #4e5dde;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.subscribe-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.banner-feature {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-icons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.feature-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.banner-feature p {
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Upgrade Banner Styles */
+.upgrade-banner {
+  background: linear-gradient(135deg, #f5f7ff, #e8eaff);
+  border: 1px solid #d8dcff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.upgrade-banner .banner-content {
+  flex: 3;
+  padding-right: 24px;
+}
+
+.upgrade-banner h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.upgrade-banner p {
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.tier-badge {
+  display: inline-block;
+  background-color: #4e5dde;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.tier-badge.premium {
+  background-color: #7b61ff;
+}
+
+.upgrade-button {
+  background-color: #7b61ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upgrade-button:hover {
+  background-color: #6a4fe6;
+  transform: translateY(-2px);
+}
+
+.global-params-preview {
+  flex: 2;
+  background-color: white;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.global-params-preview h4 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.param-preview-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.param-preview-item {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.param-name {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.param-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4e5dde;
+}
+
+.param-preview-more {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+  padding: 8px;
+}
+
+.edit-params-button {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid #4e5dde;
+  color: #4e5dde;
+  border-radius: 4px;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-params-button:hover {
+  background-color: #f0f2ff;
+}
+
+/* Complete Subscriber Header */
+.complete-subscriber-header {
+  background: linear-gradient(135deg, #f5f7ff, #eef1ff);
+  border: 1px solid #d8dcff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.subscriber-info {
+  flex: 1;
+  padding-right: 24px;
+}
+
+.subscriber-info h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.subscriber-info p {
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Parameter Info Section */
+.parameter-info-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.parameter-info-section h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.parameter-info-section > p {
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.parameter-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.parameter-info-item {
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.parameter-info-item h4 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.parameter-info-item p {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .subscription-banner,
+  .upgrade-banner,
+  .complete-subscriber-header {
+    flex-direction: column;
+  }
+  
+  .banner-content,
+  .subscriber-info {
+    margin-bottom: 24px;
+    padding-right: 0;
+  }
+  
+  .global-params-preview {
+    width: 100%;
+  }
+}

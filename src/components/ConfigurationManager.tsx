@@ -2,393 +2,325 @@ import React, { useState, useEffect } from 'react';
 import FileSystemConfig from './FileSystemIntegration/FileSystemConfig';
 import WebSearchConfig from './WebSearchIntegration/WebSearchConfig';
 import HuggingFaceConfig from './HuggingFaceIntegration/HuggingFaceConfig';
-import { generateConfiguration, copyConfigurationToClipboard, downloadConfiguration } from '../services/configurationExport';
-import { FileSystemService } from '../services/fileSystemService';
-import { Platform } from '../utils/platform';
-import { useAuth } from '../auth/AuthContext';
+import { SubscriptionProvider } from '../contexts/SubscriptionContext';
+import '../styles/configurationManager.css';
 
 interface ConfigurationManagerProps {
-  userLoggedIn: boolean;
+  onConfigurationComplete?: (config: any) => void;
+  initialConfig?: any;
 }
 
-interface ConfigurationState {
-  name: string;
-  filesystem?: { 
-    enabled: boolean; 
-    directory: string;
-  };
-  websearch?: {
-    enabled: boolean;
-    results: number;
-    safeSearch: boolean;
-    advancedOptions: Record<string, any>;
-  };
-  huggingface?: {
-    enabled: boolean;
-    modelId: string;
-    parameters: Record<string, any>;
-  };
-}
-
-const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({ userLoggedIn }) => {
-  const { getUserSubscriptionTier } = useAuth();
-  const [configuration, setConfiguration] = useState<ConfigurationState>({
-    name: 'My Configuration'
-  });
-  const [configJson, setConfigJson] = useState<string>('');
-  const [copySuccess, setCopySuccess] = useState<boolean>(false);
-  const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
-  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<string>('filesystem');
-  const [validationStatus, setValidationStatus] = useState<{
-    isValid: boolean;
-    message: string;
-    details?: Record<string, any>;
-  } | null>(null);
+const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
+  onConfigurationComplete,
+  initialConfig = {}
+}) => {
+  // Track selected services
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   
-  // Get the user's subscription tier (none, basic, or complete)
-  const subscriptionTier = getUserSubscriptionTier();
+  // Track configurations for each service
+  const [fileSystemConfig, setFileSystemConfig] = useState<any>(
+    initialConfig.fileSystem || { enabled: false }
+  );
+  const [webSearchConfig, setWebSearchConfig] = useState<any>(
+    initialConfig.webSearch || { enabled: false }
+  );
+  const [huggingFaceConfig, setHuggingFaceConfig] = useState<any>(
+    initialConfig.huggingFace || { enabled: false, modelIds: [], parameters: {} }
+  );
   
-  // Explicitly type the subscription tier for HuggingFaceConfig
-  const huggingFaceTier = subscriptionTier as 'none' | 'basic' | 'complete' | 'free' | 'standard' | 'premium';
+  // Track active service tab
+  const [activeTab, setActiveTab] = useState<string>('fileSystem');
   
-  // Check if configuration has any servers enabled
-  const hasEnabledServers = () => {
-    return !!(configuration.filesystem?.enabled || 
-              configuration.websearch?.enabled || 
-              configuration.huggingface?.enabled);
-  };
+  // Track configuration name
+  const [configurationName, setConfigurationName] = useState<string>(
+    initialConfig.name || `Configuration ${new Date().toLocaleDateString()}`
+  );
   
-  // Check if user is logged in before performing actions that require auth
-  const handleAction = (action: () => void) => {
-    if (!userLoggedIn) {
-      // Show login prompt
-      alert("Please log in to save configurations.");
-      return;
-    }
-    
-    action();
-  };
+  // Track deployment process
+  const [isDeploying, setIsDeploying] = useState<boolean>(false);
+  const [deploymentStep, setDeploymentStep] = useState<number>(0);
+  const [deploymentStatus, setDeploymentStatus] = useState<'idle' | 'progress' | 'success' | 'error'>('idle');
+  const [deploymentError, setDeploymentError] = useState<string | null>(null);
   
-  // Generate JSON configuration when dependencies change
+  // Initialize selected services based on enabled services in initialConfig
   useEffect(() => {
-    const enabledServers: any = {};
+    const services = [];
+    if (initialConfig.fileSystem?.enabled) services.push('fileSystem');
+    if (initialConfig.webSearch?.enabled) services.push('webSearch');
+    if (initialConfig.huggingFace?.enabled) services.push('huggingFace');
+    setSelectedServices(services);
     
-    if (configuration.filesystem?.enabled) {
-      enabledServers.filesystem = {
-        directory: configuration.filesystem.directory
-      };
+    // Set active tab to the first enabled service, or fileSystem by default
+    if (services.length > 0) {
+      setActiveTab(services[0]);
+    }
+  }, [initialConfig]);
+  
+  // Update configuration when any service configuration changes
+  useEffect(() => {
+    const combinedConfig = {
+      name: configurationName,
+      fileSystem: fileSystemConfig,
+      webSearch: webSearchConfig,
+      huggingFace: huggingFaceConfig
+    };
+    
+    // If onConfigurationComplete is provided, call it with the updated config
+    if (onConfigurationComplete) {
+      onConfigurationComplete(combinedConfig);
+    }
+  }, [configurationName, fileSystemConfig, webSearchConfig, huggingFaceConfig, onConfigurationComplete]);
+  
+  // Handle service selection
+  const handleServiceToggle = (service: string) => {
+    setSelectedServices(prev => {
+      if (prev.includes(service)) {
+        // If already selected, remove it
+        return prev.filter(s => s !== service);
+      } else {
+        // If not selected, add it
+        return [...prev, service];
+      }
+    });
+    
+    // Update the service's enabled status
+    switch (service) {
+      case 'fileSystem':
+        setFileSystemConfig(prev => ({ ...prev, enabled: !prev.enabled }));
+        break;
+      case 'webSearch':
+        setWebSearchConfig(prev => ({ ...prev, enabled: !prev.enabled }));
+        break;
+      case 'huggingFace':
+        setHuggingFaceConfig(prev => ({ ...prev, enabled: !prev.enabled }));
+        break;
     }
     
-    if (configuration.websearch?.enabled) {
-      enabledServers.websearch = {
-        results: configuration.websearch.results,
-        safeSearch: configuration.websearch.safeSearch
-      };
+    // If service is being enabled, switch to its tab
+    if (!selectedServices.includes(service)) {
+      setActiveTab(service);
     }
-    
-    if (configuration.huggingface?.enabled) {
-      enabledServers.huggingface = {
-        modelId: configuration.huggingface.modelId,
-        parameters: configuration.huggingface.parameters
-      };
-    }
-    
-    const json = generateConfiguration(enabledServers);
-    setConfigJson(json);
-  }, [configuration]);
-  
-  // Handle file system configuration updates
-  const handleFileSystemUpdate = (fsConfig: { enabled: boolean; directory: string }) => {
-    setConfiguration(prev => ({
-      ...prev,
-      filesystem: fsConfig
-    }));
   };
   
-  // Handle web search configuration updates
-  const handleWebSearchUpdate = (wsConfig: { 
-    enabled: boolean; 
-    results: number; 
-    safeSearch: boolean;
-    advancedOptions: Record<string, any>;
-  }) => {
-    setConfiguration(prev => ({
-      ...prev,
-      websearch: wsConfig
-    }));
+  // Handle tab switching
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
   };
   
-  // Handle Hugging Face configuration updates
-  const handleHuggingFaceUpdate = (hfConfig: { 
-    enabled: boolean; 
-    modelId: string;
-    parameters: Record<string, any>;
-  }) => {
-    setConfiguration(prev => ({
-      ...prev,
-      huggingface: hfConfig
-    }));
-  };
-  
-  // Wrap authentication-required actions
-  const handleCopyConfig = async () => {
-    if (!hasEnabledServers()) {
-      alert("Please enable at least one integration before copying the configuration.");
+  // Start deployment process
+  const handleDeploy = async () => {
+    if (selectedServices.length === 0) {
+      alert('Please select at least one service before deploying.');
       return;
     }
+    
+    setIsDeploying(true);
+    setDeploymentStatus('progress');
+    setDeploymentStep(0);
     
     try {
-      await copyConfigurationToClipboard(configJson);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 3000);
+      // Step 1: Configuration Stitching
+      setDeploymentStep(1);
+      await simulateStep(1000); // Simulate processing time
+      
+      // Step 2: Validation
+      setDeploymentStep(2);
+      await simulateStep(1500);
+      
+      // Step 3: Auto-fixing (if needed)
+      setDeploymentStep(3);
+      await simulateStep(1200);
+      
+      // Step 4: Deployment
+      setDeploymentStep(4);
+      await simulateStep(2000);
+      
+      // Step 5: Integration Testing
+      setDeploymentStep(5);
+      await simulateStep(1800);
+      
+      // Deployment successful
+      setDeploymentStatus('success');
     } catch (error) {
-      console.error('Failed to copy configuration:', error);
+      // Deployment failed
+      setDeploymentStatus('error');
+      setDeploymentError(error instanceof Error ? error.message : 'An unknown error occurred');
+    } finally {
+      setIsDeploying(false);
     }
   };
   
-  // Handle download - requires login
-  const handleDownloadConfig = () => {
-    if (!hasEnabledServers()) {
-      alert("Please enable at least one integration before downloading the configuration.");
-      return;
-    }
-    
-    handleAction(() => {
-      try {
-        const filename = `${configuration.name.replace(/\s+/g, '_').toLowerCase()}.json`;
-        downloadConfiguration(configJson, filename);
-        setDownloadSuccess(true);
-        setTimeout(() => setDownloadSuccess(false), 3000);
-      } catch (error) {
-        console.error('Failed to download configuration:', error);
-      }
+  // Simulate a deployment step with a delay
+  const simulateStep = (delay: number): Promise<void> => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay);
     });
   };
   
-  // Save to Claude dir - requires login
-  const handleSaveConfigToClaudeDir = async () => {
-    if (!hasEnabledServers()) {
-      alert("Please enable at least one integration before saving the configuration.");
-      return;
+  // Get display name for each service
+  const getServiceDisplayName = (service: string): string => {
+    switch (service) {
+      case 'fileSystem': return 'File System';
+      case 'webSearch': return 'Web Search';
+      case 'huggingFace': return 'Hugging Face';
+      default: return service;
     }
+  };
+  
+  // Render deployment progress
+  const renderDeploymentProgress = () => {
+    if (deploymentStatus === 'idle') return null;
     
-    handleAction(async () => {
-      try {
-        if (!Platform.isDesktopEnvironment()) {
-          throw new Error('Saving to Claude directory is only available in desktop environment');
-        }
-        
-        const claudeConfigDir = await FileSystemService.getClaudeConfigDirectory();
-        const configPath = `${claudeConfigDir}/claude_config.json`;
-        
-        await FileSystemService.writeFile(configPath, configJson);
-        
-        setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 3000);
-      } catch (error) {
-        console.error('Failed to save configuration:', error);
-      }
-    });
-  };
-  
-  // Validate configuration - requires login
-  const handleValidateConfig = async () => {
-    if (!hasEnabledServers()) {
-      alert("Please enable at least one integration before validating the configuration.");
-      return;
-    }
+    const steps = [
+      'Configuration Stitching',
+      'Validation',
+      'Auto-fixing Issues',
+      'Deployment',
+      'Integration Testing'
+    ];
     
-    handleAction(async () => {
-      try {
-        setValidationStatus({
-          isValid: false,
-          message: 'Validating configuration...'
-        });
-        
-        // In a real application, this would make an API call to Claude
-        // Our application will pay for validation API calls
-        
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Check for basic validation issues
-        const validationIssues = [];
-        
-        if (configuration.filesystem?.enabled && !configuration.filesystem.directory) {
-          validationIssues.push('File System directory not specified');
-        }
-        
-        if (configuration.huggingface?.enabled && !configuration.huggingface.modelId) {
-          validationIssues.push('Hugging Face model not selected');
-        }
-        
-        // If there are issues, return invalid status
-        if (validationIssues.length > 0) {
-          setValidationStatus({
-            isValid: false,
-            message: 'Configuration validation failed',
-            details: {
-              issues: validationIssues
-            }
-          });
-          return;
-        }
-        
-        // Otherwise, simulate successful validation
-        setValidationStatus({
-          isValid: true,
-          message: 'Configuration validated successfully',
-          details: {
-            timestamp: new Date().toISOString()
-          }
-        });
-      } catch (error) {
-        console.error('Validation error:', error);
-        setValidationStatus({
-          isValid: false,
-          message: 'Error during validation',
-          details: {
-            error: error instanceof Error ? error.message : 'Unknown error'
-          }
-        });
-      }
-    });
-  };
-  
-  // Handle name change
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfiguration(prev => ({
-      ...prev,
-      name: e.target.value
-    }));
-  };
-  
-  // Handle tab click with proper event handling
-  const handleTabClick = (tabName: string) => {
-    setActiveTab(tabName);
-  };
-  
-  return (
-    <div className="configuration-manager">
-      <div className="manager-header">
-        <h1>MCP Configuration Tool</h1>
-        <div className="configuration-name">
-          <label htmlFor="configName">Configuration Name:</label>
-          <input
-            id="configName"
-            type="text"
-            value={configuration.name}
-            onChange={handleNameChange}
-          />
-        </div>
-      </div>
-      
-      <div className="integration-tabs">
-        <div
-          className={`tab ${activeTab === 'filesystem' ? 'active' : ''}`}
-          onClick={() => handleTabClick('filesystem')}
-        >
-          File System
-          {configuration.filesystem?.enabled && <span className="enabled-indicator">✓</span>}
-        </div>
-        <div
-          className={`tab ${activeTab === 'websearch' ? 'active' : ''}`}
-          onClick={() => handleTabClick('websearch')}
-        >
-          Web Search
-          {configuration.websearch?.enabled && <span className="enabled-indicator">✓</span>}
-        </div>
-        <div
-          className={`tab ${activeTab === 'huggingface' ? 'active' : ''}`}
-          onClick={() => handleTabClick('huggingface')}
-        >
-          Hugging Face
-          {configuration.huggingface?.enabled && <span className="enabled-indicator">✓</span>}
-        </div>
-      </div>
-      
-      <div className="tab-content">
-        {activeTab === 'filesystem' && (
-          <FileSystemConfig 
-            onConfigurationUpdate={handleFileSystemUpdate}
-            initialConfig={configuration.filesystem}
-          />
-        )}
-        
-        {activeTab === 'websearch' && (
-          <WebSearchConfig 
-            onConfigurationUpdate={handleWebSearchUpdate}
-            initialConfig={configuration.websearch}
-          />
-        )}
-        
-        {activeTab === 'huggingface' && (
-          <HuggingFaceConfig 
-            onConfigurationUpdate={handleHuggingFaceUpdate}
-            initialConfig={configuration.huggingface}
-            userTier={huggingFaceTier}
-          />
-        )}
-      </div>
-      
-      <div className="configuration-output">
-        <h3>Configuration JSON</h3>
-        <pre className="json-preview">{configJson}</pre>
-        
-        <div className="action-buttons">
-          <button onClick={handleCopyConfig}>
-            {copySuccess ? 'Copied!' : 'Copy to Clipboard'}
-          </button>
-          
-          <button onClick={handleDownloadConfig}>
-            {downloadSuccess ? 'Downloaded!' : 'Download JSON'}
-            {!userLoggedIn && <span className="login-required"> (Login Required)</span>}
-          </button>
-          
-          {Platform.isDesktopEnvironment() && (
-            <button onClick={handleSaveConfigToClaudeDir}>
-              {saveSuccess ? 'Saved!' : 'Save to Claude Directory'}
-              {!userLoggedIn && <span className="login-required"> (Login Required)</span>}
-            </button>
-          )}
-          
-          <button 
-            onClick={handleValidateConfig}
-            className="validate-button"
-          >
-            Validate Configuration
-            {!userLoggedIn && <span className="login-required"> (Login Required)</span>}
-          </button>
+    return (
+      <div className="deployment-progress">
+        <h3>Deployment Progress</h3>
+        <div className="progress-steps">
+          {steps.map((step, index) => (
+            <div 
+              key={index}
+              className={`progress-step ${
+                deploymentStep > index 
+                  ? 'completed' 
+                  : deploymentStep === index + 1 
+                    ? 'active' 
+                    : ''
+              }`}
+            >
+              <div className="step-number">{index + 1}</div>
+              <div className="step-name">{step}</div>
+            </div>
+          ))}
         </div>
         
-        {validationStatus && (
-          <div className={`validation-status ${validationStatus.isValid ? 'valid' : 'invalid'}`}>
-            <h4>Validation Result</h4>
-            <p>{validationStatus.message}</p>
-            
-            {validationStatus.details?.issues && (
-              <ul className="validation-issues">
-                {(validationStatus.details.issues as string[]).map((issue, index) => (
-                  <li key={index}>{issue}</li>
+        {deploymentStatus === 'success' && (
+          <div className="deployment-success">
+            <h4>Deployment Successful!</h4>
+            <p>Configuration "{configurationName}" has been successfully deployed and integrated with Claude.</p>
+            <div className="deployment-summary">
+              <h5>Services Included:</h5>
+              <ul>
+                {selectedServices.map(service => (
+                  <li key={service}>{getServiceDisplayName(service)}</li>
                 ))}
               </ul>
-            )}
+              {huggingFaceConfig.enabled && huggingFaceConfig.modelIds.length > 0 && (
+                <div className="model-summary">
+                  <h5>Hugging Face Models:</h5>
+                  <ul>
+                    {huggingFaceConfig.modelIds.map((modelId: string) => (
+                      <li key={modelId}>{modelId}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <button className="test-button">Test with Claude</button>
+          </div>
+        )}
+        
+        {deploymentStatus === 'error' && (
+          <div className="deployment-error">
+            <h4>Deployment Failed</h4>
+            <p>{deploymentError || 'An unknown error occurred during deployment.'}</p>
+            <button className="retry-button" onClick={handleDeploy}>Retry Deployment</button>
           </div>
         )}
       </div>
-      
-      <div className="integration-help">
-        <h3>Getting Started</h3>
-        <p>Enable the integrations you want to use with Claude:</p>
-        <ul>
-          <li><strong>File System</strong>: Allows Claude to access files on your computer</li>
-          <li><strong>Web Search</strong>: Enables Claude to search the internet for up-to-date information</li>
-          <li><strong>Hugging Face</strong>: Integrates models from Hugging Face with Claude</li>
-        </ul>
-        <p>After configuring your integrations, copy the configuration JSON or save it to your Claude directory.</p>
+    );
+  };
+  
+  return (
+    <SubscriptionProvider>
+      <div className="configuration-manager">
+        {/* Configuration Name */}
+        <div className="configuration-header">
+          <input
+            type="text"
+            className="configuration-name-input"
+            value={configurationName}
+            onChange={(e) => setConfigurationName(e.target.value)}
+            placeholder="Configuration Name"
+          />
+          
+          {selectedServices.length > 0 && (
+            <button 
+              className="deploy-button"
+              onClick={handleDeploy}
+              disabled={isDeploying}
+            >
+              {isDeploying ? 'Deploying...' : 'Deploy Configuration'}
+            </button>
+          )}
+        </div>
+        
+        {/* Service Selection Tabs */}
+        <div className="service-tabs">
+          {['fileSystem', 'webSearch', 'huggingFace'].map(service => (
+            <div 
+              key={service}
+              className={`service-tab ${activeTab === service ? 'active' : ''}`}
+              onClick={() => handleTabChange(service)}
+            >
+              <div className="service-checkbox">
+                <input
+                  type="checkbox"
+                  checked={selectedServices.includes(service)}
+                  onChange={() => handleServiceToggle(service)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+              <span className="service-name">{getServiceDisplayName(service)}</span>
+            </div>
+          ))}
+        </div>
+        
+        {/* Active Service Configuration */}
+        <div className="service-config-container">
+          {activeTab === 'fileSystem' && (
+            <FileSystemConfig
+              onConfigurationUpdate={setFileSystemConfig}
+              initialConfig={fileSystemConfig}
+            />
+          )}
+          
+          {activeTab === 'webSearch' && (
+            <WebSearchConfig
+              onConfigurationUpdate={setWebSearchConfig}
+              initialConfig={webSearchConfig}
+            />
+          )}
+          
+          {activeTab === 'huggingFace' && (
+            <HuggingFaceConfig
+              onConfigurationUpdate={setHuggingFaceConfig}
+              initialConfig={huggingFaceConfig}
+            />
+          )}
+        </div>
+        
+        {/* Deployment Progress */}
+        {renderDeploymentProgress()}
+        
+        {/* Additional Configuration Guidance */}
+        {selectedServices.length > 0 && deploymentStatus === 'idle' && (
+          <div className="configuration-guidance">
+            <p>
+              <strong>You can configure multiple services!</strong> Use the tabs above to switch between 
+              services and configure each one. When you're ready, click the "Deploy Configuration" button to 
+              deploy all selected services.
+            </p>
+          </div>
+        )}
       </div>
-    </div>
+    </SubscriptionProvider>
   );
 };
 

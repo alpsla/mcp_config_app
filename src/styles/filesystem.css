@@ -1,0 +1,153 @@
+/* File System Integration Styles */
+
+.directory-selection {
+  margin: 20px 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: #f8f9fa;
+}
+
+.directory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.directory-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.add-directory-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-directory-button:hover {
+  background-color: #45a049;
+}
+
+.add-directory-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.no-directories {
+  padding: 15px;
+  text-align: center;
+  color: #666;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.directory-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.directory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.directory-item:last-child {
+  border-bottom: none;
+}
+
+.directory-path {
+  flex-grow: 1;
+  word-break: break-all;
+  font-family: monospace;
+  padding: 5px;
+}
+
+.remove-directory-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-left: 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-directory-button:hover {
+  background-color: #d32f2f;
+}
+
+.directory-browser-container {
+  margin-top: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.platform-compatibility {
+  margin-top: 20px;
+}
+
+.platform-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.platform-indicator {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.platform-icon {
+  margin-right: 8px;
+}
+
+.compatibility-status {
+  margin-left: 8px;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.security-explanation {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #e8f5e9;
+  border-left: 4px solid #4CAF50;
+  border-radius: 4px;
+}
+
+.security-explanation h4 {
+  margin-top: 0;
+  color: #2E7D32;
+}
+
+.security-explanation ul {
+  margin-bottom: 15px;
+}
+
+.security-tip {
+  font-style: italic;
+  color: #2E7D32;
+}

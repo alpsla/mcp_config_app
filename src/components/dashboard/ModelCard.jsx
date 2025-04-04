@@ -7,7 +7,19 @@ const ModelCard = ({ model, userTier, onAddToConfiguration }) => {
   const isAvailable = 
     model.tier === userTier || 
     (model.tier === "Basic" && userTier === "Standard") || 
+    (model.tier === "both") || // Make "both" tier available to any paid tier
     userTier === "Complete";
+  
+  // Format tier requirement text for clearer display
+  const getTierText = () => {
+    if (model.tier === 'both') {
+      return 'Basic or Complete Tier';
+    } else if (model.tier === 'complete') {
+      return 'Complete Tier Only';
+    } else {
+      return `${model.tier} Tier Required`;
+    }
+  };
   
   return (
     <div className="model-card">
@@ -17,15 +29,19 @@ const ModelCard = ({ model, userTier, onAddToConfiguration }) => {
           {model.isNew && (
             <span className="new-badge">New</span>
           )}
-          {model.isFree ? (
-            <span className="free-badge">Free Model</span>
-          ) : (
-            <span className="paid-badge">Paid Model</span>
-          )}
+          {model.tier === 'both' ? (
+            <span className="basic-tier-badge">Basic Tier</span>
+          ) : model.tier === 'complete' ? (
+            <span className="complete-tier-badge">Complete Tier</span>
+          ) : null}
         </div>
       </div>
       
       <p className="model-description">{model.description || 'No description available'}</p>
+      
+      <div className="model-category">
+        <span className="category-badge">{model.category}</span>
+      </div>
       
       <div className="model-meta">
         {model.releaseDate ? (
@@ -106,7 +122,7 @@ const ModelCard = ({ model, userTier, onAddToConfiguration }) => {
         ) : (
           <div className="tier-required">
             <span className="tier-required-text">
-              {model.tier} Tier Required
+              {getTierText()}
             </span>
           </div>
         )}

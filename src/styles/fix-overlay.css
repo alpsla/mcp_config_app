@@ -1,0 +1,132 @@
+/* Emergency fix for gray overlay issue */
+
+/* Force all content to be visible */
+html, body, #root, .App {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* Remove any fullscreen gray overlay */
+body::before,
+body::after,
+#root::before,
+#root::after,
+.App::before,
+.App::after,
+.configuration-manager::before,
+.configuration-manager::after,
+.tab-content::before,
+.tab-content::after,
+.huggingface-config::before,
+.huggingface-config::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  position: static !important;
+  z-index: -1 !important;
+}
+
+/* Reset positions of key containers */
+.tab-content,
+.huggingface-config,
+.config-steps {
+  position: static !important;
+  z-index: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  background-color: white !important;
+}
+
+/* Fix any fixed or absolute positioned elements */
+*[style*="position: fixed"],
+*[style*="position:fixed"],
+*[style*="position: absolute"],
+*[style*="position:absolute"] {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: auto !important;
+}
+
+/* Make sure progress steps are properly styled */
+.step-indicators {
+  background-color: white !important;
+  position: relative !important;
+  z-index: auto !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  margin-bottom: 20px !important;
+  border-radius: 6px !important;
+  padding: 15px !important;
+  border: 1px solid #eaeaea !important;
+}
+
+/* Make step content visible */
+.step-content {
+  background-color: white !important;
+  position: relative !important;
+  z-index: auto !important;
+  border-radius: 6px !important;
+  padding: 20px !important;
+  border: 1px solid #eaeaea !important;
+  margin-bottom: 20px !important;
+  min-height: 200px !important;
+}
+
+/* Handle overflow properly */
+.model-selection,
+.model-step,
+.model-category-section,
+.model-grid {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  position: relative !important;
+  z-index: auto !important;
+}
+
+/* Emergency visibility fix */
+.huggingface-config * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* Show only active step content */
+.token-step,
+.model-step,
+.parameters-step {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: auto !important;
+}
+
+/* Fix the tabs */
+.tab {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Make the entire section visible */
+.config-steps {
+  position: relative !important;
+  z-index: 5 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Fix background and borders */
+.huggingface-config {
+  background-color: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+}

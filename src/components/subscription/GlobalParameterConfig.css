@@ -1,0 +1,220 @@
+.global-parameter-config {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.parameter-header {
+  margin-bottom: 24px;
+}
+
+.parameter-header h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.parameter-description {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.use-defaults-toggle {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.use-defaults-toggle label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.use-defaults-toggle input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #666;
+}
+
+.parameters-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .parameters-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.parameter-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.parameter-item label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.parameter-input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.range-slider {
+  flex: 1;
+  margin-right: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #e0e0e0;
+  outline: none;
+  border-radius: 3px;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #4e5dde;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.range-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #4e5dde;
+  cursor: pointer;
+  border-radius: 50%;
+  border: none;
+}
+
+.range-slider:disabled {
+  opacity: 0.5;
+}
+
+.parameter-value-display {
+  display: flex;
+  align-items: center;
+  min-width: 70px;
+}
+
+.number-input {
+  width: 50px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.number-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.param-unit {
+  margin-left: 4px;
+  color: #777;
+  font-size: 0.8rem;
+}
+
+.parameter-config-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.cancel-button {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.cancel-button:hover {
+  background-color: #f5f5f5;
+}
+
+.save-button {
+  padding: 8px 16px;
+  background-color: #4e5dde;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.save-button:hover {
+  background-color: #3a49c9;
+}
+
+.save-button:disabled {
+  background-color: #b3b8e6;
+  cursor: not-allowed;
+}
+
+.parameter-help {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.parameter-help h3 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.parameter-help p {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.parameter-help ul {
+  padding-left: 20px;
+}
+
+.parameter-help li {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.parameter-help strong {
+  color: #444;
+}

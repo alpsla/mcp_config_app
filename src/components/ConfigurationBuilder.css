@@ -1,0 +1,485 @@
+.configuration-builder {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.config-name-editor {
+  margin-bottom: 30px;
+}
+
+.config-name-editor label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.config-name-editor input {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.config-name-editor input:focus {
+  border-color: #4e5dde;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(78, 93, 222, 0.1);
+}
+
+/* File System Configuration */
+.file-system-config,
+.web-search-config {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.file-system-config h3,
+.web-search-config h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.file-system-config p,
+.web-search-config p {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.directory-selector h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.selected-directories {
+  margin: 15px 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.selected-directories ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-directories li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.selected-directories li:last-child {
+  border-bottom: none;
+}
+
+.directory-path {
+  font-family: monospace;
+  font-size: 14px;
+  color: #333;
+}
+
+.remove-directory {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-directory:hover {
+  background-color: #d32f2f;
+}
+
+.no-directories {
+  font-style: italic;
+  color: #999;
+  text-align: center;
+  padding: 20px;
+}
+
+.add-directory {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.add-directory input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: monospace;
+}
+
+.add-directory button {
+  background-color: #4e5dde;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-directory button:hover {
+  background-color: #3f4ec3;
+}
+
+/* Web Search Configuration */
+.search-parameters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.parameter {
+  margin-bottom: 20px;
+}
+
+.parameter label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.parameter input[type="number"] {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.parameter input[type="checkbox"] {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+}
+
+.parameter-description {
+  font-size: 13px;
+  color: #666;
+  margin-top: 6px;
+}
+
+.config-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-button {
+  background-color: #4e5dde;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button:hover {
+  background-color: #3f4ec3;
+}
+
+.save-button:disabled {
+  background-color: #b0b7f5;
+  cursor: not-allowed;
+}
+
+/* Deployment */
+.deploy-container {
+  margin-top: 40px;
+  text-align: center;
+  padding: 30px;
+  background-color: #f8f9ff;
+  border-radius: 8px;
+  border: 1px solid #e0e4fd;
+}
+
+.deploy-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deploy-button:hover {
+  background-color: #3d8b40;
+}
+
+.deploy-description {
+  font-size: 14px;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Deployment Progress */
+.deployment-progress {
+  margin-top: 40px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.deployment-progress h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+  text-align: center;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.progress-steps::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.step-name {
+  font-size: 12px;
+  text-align: center;
+  color: #666;
+  max-width: 100px;
+  transition: color 0.3s ease;
+}
+
+.progress-step.active .step-number {
+  background-color: #4e5dde;
+  color: white;
+  box-shadow: 0 0 0 3px rgba(78, 93, 222, 0.2);
+}
+
+.progress-step.active .step-name {
+  color: #4e5dde;
+  font-weight: 500;
+}
+
+.progress-step.completed .step-number {
+  background-color: #4caf50;
+  color: white;
+}
+
+.progress-step.completed .step-name {
+  color: #4caf50;
+}
+
+/* Deployment Success */
+.deployment-success {
+  text-align: center;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+}
+
+.deployment-success h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: #2e7d32;
+}
+
+.deployment-success p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.deployment-summary {
+  text-align: left;
+  background-color: white;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.deployment-summary h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.deployment-summary ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+.deployment-summary li {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.model-summary {
+  margin-top: 15px;
+}
+
+.test-button {
+  background-color: #4e5dde;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.test-button:hover {
+  background-color: #3f4ec3;
+}
+
+/* Deployment Error */
+.deployment-error {
+  text-align: center;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #ffebee;
+  border-radius: 8px;
+}
+
+.deployment-error h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: #c62828;
+}
+
+.deployment-error p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.retry-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Configuration Guidance */
+.configuration-guidance {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #e8f5e9;
+  border-radius: 6px;
+  border-left: 4px solid #4caf50;
+}
+
+.configuration-guidance p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .add-directory {
+    flex-direction: column;
+  }
+  
+  .progress-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .progress-steps::before {
+    display: none;
+  }
+  
+  .progress-step {
+    flex-direction: row;
+    width: 100%;
+    gap: 15px;
+  }
+  
+  .step-name {
+    text-align: left;
+    max-width: none;
+  }
+}

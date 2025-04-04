@@ -32,19 +32,28 @@ const WebSearchConfig: React.FC<WebSearchConfigProps> = ({
   const handleToggle = () => {
     const newState = !isEnabled;
     setIsEnabled(newState);
-    notifyConfigChange(newState, resultCount, safeSearch);
+    // Use setTimeout to break potential infinite re-render cycles
+    setTimeout(() => {
+      notifyConfigChange(newState, resultCount, safeSearch);
+    }, 0);
   };
 
   const handleResultCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const count = parseInt(e.target.value, 10);
     setResultCount(count);
-    notifyConfigChange(isEnabled, count, safeSearch);
+    // Use setTimeout to break potential infinite re-render cycles
+    setTimeout(() => {
+      notifyConfigChange(isEnabled, count, safeSearch);
+    }, 0);
   };
 
   const handleSafeSearchToggle = () => {
     const newState = !safeSearch;
     setSafeSearch(newState);
-    notifyConfigChange(isEnabled, resultCount, newState);
+    // Use setTimeout to break potential infinite re-render cycles
+    setTimeout(() => {
+      notifyConfigChange(isEnabled, resultCount, newState);
+    }, 0);
   };
 
   const notifyConfigChange = (

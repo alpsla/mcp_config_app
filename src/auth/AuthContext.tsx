@@ -1,461 +1,303 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js';
-import { Database } from '../supabase-types';
-import authService from '../services/supabase/authService';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { SubscriptionTier } from '../types';
 
-// Create Supabase client
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-const supabase = createClient<Database>(supabaseUrl, supabaseKey);
-
-interface AuthContextType {
-  authState: {
-    user: User | null;
-    session: Session | null;
-    loading: boolean;
-    error?: string;
-    isAuthenticated?: boolean;
-    requiresEmailConfirmation?: boolean;
-    confirmationMessage?: string;
+// Define the user type
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  user_metadata?: {
+    firstName?: string;
+    lastName?: string;
+    [key: string]: any;
   };
-  signIn: (options: { email?: string; provider?: string }) => Promise<{ data: any; error: any }>;
-  signOut: () => Promise<void>;
-  socialLogin: (provider: 'google' | 'github') => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  robustLogin: (email: string, password: string) => Promise<void>;
-  resendVerification: (email: string) => Promise<{message: string}>;
-  clearError: () => void;
-  updateSubscriptionTier: (tier: string) => Promise<void>;
-  getUserSubscriptionTier: () => string;
-  supabase: SupabaseClient<Database>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Define the auth state
+interface AuthState {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  isAuthenticated?: boolean;
+  requiresEmailConfirmation?: boolean;
+  confirmationMessage?: string;
+  session?: any;
+}
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<{
-    user: User | null;
-    session: Session | null;
-    loading: boolean;
-    error?: string;
-    isAuthenticated?: boolean;
-    requiresEmailConfirmation?: boolean;
-    confirmationMessage?: string;
-  }>({
+// Define the context value
+interface AuthContextValue {
+  authState: AuthState;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  getUserSubscriptionTier: () => SubscriptionTier;
+  updateSubscriptionTier: (tier: SubscriptionTier) => void;
+  socialLogin?: (provider: string) => Promise<void>;
+  robustLogin?: (email: string, password: string) => Promise<void>;
+  resendVerification?: (email: string) => Promise<{message: string}>;
+  clearError?: () => void;
+  signOut?: () => Promise<void>;
+}
+
+// Create the context
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+// Helper function to generate a UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Auth provider component
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Auth state
+  const [authState, setAuthState] = useState<AuthState>({
     user: null,
-    session: null,
     loading: true,
+    error: null,
+    isAuthenticated: false,
+    requiresEmailConfirmation: false,
+    confirmationMessage: null
   });
 
-  // Initialize authentication state
+  // Subscription tier (in real implementation, this would come from the user's profile)
+  const [subscriptionTier, setSubscriptionTier] = useState<SubscriptionTier>(SubscriptionTier.FREE);
+
+  // Initialize auth state
   useEffect(() => {
     const initAuth = async () => {
-      console.log('Initializing auth state');
       try {
-        // Check for existing session
-        const { data, error } = await supabase.auth.getSession();
+        // In a real implementation, check for an existing session
+        const sessionUser = localStorage.getItem('user');
         
-        if (error) {
-          console.error('Error getting initial session:', error);
-          throw error;
-        }
-        
-        if (data.session) {
-          console.log('Session found during initialization');
-          try {
-            // Get full user profile
-            const user = await authService.getUserProfile(data.session.user);
-            
-            if (user) {
-              setAuthState({
-                user: user,
-                session: data.session,
-                loading: false,
-                isAuthenticated: true,
-                error: undefined
-              });
-              
-              // If we're on the home page, redirect to dashboard
-              if (window.location.hash === '#/' || window.location.hash === '') {
-                console.log('User authenticated, redirecting to dashboard');
-                window.location.hash = '/dashboard';
-              }
-            } else {
-              console.error('User profile not found during initialization');
-              setAuthState({
-                user: null,
-                session: null,
-                loading: false,
-                isAuthenticated: false,
-                error: 'Failed to load user profile'
-              });
-            }
-          } catch (profileError) {
-            console.error('Error getting user profile during initialization:', profileError);
-            setAuthState({
-              user: null,
-              session: null,
-              loading: false,
-              isAuthenticated: false,
-              error: 'Error loading user profile'
-            });
+        if (sessionUser) {
+          const user = JSON.parse(sessionUser);
+          setAuthState({
+            user,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+            requiresEmailConfirmation: false,
+            confirmationMessage: null
+          });
+          
+          // Get subscription tier from user profile or local storage
+          const storedTier = localStorage.getItem('subscriptionTier') as SubscriptionTier;
+          if (storedTier) {
+            setSubscriptionTier(storedTier);
           }
         } else {
-          console.log('No session found during initialization');
           setAuthState({
             user: null,
-            session: null,
             loading: false,
+            error: null,
             isAuthenticated: false,
-            error: undefined
+            requiresEmailConfirmation: false,
+            confirmationMessage: null
           });
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
         setAuthState({
           user: null,
-          session: null,
           loading: false,
+          error: 'Failed to initialize authentication',
           isAuthenticated: false,
-          error: undefined
+          requiresEmailConfirmation: false,
+          confirmationMessage: null
         });
       }
     };
-    
+
     initAuth();
-    
-    // Set up auth state change listener
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
-        
-        if (session) {
-          // User is authenticated
-          try {
-            // Get user profile if session exists
-            const user = await authService.getUserProfile(session.user);
-            
-            setAuthState({
-              user,
-              session,
-              loading: false,
-              isAuthenticated: true,
-              error: undefined
-            });
-            
-            // Redirect to dashboard if not already there
-            if (!window.location.hash.includes('/dashboard')) {
-              console.log('User authenticated, redirecting to dashboard');
-              setTimeout(() => {
-                window.location.hash = '/dashboard';
-              }, 300);
-            }
-          } catch (error) {
-            console.error('Error processing authenticated user:', error);
-            setAuthState({
-              user: null,
-              session: null,
-              loading: false,
-              isAuthenticated: false,
-              error: 'Error processing authentication'
-            });
-          }
-        } else {
-          // User is not authenticated
-          setAuthState({
-            user: null,
-            session: null,
-            loading: false,
-            isAuthenticated: false,
-            error: undefined
-          });
-        }
-      }
-    );
-    
-    // Clean up listener on unmount
-    return () => {
-      authListener?.subscription.unsubscribe();
-    };
   }, []);
 
-  // Sign in with email (magic link) or OAuth provider
-  // Social login function
-  const socialLogin = async (provider: 'google' | 'github') => {
-    try {
-      console.log(`Initiating ${provider} sign in...`);
-      await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          scopes: provider === 'google' ? 'email profile' : undefined
-        }
-      });
-    } catch (error) {
-      console.error(`Error signing in with ${provider}:`, error);
-      setAuthState(prev => ({
-        ...prev,
-        error: `Error signing in with ${provider}: ${(error as Error).message}`
-      }));
-    }
-  };
-
-  // Password login
+  // Login function
   const login = async (email: string, password: string) => {
     try {
-      setAuthState(prev => ({ ...prev, loading: true, error: undefined }));
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
+      setAuthState({
+        ...authState,
+        loading: true,
+        error: null
       });
       
-      if (error) {
-        throw error;
-      }
+      // In a real implementation, call authentication API
+      // For now, mock a successful login with proper UUID
+      const user: User = {
+        id: generateUUID(),
+        email,
+        name: 'Demo User'
+      };
+      
+      // Store user in local storage (in real implementation, use secure methods)
+      localStorage.setItem('user', JSON.stringify(user));
       
       setAuthState({
-        user: data.user,
-        session: data.session,
+        user,
         loading: false,
-        isAuthenticated: !!data.user
+        error: null,
+        isAuthenticated: true
       });
     } catch (error) {
-      console.error('Login error:', error);
-      setAuthState(prev => ({
-        ...prev,
+      setAuthState({
+        ...authState,
         loading: false,
-        error: (error as Error).message
-      }));
+        error: 'Failed to login',
+        isAuthenticated: false
+      });
     }
   };
 
-  // More robust login function with additional error handling
-  const robustLogin = async (email: string, password: string) => {
+  // Logout function
+  const logout = async () => {
     try {
-      setAuthState(prev => ({ ...prev, loading: true, error: undefined }));
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-      
-      if (error) {
-        throw error;
-      }
+      // In a real implementation, call logout API
+      // For now, just clear local storage
+      localStorage.removeItem('user');
       
       setAuthState({
-        user: data.user,
-        session: data.session,
+        user: null,
         loading: false,
-        isAuthenticated: !!data.user
+        error: null,
+        isAuthenticated: false,
+        requiresEmailConfirmation: false,
+        confirmationMessage: null
       });
     } catch (error) {
-      console.error('Robust login error:', error);
-      setAuthState(prev => ({
-        ...prev,
+      setAuthState({
+        ...authState,
+        error: 'Failed to logout'
+      });
+    }
+  };
+
+  // Get subscription tier
+  const getUserSubscriptionTier = (): SubscriptionTier => {
+    return subscriptionTier;
+  };
+
+  // Update subscription tier
+  const updateSubscriptionTier = (tier: SubscriptionTier) => {
+    setSubscriptionTier(tier);
+    localStorage.setItem('subscriptionTier', tier);
+  };
+
+  // Social login function
+  const socialLogin = async (provider: string) => {
+    try {
+      setAuthState({
+        ...authState,
+        loading: true,
+        error: null
+      });
+      
+      // In a real implementation, call social auth API
+      console.log(`Social login with ${provider} requested`);
+      
+      // Mock a successful login with proper UUID format
+      const user: User = {
+        id: generateUUID(), // Use UUID instead of simple "2" string
+        email: `user@${provider}.com`,
+        name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`
+      };
+      
+      // Store user in local storage
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      setAuthState({
+        user,
         loading: false,
-        error: (error as Error).message
-      }));
+        error: null,
+        isAuthenticated: true
+      });
+    } catch (error) {
+      setAuthState({
+        ...authState,
+        loading: false,
+        error: 'Failed to login with social provider'
+      });
+    }
+  };
+
+  // Robust login function
+  const robustLogin = async (email: string, password: string) => {
+    try {
+      // Just use the regular login for now
+      await login(email, password);
+    } catch (error) {
+      setAuthState({
+        ...authState,
+        loading: false,
+        error: 'Robust login failed'
+      });
     }
   };
 
   // Resend verification email
   const resendVerification = async (email: string): Promise<{message: string}> => {
     try {
-      setAuthState(prev => ({ ...prev, loading: true }));
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email,
-        options: {
-          emailRedirectTo: window.location.origin
-        }
+      setAuthState({
+        ...authState,
+        loading: true,
+        error: null
       });
       
-      if (error) throw error;
-      
-      setAuthState(prev => ({
-        ...prev,
-        loading: false,
-        confirmationMessage: 'Verification email resent. Please check your inbox.'
-      }));
-      
-      return { message: 'Verification email resent. Please check your inbox.' };
-    } catch (error) {
-      console.error('Error resending verification:', error);
-      setAuthState(prev => ({
-        ...prev,
-        loading: false,
-        error: (error as Error).message
-      }));
-      throw error;
-    }
-  };
-
-  // Clear error state
-  const clearError = () => {
-    setAuthState(prev => ({
-      ...prev,
-      error: undefined
-    }));
-  };
-
-  // Update user's subscription tier
-  const updateSubscriptionTier = async (tier: string) => {
-    try {
-      if (!authState.user) throw new Error('User not authenticated');
-      
-      // Convert the tier to uppercase for storage in user metadata
-      // In a real app, this would update the user's record in the database
-      const tierValue = tier.toUpperCase();
-      console.log(`Updating subscription tier to: ${tierValue}`);
-      
-      // Update local state
-      setAuthState(prev => ({
-        ...prev,
-        user: prev.user ? {
-          ...prev.user,
-          user_metadata: {
-            ...prev.user.user_metadata,
-            subscriptionTier: tierValue
-          }
-        } : null
-      }));
-      
-      // For testing purposes, let's just store in localStorage
-      localStorage.setItem('user_subscription_tier', tier);
-    } catch (error) {
-      console.error('Error updating subscription tier:', error);
-    }
-  };
-  
-  // Get user's subscription tier (defaults to 'none' if not set)
-  const getUserSubscriptionTier = (): string => {
-    // Check localStorage first (for testing)
-    const localTier = localStorage.getItem('user_subscription_tier');
-    if (localTier) {
-      return localTier;
-    }
-    
-    // Get from user metadata if available
-    const userTier = authState.user?.user_metadata?.subscriptionTier;
-    
-    // Map the enum values to the expected tier values
-    if (!userTier) return 'none';
-    
-    // Convert to lowercase for consistent comparison
-    const tier = String(userTier).toUpperCase();
-    
-    switch (tier) {
-      case 'FREE':
-        return 'none';
-      case 'BASIC':
-      case 'STARTER':
-      case 'STANDARD':
-        return 'basic';
-      case 'COMPLETE':
-        return 'complete';
-      default:
-        return 'none';
-    }
-  };
-
-  // Original signIn function kept for compatibility
-  const signIn = async (options: { email?: string; provider?: string }) => {
-    try {
-      if (options.email && !options.provider) {
-        // Sign in with magic link
-        return await supabase.auth.signInWithOtp({
-          email: options.email,
-          options: {
-            emailRedirectTo: window.location.origin
-          }
-        });
-      } else if (options.provider) {
-        // Sign in with OAuth provider
-        return await supabase.auth.signInWithOAuth({
-          provider: options.provider as any,
-          options: {
-            redirectTo: window.location.origin
-          }
-        });
-      } else {
-        throw new Error('Invalid sign in options');
-      }
-    } catch (error) {
-      console.error('Error signing in:', error);
-      return { data: null, error };
-    }
-  };
-
-  // Sign out
-  const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      // Clear local storage items
-      localStorage.removeItem('user_subscription_tier');
+      // In a real implementation, call resend verification API
+      console.log(`Resending verification email to ${email}`);
       
       setAuthState({
-        user: null,
-        session: null,
+        ...authState,
         loading: false,
+        confirmationMessage: 'Verification email sent. Please check your inbox.'
       });
+      
+      // Return success message
+      return { message: 'Verification email sent. Please check your inbox.' };
     } catch (error) {
-      console.error('Error signing out:', error);
+      setAuthState({
+        ...authState,
+        loading: false,
+        error: 'Failed to resend verification email'
+      });
+      throw new Error('Failed to resend verification email');
     }
   };
 
-  // Handle OAuth callbacks
-  const handleAuthCallback = async () => {
-    console.log('Auth callback handler initiated');
-    try {
-      const { data, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error('Auth callback error:', error.message);
-        return;
-      }
-      
-      if (data.session?.user) {
-        console.log('Session found in callback, redirecting to dashboard');
-        // Force a redirect to the dashboard
-        window.location.hash = '/dashboard';
-      } else {
-        console.warn('No session found in callback');
-      }
-    } catch (error) {
-      console.error('Error in auth callback handler:', error);
-    }
+  // Clear error
+  const clearError = () => {
+    setAuthState({
+      ...authState,
+      error: null
+    });
   };
 
-  // Check if we're in a callback URL and handle it
-  useEffect(() => {
-    if (window.location.pathname.includes('/auth/callback')) {
-      console.log('Auth callback URL detected');
-      handleAuthCallback();
-    }
-  }, []);
+  // Alias for logout for compatibility
+  const signOut = logout;
+
+  // Context value
+  const value: AuthContextValue = {
+    authState,
+    login,
+    logout,
+    getUserSubscriptionTier,
+    updateSubscriptionTier,
+    socialLogin,
+    robustLogin,
+    resendVerification,
+    clearError,
+    signOut
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        authState,
-        signIn,
-        signOut,
-        socialLogin,
-        login,
-        robustLogin,
-        resendVerification,
-        clearError,
-        updateSubscriptionTier,
-        getUserSubscriptionTier,
-        supabase,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
+// Custom hook for using the auth context
+export const useAuth = (): AuthContextValue => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');

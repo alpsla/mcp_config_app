@@ -23,10 +23,26 @@ export const generateConfiguration = (servers: Record<string, any>): string => {
   Object.entries(servers).forEach(([serverType, config]) => {
     switch (serverType) {
       case 'filesystem':
-        mcpServers.filesystem = {
-          command: 'npx',
-          args: ['@anthropic-ai/mcp-filesystem', '--directory', config.directory]
-        };
+        // Use directories array if available
+        if (config.directories && config.directories.length > 0) {
+          const args = ['@anthropic-ai/mcp-filesystem'];
+          
+          // Add each directory as a separate --directory argument
+          config.directories.forEach(dir => {
+            args.push('--directory', dir);
+          });
+          
+          mcpServers.filesystem = {
+            command: 'npx',
+            args: args
+          };
+        } else {
+          // Fallback to single directory
+          mcpServers.filesystem = {
+            command: 'npx',
+            args: ['@anthropic-ai/mcp-filesystem', '--directory', config.directory]
+          };
+        }
         break;
       case 'websearch':
         mcpServers.websearch = {

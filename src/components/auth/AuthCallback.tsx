@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../../services/supabase/supabaseClient';
 import { repairUserProfile } from '../../utils/profileRepair';
 import { SubscriptionTier } from '../../types';
+import { ensureProfileExists } from '../../utils/createProfileBypass';
 
 /**
  * Authentication Callback Handler Component
@@ -103,113 +104,58 @@ const AuthCallback: React.FC = () => {
 
         // Ensure user profile exists - critical for successful authentication
         try {
-          // First check if profile exists
-          const { data: existingProfile } = await supabase
-            .from('profiles')
-            .select('id, email, first_name, last_name')
-            .eq('id', userId)
-            .maybeSingle();
+          // Use our new bypass utility to ensure profile exists
+          setStatus('Creating user profile...');
+          console.log('AuthCallback: Ensuring profile exists for user:', userId);
           
-          // If profile doesn't exist, create it
-          if (!existingProfile) {
-            setStatus('Creating user profile...');
-            console.log('AuthCallback: Creating new profile for user:', userId);
-            console.log('AuthCallback: Profile data to save:', {
-              email,
-              firstName,
-              lastName
-            });
+          const profileResult = await ensureProfileExists(userId, email, firstName, lastName);
+          console.log('AuthCallback: Profile creation result:', profileResult);
+          
+          if (profileResult.success) {
+            console.log(`AuthCallback: Profile ${profileResult.method === 'existing' ? 'already exists' : 'created successfully'} using ${profileResult.method} method`);
+          } else {
+            console.error('AuthCallback: Failed to create profile:', profileResult.error);
             
-            // Try multiple times to create the profile (sometimes the first attempt fails)
-            let profileCreated = false;
-            let attempts = 0;
-            const maxAttempts = 3;
+            // Try legacy repair method as last resort
+            console.log('AuthCallback: Trying legacy repair method as last resort...');
+            const repairResult = await repairUserProfile(userId, email, firstName, lastName);
             
-            while (!profileCreated && attempts < maxAttempts) {
-              attempts++;
+            if (!repairResult.success) {
+              console.error('AuthCallback: All profile creation methods failed');
+              
+              // Absolute fallback: Store profile info in user metadata
               try {
-                const { error: createError } = await supabase
-                  .from('profiles')
-                  .insert([{
-                    id: userId,
-                    email: email,
+                console.log('AuthCallback: Using metadata fallback for profile info');
+                await supabase.auth.updateUser({
+                  data: {
+                    profile_creation_failed: true,
+                    email,
                     first_name: firstName,
                     last_name: lastName,
-                    created_at: new Date().toISOString(),
-                    subscription_tier: SubscriptionTier.FREE
-                  }]);
-                
-                if (createError) {
-                  console.error(`AuthCallback: Error creating profile (attempt ${attempts}):`, createError);
-                  // Wait briefly before next attempt
-                  await new Promise((resolve) => setTimeout(resolve, 500));
-                } else {
-                  console.log(`AuthCallback: Successfully created profile on attempt ${attempts}`);
-                  profileCreated = true;
-                }
-              } catch (err) {
-                console.error(`AuthCallback: Exception in profile creation (attempt ${attempts}):`, err);
-                // Wait briefly before next attempt
-                await new Promise((resolve) => setTimeout(resolve, 500));
-              }
-            }
-            
-            if (!profileCreated) {
-              console.warn('AuthCallback: Failed to create profile after multiple attempts');
-              // Try using our profile repair utility as a fallback
-              try {
-                console.log('AuthCallback: Using profile repair utility as fallback...');
-                const repairResult = await repairUserProfile(userId, email, firstName, lastName);
-                console.log('AuthCallback: Profile repair result:', repairResult);
-                
-                if (repairResult.success) {
-                  console.log('AuthCallback: Profile created using repair utility');
-                } else {
-                  console.error('AuthCallback: Profile repair also failed:', repairResult.error);
-                }
-              } catch (repairError) {
-                console.error('AuthCallback: Error using profile repair:', repairError);
-              }
-            }
-          } else {
-            console.log('Profile already exists for user', userId);
-            
-            // Check if profile fields need to be updated
-            let needsUpdate = false;
-            const updateData: any = {};
-            
-            if (!existingProfile.email || existingProfile.email !== email) {
-              updateData.email = email;
-              needsUpdate = true;
-            }
-            
-            if (!existingProfile.first_name) {
-              updateData.first_name = firstName;
-              needsUpdate = true;
-            }
-            
-            if (!existingProfile.last_name) {
-              updateData.last_name = lastName;
-              needsUpdate = true;
-            }
-            
-            // Update profile if needed
-            if (needsUpdate) {
-              setStatus('Updating user profile...');
-              const { error: updateError } = await supabase
-                .from('profiles')
-                .update(updateData)
-                .eq('id', userId);
-                
-              if (updateError) {
-                console.error('Error updating profile during callback:', updateError);
-              } else {
-                console.log('Successfully updated profile during callback');
+                    subscription_tier: 'FREE',
+                    created_at: new Date().toISOString()
+                  }
+                });
+              } catch (metadataError) {
+                console.error('AuthCallback: Even metadata fallback failed:', metadataError);
               }
             }
           }
+          
+          // Check if profile exists one more time to be sure
+          const { data: finalCheck } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', userId)
+            .maybeSingle();
+            
+          if (finalCheck) {
+            console.log('AuthCallback: Final check confirms profile exists');
+          } else {
+            console.warn('AuthCallback: Final check shows profile still missing');
+          }
         } catch (profileError) {
-          console.error('Error handling profile in callback:', profileError);
+          console.error('AuthCallback: Error handling profile:', profileError);
           // Continue anyway - we'll try to redirect to the app
         }
 

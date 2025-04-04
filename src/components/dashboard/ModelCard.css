@@ -15,6 +15,27 @@
   color: white;
 }
 
+/* New tier-specific badges */
+.basic-tier-badge {
+  background-color: #60a5fa; /* Light blue */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.complete-tier-badge {
+  background-color: #8b5cf6; /* Purple */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
 .model-card.selected {
   border: 2px solid var(--primary-color);
   box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.3);
@@ -80,36 +101,18 @@
   z-index: 0;
 }
 
-.model-badge-container {
+.model-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1rem;
   position: relative;
   z-index: 1;
 }
 
-.model-category {
-  background-color: var(--gray-200);
-  color: var(--gray-700);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.premium-badge {
-  background-color: #ffcc00;
-  color: #333;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.model-name {
+.model-title {
   font-size: 1.2rem;
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.25rem 0;
   color: var(--gray-800);
   position: relative;
   z-index: 1;
@@ -117,25 +120,81 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
+  flex: 1;
+}
+
+.model-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-left: 10px;
+}
+
+.new-badge {
+  background-color: #ef4444; /* Red */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .model-description {
   color: var(--gray-700);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   flex-grow: 1;
+  position: relative;
+  z-index: 1;
+  line-height: 1.5;
+}
+
+.model-category {
+  margin-bottom: 1rem;
+}
+
+.category-badge {
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.model-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
   position: relative;
   z-index: 1;
 }
 
-.model-card-footer {
+.meta-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--gray-600);
+}
+
+.meta-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  fill: currentColor;
+}
+
+.model-actions {
   display: flex;
   justify-content: center;
   position: relative;
   z-index: 1;
+  margin-top: auto;
 }
 
-.model-button {
-  flex: 1;
+.add-model-button {
+  width: 100%;
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -146,45 +205,59 @@
   transition: var(--transition);
 }
 
-.model-button:hover {
+.add-model-button:hover {
   background-color: var(--primary-dark);
 }
 
-.model-button:disabled {
-  background-color: var(--gray-300);
-  cursor: not-allowed;
-}
-
-.model-button.selected {
-  background-color: #10b981; /* Green */
-}
-
-.model-button.selected:hover {
-  background-color: #059669; /* Darker green */
-}
-
-.model-demo-button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--border-radius);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
+.tier-required {
   width: 100%;
+  padding: 0.75rem 0;
   text-align: center;
+  background-color: var(--gray-100);
+  border-radius: var(--border-radius);
+  border: 1px dashed var(--gray-300);
+}
+
+.tier-required-text {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+/* Version history toggle */
+.model-versions {
+  margin-bottom: 1rem;
+}
+
+.version-history-toggle {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
+  padding: 0;
 }
 
-.model-demo-button:hover {
-  background-color: var(--primary-dark);
+.version-history {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--gray-100);
+  border-radius: var(--border-radius);
+  font-size: 0.8rem;
 }
 
-.model-demo-button::before {
-  content: '▶';
-  font-size: 12px;
+.version-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.version-item {
+  margin-bottom: 0.25rem;
+}
+
+.version-item:last-child {
+  margin-bottom: 0;
 }

@@ -2,6 +2,9 @@
 @import './styles/home.css';
 @import './styles/dashboard.css';
 @import './styles/onboarding.css';
+@import './styles/deployment.css';
+@import './styles/filesystem.css';
+@import './styles/configurationManager.css';
 
 body {
   margin: 0;

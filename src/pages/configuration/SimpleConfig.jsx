@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SharedHeader from '../../components/shared/SharedHeader';
 import SharedFooter from '../../components/shared/SharedFooter';
+import TestComponent from '../../components/TestComponent'; // Import the test component
 import './ConfigurationPage.css';
 import './SimpleConfig.css';
 import { useAuth } from '../../auth/AuthContext';
@@ -300,6 +301,9 @@ const SimpleConfig = ({ history, onSaveConfiguration }) => {
         onSignOut={handleSignOut}
         languageSelector={true}
       />
+      
+      {/* Add Test Component Here */}
+      <TestComponent />
       
       <main className="config-main">
         <div className="config-container">

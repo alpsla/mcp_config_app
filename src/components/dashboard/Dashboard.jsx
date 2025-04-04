@@ -300,76 +300,76 @@ const Dashboard = () => {
     }
   ];
   
-  // Premium models data - expanded list
+  // Updated Premium models data with the new list
   const premiumModels = [
     {
-      id: 'flux1-dev',
-      name: 'Flux.1-dev-infer',
-      category: 'Image Generation',
-      description: 'Create stunning images from text descriptions with high fidelity',
+      id: 'gpt-neo-2-7b',
+      name: 'EleutherAI/gpt-neo-2.7B',
+      category: 'Text Generation',
+      description: 'Versatile text generation model for creative writing and document drafting',
       tier: 'both' // Available in both basic and complete plans
     },
     {
-      id: 'whisper-large',
+      id: 'whisper-v3',
       name: 'Whisper-large-v3-turbo',
       category: 'Audio Transcription',
-      description: 'Transcribe audio to text with high accuracy and multiple language support',
+      description: 'Powerful audio transcription with superior accuracy',
+      tier: 'both' // Available in both basic and complete plans
+    },
+    {
+      id: 'stable-diffusion-2',
+      name: 'stabilityai/stable-diffusion-2',
+      category: 'Image Generation',
+      description: 'State-of-the-art image generation with high quality outputs',
       tier: 'both' // Available in both basic and complete plans
     },
     {
       id: 'qwen2-72b',
       name: 'Qwen2-72B-Instruct',
       category: 'Language Model',
-      description: 'Advanced language model for complex tasks with contextual understanding',
-      tier: 'both' // Available in both basic and complete plans
-    },
-    {
-      id: 'shuttle-aesthetic',
-      name: 'Shuttle-3.1-aesthetic',
-      category: 'Image Generation',
-      description: 'Generate artistic and aesthetic images with unique visual styles',
+      description: 'Large language model complementary to Claude',
       tier: 'complete' // Only in complete plan
     },
     {
-      id: 'llama3-70b',
-      name: 'Llama3-70B-Instruct',
-      category: 'Language Model',
-      description: 'Versatile language model for conversational AI and content generation',
+      id: 'all-minilm-l6-v2',
+      name: 'sentence-transformers/all-MiniLM-L6-v2',
+      category: 'Semantic Search',
+      description: 'Lightweight embedding model for semantic search and clustering',
       tier: 'complete' // Only in complete plan
     },
     {
-      id: 'musicgen',
-      name: 'MusicGen-Large',
-      category: 'Audio Generation',
-      description: 'Create original music compositions from text descriptions',
+      id: 'bart-large-cnn',
+      name: 'facebook/bart-large-cnn',
+      category: 'Content Summarization',
+      description: 'Specialized model for condensing long documents into concise summaries',
       tier: 'complete' // Only in complete plan
     },
     {
-      id: 'deepseek-coder',
-      name: 'DeepSeek-Coder-33B',
-      category: 'Code Generation',
-      description: 'Generate high-quality code across multiple programming languages',
+      id: 'instruct-pix2pix',
+      name: 'CompVis/instruct-pix2pix',
+      category: 'Image Editing',
+      description: 'Edit images based on text instructions',
       tier: 'complete' // Only in complete plan
     },
     {
-      id: 'sdxl-turbo',
-      name: 'SDXL-Turbo',
-      category: 'Image Generation',
-      description: 'Fast image generation with stable diffusion for rapid prototyping',
+      id: 'layoutlmv3-base',
+      name: 'microsoft/layoutlmv3-base',
+      category: 'Document Understanding',
+      description: 'Extract structured data from scanned documents and forms',
       tier: 'complete' // Only in complete plan
     },
     {
-      id: 'videocrafter',
-      name: 'VideoCrafter-2',
+      id: 'roberta-squad2',
+      name: 'deepset/roberta-base-squad2',
+      category: 'Question Answering',
+      description: 'Question-answering model for precise information extraction',
+      tier: 'complete' // Only in complete plan
+    },
+    {
+      id: 'text-to-video-ms',
+      name: 'ali-vilab/text-to-video-ms-1.7b',
       category: 'Video Generation',
-      description: 'Create short video clips from text descriptions or image inputs',
-      tier: 'complete' // Only in complete plan
-    },
-    {
-      id: 'stable-cascade',
-      name: 'Stable Cascade',
-      category: 'Image Generation',
-      description: 'Multi-stage image generation with unprecedented detail and quality',
+      description: 'Generate videos from text descriptions with control over motion',
       tier: 'complete' // Only in complete plan
     }
   ];

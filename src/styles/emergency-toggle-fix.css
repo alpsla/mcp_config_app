@@ -1,0 +1,101 @@
+/* Emergency fix for toggle-slider covering the entire screen */
+
+/* Reset the toggle-slider's properties */
+.toggle-slider {
+  /* Reset position to be relative to its container */
+  position: relative !important;
+  display: inline-block !important;
+  
+  /* Explicit dimensions - make it small */
+  width: 40px !important;
+  height: 20px !important;
+  max-width: 40px !important;
+  max-height: 20px !important;
+  
+  /* Remove any full-screen positioning */
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  
+  /* Background and appearance */
+  background-color: #ccc !important;
+  border-radius: 20px !important;
+  
+  /* Ensure proper z-index */
+  z-index: 1 !important;
+  
+  /* Prevent strange overflow */
+  overflow: hidden !important;
+  
+  /* Ensure it doesn't try to fill space */
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure the toggle switch container is properly sized */
+.toggle-switch {
+  position: relative !important;
+  display: inline-block !important;
+  width: 40px !important; 
+  height: 20px !important;
+  margin-right: 10px !important;
+}
+
+/* Kill any after/before pseudo-elements that might be causing the issue */
+.toggle-slider::before,
+.toggle-slider::after {
+  content: "" !important;
+  position: absolute !important;
+  height: 16px !important;
+  width: 16px !important;
+  left: 2px !important;
+  bottom: 2px !important;
+  background-color: white !important;
+  transition: .2s !important;
+  border-radius: 50% !important;
+  transform: none !important;
+}
+
+/* Handle input:checked state */
+input:checked + .toggle-slider {
+  background-color: #4e5dde !important;
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(20px) !important;
+}
+
+/* Fix the container for the entire component */
+.huggingface-config .config-header,
+.huggingface-config .toggle-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Hide any lingering toggle-slider element that might be causing issues */
+body > .toggle-slider {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  z-index: -1 !important;
+}
+
+/* Just in case there's an overlay div */
+body::before,
+body::after,
+#root::before,
+#root::after,
+.App::before,
+.App::after {
+  display: none !important;
+  content: none !important;
+}

@@ -1,123 +1,166 @@
 MCP Configuration Tool - User Flow (Phased Approach)
-Phase 1: Beta Launch
-1. Simplified Onboarding Experience
-First-Time User Flow
+=======================================
 
-Welcome screen with clear explanation of MCP Configuration Tool
-Optional quick tour of key features
-"Quick Start" templates for common use cases:
+## Phase 1: Beta Launch
 
-Basic Web Search configuration
-File System integration (desktop only)
+### 1. Comprehensive User Experience
 
+**First-Time User Flow**
 
-Simple, guided setup process
-Success confirmation screen
+- Marketing homepage with clear explanation of MCP Configuration Tool
+- Compelling feature showcase with visuals and testimonials
+- Optional quick tour of key features
+- "Quick Start" templates for common use cases:
+  - Basic Web Search configuration
+  - File System integration (desktop only)
+  - Hugging Face model integration
+- Simple, guided setup process
+- Success confirmation screen
 
-Sign Up / Sign In
+**Sign Up / Sign In**
 
-Streamlined registration with email or social media via Supabase
-Clear tier comparison showing:
+- Streamlined registration with email or social media via Supabase
+- Clear tier comparison showing:
+  - Free Tier capabilities
+  - Paid tier options with model counts (Basic: 3 models, Complete: Unlimited models)
+- Secure payment processing for subscription features
 
-Free Tier capabilities
-Paid tier options with model counts (3, 6, or 10 models)
+### 2. Enhanced Dashboard Experience
 
+**Dynamic Dashboard Based on User Status**
 
-One-time payment processing for beta premium features
+- **Adaptive Dashboard System**:
+  - First-time user dashboard (comprehensive with marketing/education)
+  - Existing user dashboard (focused on configurations and usage)
 
-2. Main Dashboard
-Visual Organization
-
-User Type Detection
-- First-time user experience (comprehensive with marketing/education)
-- Returning user experience (streamlined with focus on configurations)
-
-First-Time User Dashboard
+**First-Time User Dashboard**
 - Current capabilities prominently featured
 - Pricing and features comparison
 - Example use cases and templates
+- AI model demos for capabilities preview
+- User testimonials to build trust
 - "Coming Soon" section highlighting future features
 - Quick access to create new configuration
+- Package selection with direct navigation to configuration
 
-Returning User Dashboard
+**Returning User Dashboard**
 - Existing configurations prominently displayed with:
   - Configuration details preview
+  - Active configuration indicator
   - Last used date
   - Testing/validation button
   - Quick action buttons (Edit, Duplicate, Export)
-- New/featured models section
+- Configuration history with usage stats
+- New arrivals based on user profile and interests
+- Popular configurations from other users
 - Minimal upgrade path (if not on highest tier)
 - User feedback collection
 - Preference toggle for full dashboard view
 
-3. Core Configuration Interface
-Two-Panel Layout
+### 3. Unified Subscription & Configuration Flow
 
-Left Panel: Server selection with toggles:
+**Subscription Process Integration**
 
-Web Search
-File System Access (with "Desktop Only" indicator)
-Hugging Face Models (with tier indicators)
+- Seamless transition from tier selection to configuration
+- **Enhanced Subscription Flow**:
+  - Step 1: Tier selection (Basic or Complete)
+  - Step 2: Global parameter configuration with educational explanations
+  - Step 3: Subscription confirmation with parameter summary
+- **Global Parameter Management**:
+  - User-configured defaults applied to all models
+  - Educational tooltips explaining each parameter's function
+  - Visual examples of parameter effects
+  - Parameter presets based on common use cases
 
+### 4. Core Configuration Interface
 
-Right Panel: Initially shows Claude character with service benefit descriptions
+**Two-Panel Layout**
 
-4. Server Configuration Process
-Web Search Configuration
+- Left Panel: Server selection with toggles:
+  - Web Search
+  - File System Access (with "Desktop Only" indicator)
+  - Hugging Face Models (with tier indicators)
+- Right Panel: Initially shows Claude character with service benefit descriptions
 
-Simple parameter settings
-Search result quantity selector
-Safe search toggle
+### 5. Server Configuration Process
 
-File System Access (Desktop Only)
+**Web Search Configuration**
 
-Clear compatibility notice
-Directory selection interface
-Security explanation
+- Simple parameter settings
+- Search result quantity selector
+- Safe search toggle
 
-Hugging Face Models (Tiered Access)
+**File System Access (Desktop Only)**
 
-Token configuration with clear instructions
-Model selection based on tier access:
+- Clear compatibility notice
+- Directory selection interface
+- Security explanation
 
-Starter Tier: 3 selected models
-Standard Tier: 6 selected models
-Complete Tier: All 10 selected models
+**Hugging Face Models (Enhanced Tiered Access)**
 
+- Token configuration with secure storage
+- Subscription-aware model selection interface:
+  - Non-subscribers: Preview with "Subscribe to Enable" buttons
+  - Basic Tier: All models visible, but limited to 3 selections
+  - Complete Tier: Unlimited model selection
+- **Model-Specific Parameter Configuration**:
+  - Parameters inherit global defaults
+  - Visual indication of which parameters use global settings
+  - Option to override global settings for specific models
+  - Advanced parameters available for Complete tier subscribers
 
-Basic configuration options for each model
+### 6. Review and Finalization
 
-5. Review and Finalization
+- Comprehensive configuration summary
+- Platform compatibility notices
+- Enhanced deployment process with progress tracking:
+  - Configuration validation
+  - Secure token storage
+  - Script generation
+  - Configuration file creation
+  - Integration testing
+- JSON export for desktop integration
+- Success confirmation
 
-Configuration summary
-Platform compatibility notices
-JSON export for desktop integration
-Success confirmation
+## Phase 2: Full Release
 
-Phase 2: Full Release
-6. Enhanced Dashboard with Analytics
+### 7. Enhanced Dashboard with Analytics
 
-Configuration usage statistics
-Performance metrics for configured models
-Optimization recommendations
+- Configuration usage statistics
+- Performance metrics for configured models
+- Optimization recommendations
+- Personalized improvement suggestions based on usage patterns
 
-7. Full Marketplace Experience
+### 8. Enhanced User Profiles
 
-Complete model browsing and filtering
-Community configurations section
-New arrivals and trending models
-Detailed model performance cards
+- Comprehensive user profile management
+- Interest tracking for personalized recommendations
+- Experience level settings to adjust interface complexity
+- Use case preferences for tailored suggestions
+- Social account integration for community features
+- Profile picture and username customization
 
-8. Advanced Configuration Options
+### 9. Full Marketplace Experience
 
-Multi-configuration management
-Configuration sharing capabilities
-Version control for configurations
-Advanced testing tools
+- Complete model browsing and filtering
+- Community configurations section
+- New arrivals and trending models
+- Interest-based discovery
+- Detailed model performance cards
+- User ratings and reviews
 
-9. Enterprise Capabilities
+### 10. Advanced Configuration Options
 
-Team management
-Role-based access controls
-Advanced usage analytics
-Custom integration options
+- Multi-configuration management
+- Configuration sharing capabilities
+- Version control for configurations
+- Advanced testing tools
+- Parameter optimization suggestions
+
+### 11. Enterprise Capabilities
+
+- Team management
+- Role-based access controls
+- Advanced usage analytics
+- Custom integration options
+- Centralized configuration management

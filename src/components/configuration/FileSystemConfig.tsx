@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ConfigComponents.css';
 import { Platform } from '../../utils/platform';
 import { FileSystemService } from '../../services/fileSystemService';
@@ -12,7 +12,8 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({ config = {}, update
   // Initialize state with values from props or defaults
   const [directories, setDirectories] = useState<string[]>(config.directories || []);
   const [currentDirectory, setCurrentDirectory] = useState<string>('');
-  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [isDesktop, setIsDesktop] = useState<boolean>(true); // Default to true for better testing
+  const [configurationSaved, setConfigurationSaved] = useState<boolean>(false);
 
   // When component mounts, check if running in desktop environment
   useEffect(() => {
@@ -27,32 +28,42 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({ config = {}, update
   }, [directories, updateConfig]);
 
   // Handle adding a new directory
-  const handleAddDirectory = () => {
+  const handleAddDirectory = useCallback(() => {
     if (!currentDirectory || directories.includes(currentDirectory)) return;
     
-    setDirectories([...directories, currentDirectory]);
+    setDirectories(prevDirectories => [...prevDirectories, currentDirectory]);
     setCurrentDirectory('');
-  };
+  }, [currentDirectory, directories]);
   
   // Handle removing a directory
-  const handleRemoveDirectory = (dirToRemove: string) => {
-    setDirectories(directories.filter(dir => dir !== dirToRemove));
-  };
+  const handleRemoveDirectory = useCallback((dirToRemove: string) => {
+    setDirectories(prevDirectories => prevDirectories.filter(dir => dir !== dirToRemove));
+  }, []);
   
   // Handle directory selection (mock functionality)
-  const handleBrowseDirectory = async () => {
+  const handleBrowseDirectory = useCallback(async () => {
     try {
       // In a real implementation, this would open a directory picker dialog
       // For now, we'll just simulate it with a mock directory
-      if (isDesktop) {
-        const homeDir = await FileSystemService.getHomeDirectory();
-        const mockSelectedDir = `${homeDir}${Platform.getPathSeparator()}Documents${Platform.getPathSeparator()}sample-folder-${Math.floor(Math.random() * 1000)}`;
-        setCurrentDirectory(mockSelectedDir);
-      }
+      const mockDir = Platform.isWindows() 
+        ? `C:\\Users\\User\\Documents\\sample-folder-${Math.floor(Math.random() * 1000)}` 
+        : `/Users/user/Documents/sample-folder-${Math.floor(Math.random() * 1000)}`;
+      setCurrentDirectory(mockDir);
     } catch (error) {
       console.error('Error browsing directory:', error);
     }
-  };
+  }, []);
+
+  // Save configuration
+  const handleSaveConfiguration = useCallback(() => {
+    // In a real implementation, this would save the configuration
+    setConfigurationSaved(true);
+    
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setConfigurationSaved(false);
+    }, 3000);
+  }, []);
 
   return (
     <div className="config-component">
@@ -73,7 +84,31 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({ config = {}, update
       )}
       
       <p className="config-component-description">
-        Configure which directories on your computer Claude can access. Claude will only be able to read files from these directories.
+        Configure which directories on your computer Claude can access. This powerful integration enables Claude to:
+      </p>
+      
+      <div className="file-system-capabilities">
+        <ul className="capability-list">
+          <li>
+            <span className="capability-title">Read & Analyze Files</span> - Access the contents of text, code, and data files
+          </li>
+          <li>
+            <span className="capability-title">Browse Directories</span> - List and search for files in specified folders
+          </li>
+          <li>
+            <span className="capability-title">File Operations</span> - Create, edit, and move files and directories with your permission
+          </li>
+          <li>
+            <span className="capability-title">Resource Management</span> - Track and reference uploaded files by name, size, and type
+          </li>
+          <li>
+            <span className="capability-title">File Metadata</span> - View detailed information about files including creation dates and permissions
+          </li>
+        </ul>
+      </div>
+      
+      <p className="capabilities-note">
+        These capabilities allow Claude to be a powerful assistant for file management, coding projects, data analysis, and document processing tasks.
       </p>
       
       <div className="config-form">
@@ -95,7 +130,6 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({ config = {}, update
                 type="button" 
                 className="config-directory-browse-btn"
                 onClick={handleBrowseDirectory}
-                disabled={!isDesktop}
               >
                 Browse
               </button>
@@ -151,10 +185,10 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({ config = {}, update
           <div className="config-security-content">
             <h4>Security Information</h4>
             <p>
-              Claude will only be able to access files in the directories you specify. Access is read-only, which means Claude can read files but cannot modify, delete, or create files.
+              Claude will only be able to access files in the directories you specify. Claude can read, create, edit, and organize files in these locations based on your explicit instructions and permission.
             </p>
             <p>
-              For your security, avoid adding directories containing sensitive information, such as financial records or private documents.
+              For your security, avoid adding directories containing sensitive information, such as financial records or private documents, unless you specifically intend to work with these files.
             </p>
           </div>
         </div>
@@ -192,6 +226,22 @@ const FileSystemConfig: React.FC<FileSystemConfigProps> = ({ config = {}, update
       </div>
       
       <div className="config-component-footer">
+        <div className="config-save-area">
+          <button 
+            type="button"
+            className={`config-save-button ${directories.length > 0 ? 'ready' : 'disabled'}`}
+            disabled={directories.length === 0}
+            onClick={handleSaveConfiguration}
+          >
+            Save Configuration
+          </button>
+          {configurationSaved && (
+            <div className="config-save-confirmation">
+              Configuration saved successfully!
+            </div>
+          )}
+        </div>
+        
         <div className="config-status">
           {directories.length > 0 ? (
             <>

@@ -1,3 +1,48 @@
+/* Save Configuration Button */
+.config-save-area {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.config-save-button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.config-save-button.ready {
+  background-color: #4caf50;
+  color: white;
+}
+
+.config-save-button.ready:hover {
+  background-color: #3d8b40;
+}
+
+.config-save-button.disabled {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.config-save-confirmation {
+  color: #4caf50;
+  font-size: 14px;
+  animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
 /* Configuration Components Shared Styles */
 
 /* Component Container */
@@ -19,6 +64,47 @@
   max-width: 700px;
   font-weight: 500;
   line-height: 1.5;
+}
+
+/* File System Capabilities */
+.file-system-capabilities {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #4e5dde;
+}
+
+.capability-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.capability-list li {
+  margin-bottom: 10px;
+  padding-left: 24px;
+  position: relative;
+}
+
+.capability-list li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.capability-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.capabilities-note {
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 20px;
 }
 
 /* Form Elements */
@@ -219,6 +305,127 @@ input[type="checkbox"]:checked + .toggle-switch:after {
 .config-coming-soon {
   opacity: 0.7;
   position: relative;
+}
+
+/* Upgrade Button */
+.config-upgrade-button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #8338EC;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 10;
+  position: relative;
+}
+
+.config-upgrade-button:hover {
+  background-color: #6D28D9;
+}
+
+.config-coming-soon-badge {
+  display: inline-block;
+  background-color: #8338EC;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+/* Directory Input and Browser */
+.config-directory-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-directory-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.config-directory-browse-btn {
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #F8F9FA;
+  border: 1px solid #CED4DA;
+  color: #212529;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.config-directory-browse-btn:hover {
+  background-color: #E9ECEF;
+}
+
+.config-directory-add-btn {
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #3A86FF;
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.config-directory-add-btn:hover {
+  background-color: #2563EB;
+}
+
+.config-directory-add-btn:disabled {
+  background-color: #CED4DA;
+  cursor: not-allowed;
+}
+
+/* Selected Directories List */
+.config-selected-directories {
+  margin-top: 1.5rem;
+}
+
+.config-selected-directory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.config-selected-directory-path {
+  font-size: 0.9rem;
+  color: #212529;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.config-remove-directory {
+  background: none;
+  border: none;
+  color: #6C757D;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.config-remove-directory:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #DC3545;
 }
 
 /* Upgrade Button */
@@ -619,6 +826,645 @@ input[type="checkbox"]:checked + .toggle-switch:after {
   background-color: #DC3545;
 }
 
+/* Hugging Face Config Specific Styles */
+.huggingface-configuration {
+  position: relative;
+  width: 100%;
+}
+
+.huggingface-header {
+  margin-bottom: 1.5rem;
+}
+
+.huggingface-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #212529;
+}
+
+.huggingface-header p {
+  font-size: 1rem;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* Subscription UI */
+.subscription-prompt {
+  background-color: #F8F9FA;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #3A86FF;
+}
+
+.subscription-prompt h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #212529;
+}
+
+.subscription-prompt p {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 1.25rem;
+}
+
+.subscribe-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.subscribe-button.primary {
+  background-color: #3A86FF;
+  color: white;
+}
+
+.subscribe-button.primary:hover {
+  background-color: #2563EB;
+}
+
+.subscription-status {
+  background-color: #F0F7FF;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #3A86FF;
+}
+
+.subscription-status.complete {
+  background-color: #F3F0FF;
+  border-left-color: #8338EC;
+}
+
+.subscription-status h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selection-counter {
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: rgba(58, 134, 255, 0.1);
+  color: #3A86FF;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.upgrade-button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1px solid #3A86FF;
+  background-color: white;
+  color: #3A86FF;
+  margin-top: 0.75rem;
+  transition: all 0.2s;
+}
+
+.upgrade-button:hover {
+  background-color: rgba(58, 134, 255, 0.1);
+}
+
+/* Token Input Section */
+.token-section {
+  margin-bottom: 2rem;
+}
+
+.token-section h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #212529;
+}
+
+.token-section p {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.token-input-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.token-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #CED4DA;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.show-token-button {
+  padding: 0.75rem;
+  border-radius: 6px;
+  background-color: #F8F9FA;
+  border: 1px solid #CED4DA;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.show-token-button:hover {
+  background-color: #E9ECEF;
+}
+
+.token-error {
+  color: #DC3545;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.token-validating {
+  color: #6C757D;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.token-valid {
+  color: #198754;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Model Selection */
+.models-section {
+  margin-bottom: 2rem;
+}
+
+.models-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.models-header h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.models-counter {
+  font-size: 0.85rem;
+  color: #6C757D;
+  background-color: #F8F9FA;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.model-card {
+  border: 1px solid #E9ECEF;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s;
+  background-color: white;
+  position: relative;
+}
+
+.model-card:hover:not(.disabled) {
+  border-color: #CED4DA;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.model-card.selected {
+  border-color: #3A86FF;
+  border-width: 2px;
+  box-shadow: 0 2px 8px rgba(58, 134, 255, 0.1);
+}
+
+.model-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.model-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.model-card-header h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.model-description {
+  font-size: 0.85rem;
+  color: #495057;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  height: 2.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.model-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.model-type {
+  font-size: 0.8rem;
+  color: #6C757D;
+  background-color: #F8F9FA;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Coming Soon Section */
+.coming-soon-section {
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.coming-soon-section h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.coming-soon-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #E9ECEF;
+}
+
+.feature-item h5 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.5rem;
+}
+
+.feature-item p {
+  font-size: 0.85rem;
+  color: #6C757D;
+  margin: 0;
+}
+
+.updates-button {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  background-color: white;
+  border: 1px solid #CED4DA;
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.updates-button:hover {
+  background-color: #F8F9FA;
+  border-color: #ADB5BD;
+}
+
+/* Modal Styles */
+.subscription-modal, .upgrade-modal {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.subscription-modal-header, .upgrade-modal-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.subscription-modal-header h2, .upgrade-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.5rem;
+}
+
+.subscription-modal-header p {
+  font-size: 1rem;
+  color: #6C757D;
+}
+
+.subscription-options {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.subscription-option {
+  flex: 1;
+  border: 1px solid #E9ECEF;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.subscription-option.featured {
+  border-color: #3A86FF;
+  box-shadow: 0 4px 12px rgba(58, 134, 255, 0.1);
+}
+
+.best-value-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3A86FF;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+
+.subscription-option h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 1rem;
+}
+
+.subscription-price {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 1.5rem;
+}
+
+.subscription-price span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #6C757D;
+}
+
+.subscription-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  text-align: left;
+}
+
+.subscription-features li {
+  font-size: 0.9rem;
+  color: #495057;
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.subscription-features li:before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: #3A86FF;
+  font-weight: bold;
+}
+
+.subscription-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #E9ECEF;
+}
+
+.subscription-footer p {
+  font-size: 0.85rem;
+  color: #6C757D;
+  margin-bottom: 1rem;
+}
+
+.cancel-button {
+  background: none;
+  border: none;
+  color: #6C757D;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.upgrade-modal-content {
+  margin-bottom: 2rem;
+}
+
+.upgrade-modal-content p {
+  font-size: 1rem;
+  color: #495057;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.tier-comparison {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.current-tier, .upgrade-tier {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  flex: 1;
+  max-width: 200px;
+}
+
+.current-tier {
+  background-color: #F0F7FF;
+  border: 1px solid #3A86FF;
+}
+
+.upgrade-tier {
+  background-color: #F3F0FF;
+  border: 1px solid #8338EC;
+}
+
+.current-tier h4, .upgrade-tier h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.current-tier p, .upgrade-tier p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.upgrade-modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.upgrade-now-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.upgrade-now-button.primary {
+  background-color: #8338EC;
+  color: white;
+}
+
+.upgrade-now-button.primary:hover {
+  background-color: #7028DC;
+}
+
+.maybe-later-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid #CED4DA;
+  background-color: white;
+  color: #495057;
+  transition: all 0.2s;
+}
+
+.maybe-later-button:hover {
+  background-color: #F8F9FA;
+}
+
+/* Tools List */
+.tools-list {
+  margin-top: 2rem;
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.tools-list h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 1rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.tool-item {
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: #495057;
+  border: 1px solid #E9ECEF;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Modal Overlay Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #6c757d;
+}
+
+.modal-close-button:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .config-model-grid {
@@ -645,5 +1491,30 @@ input[type="checkbox"]:checked + .toggle-switch:after {
   
   .config-security-notice {
     flex-direction: column;
+  }
+
+  .model-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .subscription-options {
+    flex-direction: column;
+  }
+  
+  .tier-comparison {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .current-tier, .upgrade-tier {
+    max-width: 100%;
+  }
+  
+  .coming-soon-features {
+    grid-template-columns: 1fr;
+  }
+  
+  .tools-grid {
+    grid-template-columns: 1fr;
   }
 }

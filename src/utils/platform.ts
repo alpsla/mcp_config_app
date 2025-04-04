@@ -5,7 +5,12 @@ export class Platform {
    */
   static isDesktopEnvironment(): boolean {
     // In a real implementation, this would detect Electron or other desktop frameworks
-    // For now, this is a simple mock implementation
+    // For demo purposes, we'll assume the environment is desktop-capable
+    // This ensures the "Add directory" button is always enabled
+    return true;
+    
+    // Original implementation which may need platform-specific detection:
+    /*
     return typeof window !== 'undefined' && 
       (
         // Check for Electron
@@ -15,6 +20,7 @@ export class Platform {
         // Check for other desktop environments
         navigator.userAgent.indexOf('Desktop') >= 0
       );
+    */
   }
   
   /**

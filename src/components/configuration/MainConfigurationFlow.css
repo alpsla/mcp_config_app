@@ -1,0 +1,113 @@
+.main-configuration-flow {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Service Selection Styles */
+.service-selection {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.service-selection h2 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.service-selection p {
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.service-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.service-option {
+  background-color: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.service-option:hover {
+  border-color: #4e5dde;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(78, 93, 222, 0.1);
+}
+
+.service-option h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.service-option p {
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Configuration Step Styles */
+.file-system-config,
+.web-search-config,
+.hugging-face-config {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.file-system-config h2,
+.web-search-config h2,
+.hugging-face-config h2 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+}
+
+/* Navigation buttons */
+.main-configuration-flow button {
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.2s;
+}
+
+.main-configuration-flow button:hover {
+  background-color: #e5e5e5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .service-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-configuration-flow {
+    padding: 16px;
+  }
+}

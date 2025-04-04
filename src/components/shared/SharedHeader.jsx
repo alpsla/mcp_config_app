@@ -16,20 +16,27 @@ const SharedHeader = ({
 }) => {
 
   // Force a complete sign-out and page reload
-  const handleSignOut = (e) => {
+  const handleSignOut = async (e) => {
     e.preventDefault();
-    console.log('Sign Out clicked');
+    console.log('Sign Out clicked in SharedHeader');
     
-    // Clear any tokens from storage (this is the key part)
-    localStorage.clear();
-    sessionStorage.clear();
-    
-    // Use hash-based navigation
-    window.location.hash = '/';
-    
-    // If onSignOut was provided, call it
-    if (onSignOut) {
-      onSignOut();
+    try {
+      // First call the provided onSignOut function if it exists
+      if (onSignOut) {
+        await onSignOut();
+      }
+      
+      // Then clear local storage as a fallback
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Navigate to home page
+      window.location.hash = '/';
+      
+      // Force reload if needed
+      // window.location.reload();
+    } catch (error) {
+      console.error('Error during sign out:', error);
     }
   };
 
@@ -46,21 +53,11 @@ const SharedHeader = ({
         
         <nav className="shared-header-nav">
           <ul className="shared-header-nav-list">
-            {isAuthenticated ? 
-              // Authenticated user sees all links including Home
-              navLinks.map((link, index) => (
-                <li key={index} className="shared-header-nav-item">
-                  <a href={`#${link.to}`} className="shared-header-nav-link">{link.label}</a>
-                </li>
-              ))
-              : 
-              // Non-authenticated user sees Home first
-              navLinks.map((link, index) => (
-                <li key={index} className="shared-header-nav-item">
-                  <a href={`#${link.to}`} className="shared-header-nav-link">{link.label}</a>
-                </li>
-              ))
-            }
+            {navLinks.map((link, index) => (
+              <li key={index} className="shared-header-nav-item">
+                <a href={`#${link.to}`} className="shared-header-nav-link">{link.label}</a>
+              </li>
+            ))}
           </ul>
         </nav>
         
@@ -75,15 +72,16 @@ const SharedHeader = ({
           )}
           
           {isAuthenticated ? (
-            <button className="shared-header-sign-out" onClick={handleSignOut}>
-              Sign Out
-            </button>
+            <>
+              <a href="#/new-configuration" className="shared-header-new-config-btn">
+                New Configuration
+              </a>
+              <button className="shared-header-sign-out" onClick={handleSignOut}>
+                Sign Out
+              </button>
+            </>
           ) : (
-            <a href="#/signin" className="shared-header-sign-in" onClick={(e) => {
-              e.preventDefault();
-              console.log('SharedHeader: Sign In link clicked');
-              window.location.hash = '/signin';
-            }}>
+            <a href="#/signin" className="shared-header-sign-in">
               Sign In
             </a>
           )}

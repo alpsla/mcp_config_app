@@ -4,6 +4,7 @@ import SharedFooter from '../../components/shared/SharedFooter';
 import { InfoIcon } from '../../components/icons';
 import { UserConfigService } from '../../services/userConfigService';
 import { useAuth } from '../../auth/AuthContext';
+import TestComponent from '../../components/TestComponent'; // Import the test component
 import '../../styles/ConfigurationStyles.css';
 import '../../styles/ProgressBar.css';
 import '../../styles/FooterFix.css'; // Import the footer fix CSS
@@ -170,36 +171,42 @@ const MCPStudioPage = ({ history, onSaveConfiguration }) => {
   
   // Update service configuration
   const updateServiceConfig = (serviceId, newConfig) => {
-    setServices(services.map(service => 
-      service.id === serviceId 
-        ? { ...service, config: { ...service.config, ...newConfig } } 
-        : service
-    ));
+    // Use setTimeout to prevent potential infinite re-renders
+    setTimeout(() => {
+      setServices(services.map(service => 
+        service.id === serviceId 
+          ? { ...service, config: { ...service.config, ...newConfig } } 
+          : service
+      ));
+    }, 0);
   };
   
   // Save the configuration of a service
   const saveServiceConfiguration = (serviceId) => {
-    setServices(services.map(service => 
-      service.id === serviceId 
-        ? { ...service, configured: true } 
-        : service
-    ));
-    
-    console.log(`Configuration saved for ${serviceId}`);
-    
-    // Check if all enabled services are configured
-    const allConfigured = services
-      .filter(service => service.enabled)
-      .every(service => service.configured || service.id === serviceId);
-    
-    if (allConfigured) {
-      // If all are configured, move to next step
-      if (currentStep === 1) {
-        setCurrentStep(2); // Move to Select Models step
-      } else if (currentStep === 2) {
-        setCurrentStep(3); // Move to Configure & Export step
+    // Use setTimeout to prevent potential infinite re-renders
+    setTimeout(() => {
+      setServices(services.map(service => 
+        service.id === serviceId 
+          ? { ...service, configured: true } 
+          : service
+      ));
+      
+      console.log(`Configuration saved for ${serviceId}`);
+      
+      // Check if all enabled services are configured
+      const allConfigured = services
+        .filter(service => service.enabled)
+        .every(service => service.configured || service.id === serviceId);
+      
+      if (allConfigured) {
+        // If all are configured, move to next step
+        if (currentStep === 1) {
+          setCurrentStep(2); // Move to Select Models step
+        } else if (currentStep === 2) {
+          setCurrentStep(3); // Move to Configure & Export step
+        }
       }
-    }
+    }, 0);
   };
   
   // Function to upgrade subscription
@@ -593,6 +600,9 @@ const MCPStudioPage = ({ history, onSaveConfiguration }) => {
         onSignOut={handleSignOut}
         languageSelector={true}
       />
+      
+      {/* Add the test component */}
+      <TestComponent />
       
       <main className="mcp-studio-main">
         <div className="mcp-studio-container">

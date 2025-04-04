@@ -1,0 +1,192 @@
+/* Emergency fix for the gray overlay issue */
+
+.config-steps {
+  position: static !important;
+  z-index: auto !important;
+  height: auto !important;
+  background-color: transparent !important;
+}
+
+.step-indicators {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 10;
+  background-color: white;
+  width: 100%;
+  height: auto !important;
+}
+
+.step-content {
+  position: relative;
+  z-index: 5;
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  border: 1px solid #eaeaea;
+  width: 100%;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  height: auto !important;
+  background: transparent !important;
+}
+
+.step-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: calc(100% - 40px);
+  height: 2px;
+  background-color: #eaeaea;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step-indicator:last-child::after {
+  display: none;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #eaeaea;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+}
+
+.step-indicator.active .step-number {
+  background-color: #4e5dde;
+  color: white;
+}
+
+.step-indicator.completed .step-number {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.step-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  padding: 0 5px;
+}
+
+.step-indicator.active .step-label {
+  color: #4e5dde;
+  font-weight: 600;
+}
+
+.step-indicator.completed .step-label {
+  color: #4CAF50;
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.prev-button, .next-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.prev-button {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.prev-button:hover {
+  background-color: #eaeaea;
+}
+
+.next-button {
+  background-color: #4e5dde;
+  color: white;
+  border: none;
+}
+
+.next-button:hover {
+  background-color: #3f4ec3;
+}
+
+.next-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Make content sections behave properly */
+.token-step, .model-step, .parameters-step {
+  position: relative;
+  z-index: 5;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  background-color: transparent !important;
+}
+
+/* Fix model selection container */
+.model-selection-container {
+  position: static !important;
+  max-height: none !important; 
+  overflow: visible !important;
+  z-index: auto !important;
+  background-color: transparent !important;
+}
+
+/* Force container to behave */
+.huggingface-config {
+  position: relative !important;
+  z-index: 5 !important;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+  background-color: transparent !important;
+}
+
+/* Ensure nothing is behind a backdrop */
+.huggingface-config::before,
+.huggingface-config::after,
+.config-steps::before,
+.config-steps::after,
+.step-indicators::before,
+.step-indicators::after,
+.step-content::before,
+.step-content::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+/* Force tab content to be visible */
+.tab-content {
+  position: relative !important;
+  z-index: 5 !important;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+}

@@ -5,12 +5,22 @@ import React, { useState, useEffect } from 'react';
  * This allows navigation between pages without requiring react-router-dom
  */
 const RouteHandler = ({ routes, defaultRoute = '/' }) => {
-  const [currentPath, setCurrentPath] = useState(window.location.hash.substring(1) || defaultRoute);
+  // Handle paths with or without leading slash
+  const normalizePath = (path) => {
+    // Remove the leading slash if it exists
+    if (path.startsWith('/')) {
+      return path;
+    }
+    return '/' + path;
+  };
+
+  const [currentPath, setCurrentPath] = useState(normalizePath(window.location.hash.substring(1)) || defaultRoute);
 
   // Listen for hashchange events
   useEffect(() => {
     const handleHashChange = () => {
-      const path = window.location.hash.substring(1) || defaultRoute;
+      const path = normalizePath(window.location.hash.substring(1)) || defaultRoute;
+      console.log('Hash changed to:', path);
       setCurrentPath(path);
     };
 
@@ -28,9 +38,14 @@ const RouteHandler = ({ routes, defaultRoute = '/' }) => {
   
   // Find the component to render based on the current path
   const renderRoute = () => {
+    // Debug route matching
+    console.log('Current path:', currentPath);
+    console.log('Available routes:', routes.map(r => r.path));
+    
     // Check for exact match
     const exactMatch = routes.find(route => route.path === currentPath);
     if (exactMatch) {
+      console.log('Found exact match:', exactMatch.path);
       return React.createElement(exactMatch.component, { path: currentPath });
     }
     

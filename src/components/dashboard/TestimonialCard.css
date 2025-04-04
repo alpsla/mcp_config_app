@@ -8,6 +8,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative; /* Add this to contain absolutely positioned children */
 }
 
 .testimonial-card:hover {
@@ -19,7 +20,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
-  position: relative;
+  padding-top: 1rem; /* Add padding to avoid overlap with the badge */
 }
 
 .avatar, .avatar-placeholder {
@@ -61,19 +62,20 @@
 
 .model-badge {
   position: absolute;
-  top: -0.75rem;
-  right: -0.75rem;
+  top: 0.5rem; /* Position at the top of the card */
+  right: 0.5rem; /* Position at the right of the card */
   background-color: var(--primary-light);
   color: var(--primary-color);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 600;
-  max-width: 130px;
+  max-width: 150px; /* Increase max-width slightly */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow to make it stand out */
 }
 
 .testimonial-quote {

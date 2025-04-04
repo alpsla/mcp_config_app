@@ -1,88 +1,66 @@
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '../supabase-types';
+/**
+ * User Configuration Service
+ * 
+ * Handles storage and retrieval of user configurations from the database or local storage.
+ * In a production environment, this would interact with a backend API.
+ */
 
-// Create Supabase client
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || '';
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
-const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+// Define interfaces for the configuration data
+interface StoredConfiguration {
+  id: string;
+  userId: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  configData: any;
+  status: 'draft' | 'deployed' | 'failed';
+}
 
-export class UserConfigService {
+/**
+ * UserConfigService class handles the storage and retrieval of configurations
+ */
+class UserConfigServiceClass {
   /**
-   * Check if a user has saved configurations
-   * @param userId The user ID to check
-   * @returns Promise<boolean> indicating if the user has configurations
+   * Save a configuration to storage
    */
-  static async hasConfigurations(userId: string): Promise<boolean> {
+  async saveConfiguration(
+    userId: string,
+    name: string,
+    configData: any,
+    status: 'draft' | 'deployed' | 'failed' = 'draft',
+    id?: string
+  ): Promise<StoredConfiguration> {
     try {
-      // Query the configurations table to check if the user has any configs
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { data, error, count } = await supabase
-        .from('configurations')
-        .select('id', { count: 'exact' })
-        .eq('user_id', userId)
-        .limit(1);
-        
-      if (error) {
-        throw error;
+      // Get existing configurations
+      const configs = this.getConfigurationsFromStorage(userId);
+      
+      const now = new Date().toISOString();
+      const configId = id || `config_${now}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Check if configuration already exists
+      const existingConfigIndex = configs.findIndex(config => config.id === configId);
+      
+      const updatedConfig: StoredConfiguration = {
+        id: configId,
+        userId,
+        name,
+        createdAt: existingConfigIndex >= 0 ? configs[existingConfigIndex].createdAt : now,
+        updatedAt: now,
+        configData,
+        status
+      };
+      
+      // Update or add the configuration
+      if (existingConfigIndex >= 0) {
+        configs[existingConfigIndex] = updatedConfig;
+      } else {
+        configs.push(updatedConfig);
       }
       
-      return !!count && count > 0;
-    } catch (error) {
-      console.error('Error checking user configurations:', error);
-      return false;
-    }
-  }
-  
-  /**
-   * Get all configurations for a user
-   * @param userId The user ID
-   * @returns Promise with the user's configurations
-   */
-  static async getUserConfigurations(userId: string) {
-    try {
-      const { data, error } = await supabase
-        .from('configurations')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-        
-      if (error) {
-        throw error;
-      }
+      // Save to storage
+      this.saveConfigurationsToStorage(userId, configs);
       
-      return data || [];
-    } catch (error) {
-      console.error('Error getting user configurations:', error);
-      return [];
-    }
-  }
-  
-  /**
-   * Save a configuration for a user
-   * @param userId The user ID
-   * @param configName The name of the configuration
-   * @param configData The configuration data to save
-   * @returns Promise with the saved configuration
-   */
-  static async saveConfiguration(userId: string, configName: string, configData: any) {
-    try {
-      const { data, error } = await supabase
-        .from('configurations')
-        .insert([
-          { 
-            user_id: userId, 
-            name: configName, 
-            data: configData 
-          }
-        ])
-        .select()
-        .single();
-        
-      if (error) {
-        throw error;
-      }
-      
-      return data;
+      return updatedConfig;
     } catch (error) {
       console.error('Error saving configuration:', error);
       throw error;
@@ -90,56 +68,82 @@ export class UserConfigService {
   }
   
   /**
-   * Update an existing configuration
-   * @param configId The configuration ID to update
-   * @param configName The new name for the configuration
-   * @param configData The new configuration data
-   * @returns Promise with the updated configuration
+   * Get a configuration by ID
    */
-  static async updateConfiguration(configId: string, configName: string, configData: any) {
+  async getConfiguration(userId: string, configId: string): Promise<StoredConfiguration | null> {
     try {
-      const { data, error } = await supabase
-        .from('configurations')
-        .update({ 
-          name: configName, 
-          data: configData,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', configId)
-        .select()
-        .single();
-        
-      if (error) {
-        throw error;
-      }
+      const configs = this.getConfigurationsFromStorage(userId);
+      const config = configs.find(config => config.id === configId);
       
-      return data;
+      return config || null;
     } catch (error) {
-      console.error('Error updating configuration:', error);
-      throw error;
+      console.error('Error getting configuration:', error);
+      return null;
+    }
+  }
+  
+  /**
+   * Get all configurations for a user
+   */
+  async getUserConfigurations(userId: string): Promise<StoredConfiguration[]> {
+    try {
+      return this.getConfigurationsFromStorage(userId);
+    } catch (error) {
+      console.error('Error getting user configurations:', error);
+      return [];
     }
   }
   
   /**
    * Delete a configuration
-   * @param configId The configuration ID to delete
-   * @returns Promise indicating success
    */
-  static async deleteConfiguration(configId: string) {
+  async deleteConfiguration(userId: string, configId: string): Promise<boolean> {
     try {
-      const { error } = await supabase
-        .from('configurations')
-        .delete()
-        .eq('id', configId);
-        
-      if (error) {
-        throw error;
+      const configs = this.getConfigurationsFromStorage(userId);
+      const filteredConfigs = configs.filter(config => config.id !== configId);
+      
+      if (filteredConfigs.length === configs.length) {
+        // No configuration was removed
+        return false;
       }
+      
+      // Save updated configurations
+      this.saveConfigurationsToStorage(userId, filteredConfigs);
       
       return true;
     } catch (error) {
       console.error('Error deleting configuration:', error);
-      throw error;
+      return false;
     }
   }
+  
+  /**
+   * Get configurations from local storage
+   * In a production environment, this would be an API call
+   */
+  private getConfigurationsFromStorage(userId: string): StoredConfiguration[] {
+    const storedConfigs = localStorage.getItem(`userConfigs_${userId}`);
+    
+    if (!storedConfigs) {
+      return [];
+    }
+    
+    try {
+      return JSON.parse(storedConfigs);
+    } catch (error) {
+      console.error('Error parsing stored configurations:', error);
+      return [];
+    }
+  }
+  
+  /**
+   * Save configurations to local storage
+   * In a production environment, this would be an API call
+   */
+  private saveConfigurationsToStorage(userId: string, configs: StoredConfiguration[]): void {
+    localStorage.setItem(`userConfigs_${userId}`, JSON.stringify(configs));
+  }
 }
+
+// Create a singleton instance
+export const UserConfigService = new UserConfigServiceClass();

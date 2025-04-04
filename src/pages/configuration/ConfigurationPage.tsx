@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { SubscriptionTier } from '../../types';
 import SharedHeader from '../../components/shared/SharedHeader';
 import SharedFooter from '../../components/shared/SharedFooter';
 import './ConfigurationPage.css';
@@ -83,7 +84,7 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
   const toggleServerConfig = (serverType: keyof ConfigurationsState) => {
     // Special handling for Hugging Face - check subscription
     if (serverType === 'huggingFace' && !configurations.huggingFace.enabled && 
-        (subscriptionTier === 'none' || subscriptionTier === 'free')) {
+        subscriptionTier === SubscriptionTier.FREE) {
       // Don't allow toggling for non-subscribers
       alert('A subscription is required to use Hugging Face models.');
       return;
@@ -374,7 +375,7 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
                   </div>
                   <div className="config-server-info">
                     <h3>File System Access</h3>
-                    <p>Allow Claude to access files on your computer.</p>
+                    <p>Allow Claude to read, write, manage and organize files on your computer.</p>
                     <p className="desktop-requirement">Requires desktop application</p>
                   </div>
                 </div>
@@ -398,7 +399,7 @@ const ConfigurationPage: React.FC<ConfigurationPageProps> = ({ history, onSaveCo
                   <div className="config-server-info">
                     <h3>Hugging Face Models</h3>
                     <p>Connect specialized AI models to extend Claude's capabilities.</p>
-                    {(subscriptionTier === 'none' || subscriptionTier === 'free') && (
+                    {subscriptionTier === SubscriptionTier.FREE && (
                       <p className="subscription-requirement">Subscription required</p>
                     )}
                   </div>

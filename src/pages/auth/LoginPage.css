@@ -2,9 +2,159 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  background-color: #f5f5f5;
+  min-height: calc(100vh - 170px); /* Adjusted for header and footer */
+  padding: 40px 20px;
+  background-color: #f9f9fb;
+  transition: opacity 0.3s ease-out;
+  opacity: 1;
+}
+
+/* Fading transition for smooth page exit */
+.login-page-container.fading-out {
+  opacity: 0;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4e5dde;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Minimal redirect experience */
+.minimal-redirect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: transparent;
+  z-index: 1000;
+  overflow: hidden;
+  opacity: 0.7;
+}
+
+.minimal-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #4e5dde, transparent);
+  animation: minimal-loading 1s infinite linear;
+}
+
+@keyframes minimal-loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+/* Redirecting spinner - more subtle version */
+.redirecting-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.redirecting-spinner:hover {
+  opacity: 1;
+}
+
+.redirecting-spinner .spinner {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4e5dde;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.redirecting-spinner p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 10px 0;
+}
+
+.manual-redirect-button {
+  padding: 6px 12px;
+  background-color: #4e5dde;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.manual-redirect-button:hover {
+  background-color: #3e4dbe;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Disabled button styles */
+.social-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-button, .secondary-button {
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.primary-button {
+  background-color: #4e5dde;
+  color: white;
+  border: none;
+}
+
+.primary-button:hover {
+  background-color: #3f4ec3;
+  box-shadow: 0 2px 6px rgba(78, 93, 222, 0.2);
+}
+
+.secondary-button {
+  background-color: white;
+  color: #4e5dde;
+  border: 1px solid #4e5dde;
+}
+
+.secondary-button:hover {
+  background-color: #f5f7ff;
 }
 
 .login-card {
@@ -14,6 +164,12 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fading-out .login-card {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .login-title {
