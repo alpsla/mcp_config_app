@@ -5,7 +5,7 @@ import TierSelectionConnector from '../dashboard/TierSelectionConnector';
 import SubscriptionFlow from '../subscription/SubscriptionFlow';
 import EnhancedHuggingFaceConfig from '../HuggingFaceIntegration/EnhancedHuggingFaceConfig';
 import { enhancedConfigurationManager } from '../../services/EnhancedConfigurationManager';
-import { SubscriptionTierSimple } from '../../types/enhanced-types';
+import { SubscriptionTierSimple, mapTierToSimpleType } from '../../types/enhanced-types';
 import './MainConfigurationFlow.css';
 
 /**
@@ -15,7 +15,7 @@ import './MainConfigurationFlow.css';
  * - Enhanced service configuration (HuggingFace, etc.)
  */
 const MainConfigurationFlow: React.FC = () => {
-  const { authState } = useAuth();
+  const { authState, getUserSubscriptionTier } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const { configId } = useParams<{ configId?: string }>();
@@ -25,6 +25,30 @@ const MainConfigurationFlow: React.FC = () => {
   const [configurationStep, setConfigurationStep] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentConfig, setCurrentConfig] = useState<any>(null);
+  const [userSubscriptionTier, setUserSubscriptionTier] = useState<SubscriptionTierSimple>('none');
+  const [showTierSelectionModal, setShowTierSelectionModal] = useState<boolean>(false);
+  
+  // Get the user's subscription tier
+  useEffect(() => {
+    if (getUserSubscriptionTier) {
+      const tier = getUserSubscriptionTier();
+      const mappedTier = mapTierToSimpleType(tier);
+      console.log('User subscription tier:', tier, 'Mapped tier:', mappedTier);
+      
+      // For diagnostic purposes
+      console.log('Auth state:', authState);
+      console.log('User metadata:', authState?.user?.user_metadata);
+      console.log('Subscription from metadata:', authState?.user?.user_metadata?.subscriptionTier);
+      
+      setUserSubscriptionTier(mappedTier);
+      
+      // Enforce logging after state update
+      setTimeout(() => {
+        console.log('Updated userSubscriptionTier state:', mappedTier);
+        console.log('Is premium feature locked?', mappedTier === 'none' ? 'YES - show Premium badge' : 'NO - user has paid plan');
+      }, 0);
+    }
+  }, [getUserSubscriptionTier, authState]);
   
   // Handle tier selection from dashboard or URL
   const handleTierSelected = (tier: SubscriptionTierSimple) => {
@@ -66,8 +90,16 @@ const MainConfigurationFlow: React.FC = () => {
   const handleSubscriptionComplete = () => {
     setShowSubscriptionFlow(false);
     
-    // Move to first configuration step
-    setConfigurationStep(1);
+    // Update the user's subscription tier
+    if (getUserSubscriptionTier) {
+      const tier = getUserSubscriptionTier();
+      setUserSubscriptionTier(mapTierToSimpleType(tier));
+    }
+    
+    // If the user subscribed for Hugging Face, send them directly to that config
+    if (configurationStep === 0) {
+      setConfigurationStep(3);
+    }
   };
   
   // Handle configuration update
@@ -85,12 +117,87 @@ const MainConfigurationFlow: React.FC = () => {
     return <div className="loading-state">Loading configuration...</div>;
   }
   
+  // Render tier selection modal if needed
+  if (showTierSelectionModal) {
+    return (
+      <div className="tier-selection-modal">
+        <div className="modal-overlay" onClick={() => setShowTierSelectionModal(false)}></div>
+        <div className="modal-content">
+          <h2>Choose Your Subscription Plan</h2>
+          <p>Select a plan to unlock Hugging Face Models integration:</p>
+          
+          <div className="tier-options">
+            <div className="tier-option">
+              <div className="tier-option-content">
+                <h3>Basic Plan</h3>
+                <div className="tier-price">$2/month</div>
+                <ul>
+                  <li>Access to File System</li>
+                  <li>Access to Web Search</li>
+                  <li>Access to 3 Hugging Face models</li>
+                </ul>
+              </div>
+              <div className="tier-button-container">
+                <button 
+                  className="tier-button"
+                  onClick={() => {
+                    setSelectedTier('basic');
+                    setShowTierSelectionModal(false);
+                    setShowSubscriptionFlow(true);
+                  }}
+                >
+                  Select Basic Plan
+                </button>
+              </div>
+            </div>
+            
+            <div className="tier-option recommended">
+              <div className="recommended-badge">Recommended</div>
+              <div className="tier-option-content">
+                <h3>Complete Plan</h3>
+                <div className="tier-price">$5/month</div>
+                <ul>
+                  <li>Access to File System</li>
+                  <li>Access to Web Search</li>
+                  <li>Access to ALL Hugging Face models</li>
+                  <li>Priority Support</li>
+                </ul>
+              </div>
+              <div className="tier-button-container">
+                <button 
+                  className="tier-button"
+                  onClick={() => {
+                    setSelectedTier('complete');
+                    setShowTierSelectionModal(false);
+                    setShowSubscriptionFlow(true);
+                  }}
+                >
+                  Select Complete Plan
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <button 
+            className="cancel-button"
+            onClick={() => setShowTierSelectionModal(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   // Render subscription flow if needed
   if (showSubscriptionFlow) {
     return (
       <SubscriptionFlow
         onComplete={handleSubscriptionComplete}
-        onCancel={() => navigate('/dashboard')}
+        onCancel={() => {
+          setShowSubscriptionFlow(false);
+          setSelectedTier('none');
+        }}
         initialTier={selectedTier !== 'none' ? selectedTier : undefined}
       />
     );
@@ -123,12 +230,58 @@ const MainConfigurationFlow: React.FC = () => {
                 <p>Enable Claude to search the web for information</p>
               </div>
               
+              {/* Super-simplified Hugging Face option logic */}
               <div 
-                className="service-option"
-                onClick={() => setConfigurationStep(3)}
+                className={`service-option ${userSubscriptionTier === 'none' ? 'locked-option' : ''}`}
+                onClick={() => {
+                  console.log('HuggingFace option clicked, userSubscriptionTier:', userSubscriptionTier);
+                  if (userSubscriptionTier === 'none') {
+                    // Free user - show tier selection modal
+                    console.log('Free user clicked HuggingFace, showing tier selection modal');
+                    setShowTierSelectionModal(true);
+                  } else {
+                    // Paid user - proceed to Hugging Face config
+                    console.log('Paid user clicked HuggingFace, proceeding to config step');
+                    setConfigurationStep(3);
+                  }
+                }}
               >
-                <h3>Hugging Face Models</h3>
-                <p>Extend Claude with specialized AI models</p>
+                <h3>
+                  Hugging Face Models 
+                  {userSubscriptionTier === 'none' && (
+                    <span style={{ color: '#6750A4', fontWeight: 'bold', marginLeft: '5px' }}>
+                      (Premium)
+                    </span>
+                  )}
+                </h3>
+                
+                <p>
+                  {userSubscriptionTier === 'none' 
+                    ? 'Subscribe to a paid plan to access specialized AI models' 
+                    : 'Extend Claude with specialized AI models'}
+                </p>
+                
+                {userSubscriptionTier === 'none' && (
+                  <div 
+                    style={{ 
+                      marginTop: '12px', 
+                      display: 'inline-block',
+                      padding: '6px 12px',
+                      backgroundColor: '#6750A4',
+                      color: 'white',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the parent click handler again
+                      setShowTierSelectionModal(true);
+                    }}
+                  >
+                    Unlock with Subscription
+                  </div>
+                )}
               </div>
             </div>
           </div>

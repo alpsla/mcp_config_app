@@ -88,6 +88,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .pricing-card.featured {
@@ -110,6 +113,9 @@
 .card-body {
   padding: 2rem 1.5rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .card-price {
@@ -129,6 +135,7 @@
   padding: 0;
   margin: 0 0 2rem 0;
   text-align: left;
+  flex-grow: 1;
 }
 
 .features-list li {
@@ -152,12 +159,16 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  margin-top: auto;
 }
 
 .plan-button.current {
   background-color: white;
   border: 1px solid #3A86FF;
   color: #3A86FF;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .plan-button.subscribe {

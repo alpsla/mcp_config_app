@@ -26,10 +26,14 @@ export async function sendMagicLink(email: string) {
     console.log('MagicLinkAuth: Redirect URL:', `${window.location.origin}/auth/callback`);
     
     // Send the magic link
+    // Construct redirect URL based on hash-based routing
+    const redirectUrl = `${window.location.origin}${window.location.pathname}#/auth/callback`;
+    console.log('MagicLinkAuth: Using redirect URL:', redirectUrl);
+    
     const { error } = await supabase.auth.signInWithOtp({
       email: sanitizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: redirectUrl,
         shouldCreateUser: true  // Always create user account if it doesn't exist
       }
     });

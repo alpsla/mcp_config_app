@@ -3,9 +3,9 @@
  * This ensures that badges like "Desktop Only" and "Premium" have consistent sizing
  */
 
-/* Target all badge and label elements */
-[class*="badge"],
-[class*="label"],
+/* Target all badge and label elements except our premium badge */
+[class*="badge"]:not(.mcp-paid-feature-badge),
+[class*="label"]:not(.mcp-paid-feature-badge),
 sup, 
 small,
 .small-text {
@@ -15,9 +15,8 @@ small,
   line-height: inherit !important;
 }
 
-/* Specific targeting for elements with Desktop Only and Premium text */
-*:not(style):not(script):contains('Desktop Only'),
-*:not(style):not(script):contains('Premium') {
+/* Specific targeting for elements with Desktop Only text */
+*:not(style):not(script):contains('Desktop Only') {
   font-size: inherit !important;
   line-height: inherit !important;
 }

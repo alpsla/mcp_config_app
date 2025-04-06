@@ -42,6 +42,13 @@ const RouteHandler = ({ routes, defaultRoute = '/' }) => {
     console.log('Current path:', currentPath);
     console.log('Available routes:', routes.map(r => r.path));
     
+    // Special case for /configure redirect
+    if (currentPath === '/configure') {
+      console.log('Detected /configure path, redirecting to /configuration');
+      window.location.hash = '/configuration';
+      return <div>Redirecting to configuration page...</div>;
+    }
+    
     // Check for exact match
     const exactMatch = routes.find(route => route.path === currentPath);
     if (exactMatch) {

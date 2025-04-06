@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { SubscriptionTier } from '../types';
+import { supabase } from '../services/supabase/supabaseClient';
 
 // Define the user type
 interface User {
@@ -44,8 +45,8 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 // Helper function to generate a UUID v4
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    const r = Math.floor(Math.random() * 16);
+    const v = c === 'x' ? r : ((r & 0x3) | 0x8);
     return v.toString(16);
   });
 }
@@ -89,16 +90,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setSubscriptionTier(storedTier);
           }
         } else {
-          setAuthState({
-            user: null,
-            loading: false,
-            error: null,
-            isAuthenticated: false,
-            requiresEmailConfirmation: false,
-            confirmationMessage: null
-          });
+          // Try to get session from Supabase directly
+          console.log('No user in localStorage, checking Supabase session');
+          const { data: sessionData } = await supabase.auth.getSession();
+          if (sessionData?.session?.user) {
+            console.log('Found Supabase session, updating auth state');
+            const supabaseUser = sessionData.session.user;
+            const user: User = {
+              id: supabaseUser.id,
+              email: supabaseUser.email || 'unknown@email.com',
+              name: supabaseUser.user_metadata?.name || 'User',
+              user_metadata: supabaseUser.user_metadata
+            };
+            
+            // Store user in local storage
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            setAuthState({
+              user,
+              loading: false,
+              error: null,
+              isAuthenticated: true,
+              requiresEmailConfirmation: false,
+              confirmationMessage: null
+            });
+          } else {
+            setAuthState({
+              user: null,
+              loading: false,
+              error: null,
+              isAuthenticated: false,
+              requiresEmailConfirmation: false,
+              confirmationMessage: null
+            });
+          }
         }
       } catch (error) {
+        console.error('Error initializing auth:', error);
         setAuthState({
           user: null,
           loading: false,
@@ -111,6 +139,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     initAuth();
+    
+    // Also set up an auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session ? 'Session exists' : 'No session');
+        
+        if (event === 'SIGNED_IN') {
+          if (session?.user) {
+            const supabaseUser = session.user;
+            const user: User = {
+              id: supabaseUser.id,
+              email: supabaseUser.email || 'unknown@email.com',
+              name: supabaseUser.user_metadata?.name || 'User',
+              user_metadata: supabaseUser.user_metadata
+            };
+            
+            // Store user in local storage
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            setAuthState({
+              user,
+              loading: false,
+              error: null,
+              isAuthenticated: true,
+              requiresEmailConfirmation: false,
+              confirmationMessage: null
+            });
+          }
+        } else if (event === 'SIGNED_OUT') {
+          localStorage.removeItem('user');
+          setAuthState({
+            user: null,
+            loading: false,
+            error: null,
+            isAuthenticated: false,
+            requiresEmailConfirmation: false,
+            confirmationMessage: null
+          });
+        }
+      }
+    );
+    
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Login function

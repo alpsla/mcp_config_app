@@ -1,304 +1,294 @@
-# MCP Configuration Tool Implementation Plan
-**Updated: April 2025**
+# Updated Implementation Plan (March 2025)
 
-This document provides an overview of our implementation progress and outlines upcoming development priorities for the MCP Configuration Tool.
+This document outlines our updated implementation plan for the MCP Configuration Tool, tracking our progress and highlighting immediate next steps. The original phased approach and user flow remain unchanged, but this document reflects our current status and priorities.
 
-## Completed Work
+## Phase 1: Beta Release - Current Status
 
-### Core Infrastructure
+### Core Authentication & Onboarding (Completed)
 
-1. **Authentication System** ✅
-   - Implemented Supabase authentication with multiple methods:
-     - Magic Link (email-based passwordless login)
-     - Google OAuth integration
-     - GitHub OAuth integration
-   - Fixed authentication issues with proper user profile handling
-   - Refactored authentication system into modular components:
-     - Core authentication (client setup, base functions)
-     - Profile management with multi-strategy approach
-     - Email authentication (login, registration, password reset)
-     - OAuth/Social authentication (Google, GitHub)
-     - Type definitions and interfaces
-   - Implemented RPC function for reliable profile creation
-   - Added comprehensive error handling and logging
+- [x] Implement Supabase authentication
+- [x] Create streamlined registration flow
+- [x] Implement Google OAuth integration
+- [x] Implement GitHub OAuth integration
+- [x] Fix email authentication login issues
+- [x] Build welcome screens and product tour
+- [x] Develop tiered pricing structure ($5/$10/$15 options)
 
-2. **Routing System** ✅
-   - Implemented hash-based routing for better compatibility
-   - Created navigation system with proper route handling
-   - Fixed URL format issues to ensure consistent navigation with '#/' prefix
+### Enhanced User Experience (New Priority)
 
-3. **Application Shell** ✅
-   - Developed responsive layout with shared header and footer
-   - Implemented navigation links with proper active states
-   - Added proper home page access from all application screens
+- [x] Design returning user dashboard layout
+- [x] Create configuration card components with expanded details
+- [x] Implement configuration validation UI
+- [x] Add model cards with detailed information
+- [x] Build user feedback collection system
+- [x] Create testing utilities for prototype validation
+- [x] Conduct user testing for returning user experience
+- [x] Gather feedback and implement refinements
 
-### Service Integrations
+### Basic Configuration Interface (Partially Complete)
 
-1. **File System Integration** ✅
-   - Implemented directory browser with add/remove functionality
-   - Created proper path handling with platform detection
-   - Added security explanations and warning notices
-   - Implemented compatibility indicators for different platforms
-   - Added UI for directory selection/management
-   - Provided validation feedback for configuration status
+- [x] Build two-panel configuration UI
+- [x] Create "waiting state" illustration for empty right panel
+- [x] Implement Web Search configuration
+- [x] Develop File System access configuration UI
+- [x] Add platform compatibility indicators
+- [x] Create basic contextual help system
 
-2. **Web Search Integration** ✅
-   - Built parameter configuration interface with result count slider
-   - Implemented safe search toggle with clear explanations
-   - Added expandable advanced settings section for future options
-   - Created clean, intuitive UI with helper text and validation
+### Limited Hugging Face Integration (Not Started)
 
-3. **Hugging Face Integration** 🟡
-   - Developed secure token input mechanism with show/hide feature 
-   - Implemented token validation with feedback
-   - Created tiered model display system based on user subscription
-   - Added model selection UI with descriptions and tier indicators
-   - Implemented platform compatibility indicators
-   - Added status validation and feedback
-   - Created a basic model grid with tier-specific availability
-   - **In Progress**: Enhancing tier-based model selection UI
+- [ ] Implement token validation mechanism
+- [ ] Develop limited model selection interface (10 models total)
+- [ ] Create tier-based access control (3/6/10 models)
+- [ ] Build basic error handling for API interactions
+- [ ] Implement simple model configuration options
+- [ ] **Integrate ModelPreferencesUI component for collecting global model parameters**
 
-### Configuration Management
+### Dashboard and Navigation (In Progress)
 
-1. **Export Framework** 🟡
-   - Built JSON generation for Claude's format
-   - Implemented export options (clipboard, download, save)
-   - Created wrapper script generation for secure token handling
-   - **In Progress**: Fixing JSON export format to match Claude's requirements
+- [x] Create main dashboard for configuration management
+- [x] Implement "Recently Used" configurations display
+- [x] Add "Coming Soon" indicators for future features
+- [x] Create returning user dashboard for experienced users
+- [x] Implement tier status indicators and upgrade paths
+- [ ] Add configuration usage statistics
+- [ ] Integrate dashboard with real data APIs
 
-2. **Dashboard Views** ✅
-   - Implemented dashboard for new users
-   - Created returning user dashboard with configuration cards
-   - Added "Create New Configuration" action
+### Integration & Testing (Partially Complete)
 
-## Current Development Focus
+- [ ] Create configuration testing capabilities
+- [ ] **Fix JSON export format to match Claude's requirements**
+- [ ] Develop desktop integration testing
+- [ ] Build validation feedback system
+- [ ] Create user feedback mechanisms
 
-We are currently working on the following improvements:
+### Error Handling and User Experience (Not Started)
 
-1. **Authentication System Implementation**
-   - Deploying RPC function to Supabase
-   - Testing multi-strategy profile creation
-   - Updating import references across the codebase
-   - Conducting comprehensive authentication flow testing
+- [ ] **Implement comprehensive error handling system**
+- [ ] Create user-friendly error messages (especially for authentication)
+- [ ] Add recovery suggestions for common errors
+- [ ] Design improved empty states with clear next steps
+- [ ] Add guided tutorials for first-time users
 
-2. **Hugging Face Integration Enhancements**
-   - Updating the model selection UI to improve tier limitations clarity:
-     - Showing all 10 models for all users but limiting selection based on tier
-     - For non-subscribers: Replace toggle with "Subscribe to Enable" button
-     - For Basic Tier: Allow selection of up to 3 models from the entire pool
-     - For Complete Tier: Allow selection of all 10 models
-   - Adding clear upgrade paths and UI elements 
-   - Implementing better visual indicators for tier limitations
-   - Creating compelling "Coming Soon" section describing the full marketplace vision
+## Immediate Next Steps (Priority Order)
 
-3. **Configuration Flow Improvements**
-   - Adding a multi-step process indicator showing the full configuration lifecycle
-   - Creating validation preview for each service
-   - Improving the action buttons to better reflect the next steps in the process
-   - Adding helpful guidance throughout the configuration experience
+1. **Testing Returning User Flow (Highest Priority)**
+   - Test the returning user dashboard with mockup data
+   - Evaluate user interface and interaction flow
+   - Identify and fix any usability issues 
+   - Document user feedback for future improvements
 
-4. **Comprehensive Testing & Bug Fixing**
-   - Systematically testing all implemented components to verify functionality
-   - Testing the configuration flow end-to-end to identify integration issues
-   - Fixing toggle functionality in the configuration interface
-   - Addressing navigation and routing edge cases
-   - Ensuring proper state management across components
-   - Verifying responsive behavior across different screen sizes
-   - Performance testing with large model lists and complex configurations
+2. **Implement Configuration Creation Flow (High Priority)**
+   - Build configuration creation wizard
+   - Implement service selection interface
+   - Add model selection based on tier access
+   - Create validation and testing capabilities
 
-## Next Steps
+3. **Integrate Hugging Face API (High Priority)**
+   - Implement token validation mechanism
+   - Build model discovery and filtering system
+   - Create tiered access control for models
+   - Integrate model information retrieval (versions, stats)
+   - Implement ModelPreferencesUI for global parameter collection
 
-### Short-Term Priorities (Next 2-4 Weeks)
+4. **Complete Dashboard API Integration (Medium Priority)**
+   - Replace mock data with actual API calls
+   - Implement proper user type detection logic
+   - Add configuration usage tracking
+   - Create analytics for model and configuration usage
 
-1. **Complete Authentication System Implementation**
-   - Finish deploying RPC function to production
-   - Test all authentication flows thoroughly
-   - Update all components to use new modular auth system
-   - Document new authentication architecture
+5. **Finish Subscription Management (Medium Priority)**
+   - Implement one-time payment processing
+   - Create tier upgrade/downgrade workflow
+   - Add subscription management dashboard
+   - Implement usage limits based on tier
 
-2. **Tier-Based Model Selection UI**
-   - Finalize comprehensive model selection UI for different subscription tiers:
-     - Non-subscribers: Preview of models with "Subscribe to Enable" button
-     - Basic Tier: All 10 models visible but only 3 selectable
-     - Complete Tier: All 10 models selectable
-   - Create clear visual indicators for tier limitations
-   - Add smooth upgrade flow when users hit selection limits
+## Detailed Sub-Tasks for Immediate Priorities
 
-3. **Configuration Validation Flow**
-   - Implement multi-step process indicator
-   - Create validation preview in configuration UI
-   - Develop service-specific validation checks
-   - Build validation results display with actionable feedback
+### 1. Testing Returning User Flow
 
-4. **Hugging Face Integration Completion**
-   - Finalize token validation with real-time feedback
-   - Implement model-specific parameter configuration
-   - Create model performance indicators and usage metrics
+```
+- Conduct user tests with the returning user dashboard mockup
+- Test key interactions including:
+  - Configuration expansion and details view
+  - Validation testing flow
+  - Model information display
+  - Feedback collection
+  - View toggle between minimal and full
+- Document usability feedback and pain points
+- Identify any missing critical features
+- Prepare prioritized list of refinements
+```
 
-5. **"Coming Soon" Features Preview**
-   - Build a compelling section highlighting future capabilities:
-     - Unlimited model selection from Hugging Face
-     - Personalized model recommendations
-     - New model alerts and updates
-     - Model performance analytics
-     - Community configuration sharing
-   - Add newsletter signup to collect user interest
+### 2. Implement Configuration Creation Flow
 
-### Medium-Term Goals (1-3 Months)
+```
+- Design multi-step configuration wizard
+- Create server selection interface with tier indicators
+- Implement model browsing and selection based on tier
+- Build validation flow for configuration settings
+- Implement export functionality with proper JSON structure:
+  {
+    "mcpServers": {
+      "filesystem": {
+        "command": "npx",
+        "args": [...]
+      },
+      // other servers
+    }
+  }
+- Add deployment guidance based on platform
+- Create success confirmation with next steps
+```
 
-1. **Full Configuration Testing Pipeline**
-   - Automated configuration validation with Claude API
-   - Real-time token validation for Hugging Face
-   - Directory access permission checks for file system
-   - Comprehensive error reporting and remediation suggestions
+### 3. Integrate Hugging Face API
 
-2. **User Profile & Subscription Management**
-   - Subscription tier management and upgrades
-   - Usage tracking and quota management
-   - Billing integration and subscription lifecycle
-   - User preferences and settings
+```
+- Create Hugging Face API client service
+- Implement token validation and security
+- Build model discovery and search capabilities
+- Create model details fetching service
+- Add caching for model information
+- Implement tier-based model access control
+- Create error handling for API rate limits
+- Add proper error messaging for token issues
+- Integrate ModelPreferencesUI component for global parameter collection
+- Implement parameter persistence and retrieval
+- Create model-specific parameter override functionality
+```
 
-3. **Configuration Sharing & Export**
-   - Advanced export options for different platforms
-   - Secure configuration sharing between users
-   - Import functionality for shared configurations
-   - Version control for configuration history
+### 4. Complete Dashboard API Integration
 
-### Long-Term Vision (3+ Months)
+```
+- Create configurations API service
+- Implement validation API endpoints
+- Build user type detection based on configuration count
+- Add configuration usage tracking:
+  - Create last_used_at field in database
+  - Track usage count and patterns
+  - Implement analytics collection
+- Create proper user preference storage
+- Implement persistent dashboard state
+```
 
-1. **Full Hugging Face Marketplace**
-   - Search and browse thousands of Hugging Face models
-   - Category filtering and recommendation engine
-   - Performance metrics and popularity indicators
-   - Community ratings and reviews
+### 5. Finish Subscription Management
 
-2. **Advanced Analytics Dashboard**
-   - Usage statistics and performance metrics
-   - Cost optimization recommendations
-   - Configuration effectiveness scoring
-   - Predictive usage and cost forecasting
+```
+- Implement payment processing integration
+- Create subscription management UI
+- Build tier upgrade/downgrade workflows
+- Implement usage tracking and limitations
+- Add subscription status indicators
+- Create invoicing and receipt system
+- Build payment history view
+```
 
-3. **Enterprise Features**
-   - Team management and role-based access control
-   - Centralized configuration management
-   - Enterprise SSO integration
-   - Comprehensive audit logging and compliance features
+## Phase 2: Future Development (Unchanged)
+
+The plan for Phase 2 remains as originally outlined, focusing on:
+
+- Full Marketplace Experience
+- Analytics & Advanced Configuration
+- Community & Documentation
+- Enterprise Features
+
+These will be addressed after successfully completing the Phase 1 implementation priorities.
+
+## Integration Plan
+
+### Database Schema Updates
+
+```sql
+-- Update configurations table to track usage
+ALTER TABLE configurations 
+ADD COLUMN last_used_at TIMESTAMP,
+ADD COLUMN usage_count INTEGER DEFAULT 0;
+
+-- Create configuration_usage tracking table
+CREATE TABLE configuration_usage (
+  id SERIAL PRIMARY KEY,
+  configuration_id INTEGER REFERENCES configurations(id),
+  used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  session_id TEXT,
+  context TEXT
+);
+```
+
+### API Endpoints to Create
+
+```
+GET /api/users/:userId/configurations
+POST /api/configurations/:configId/validate
+POST /api/configurations/:configId/use
+POST /api/feedback
+GET /api/models?tier=:tier
+```
+
+### User Type Detection
+
+```javascript
+// Smart dashboard that detects user type
+const SmartDashboard = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [userType, setUserType] = useState('new');
+  const { user } = useAuth();
+  
+  useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
+    
+    // Check session storage first for better performance
+    const cachedUserType = sessionStorage.getItem('userType');
+    if (cachedUserType) {
+      setUserType(cachedUserType);
+      setIsLoading(false);
+      return;
+    }
+    
+    // Fetch user configurations
+    const fetchUserType = async () => {
+      try {
+        const response = await fetch(`/api/users/${user.id}/configurations`);
+        const data = await response.json();
+        
+        // Determine user type based on configurations
+        const type = data.configurations && data.configurations.length > 0 ? 'returning' : 'new';
+        
+        // Cache result for session
+        sessionStorage.setItem('userType', type);
+        setUserType(type);
+      } catch (error) {
+        console.error('Error determining user type:', error);
+        setUserType('new'); // Default to new user experience on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchUserType();
+  }, [user]);
+  
+  if (isLoading) return <LoadingSpinner />;
+  
+  return userType === 'returning' ? <ReturningUserDashboard /> : <Dashboard />;
+};
+```
+
+## Development Guidelines
+
+1. **Focus on User Experience**: Prioritize clear error messages and intuitive interfaces
+2. **Test Thoroughly**: Test all authentication flows and export functionality extensively
+3. **Mobile Responsiveness**: Ensure core features work on both desktop and mobile
+4. **Documentation**: Update documentation as features are completed
+5. **Error Handling**: Implement robust error handling throughout the application
 
 ## Technical Considerations
 
-1. **Cross-Platform Compatibility**
-   - Ensure consistent experience across Windows, macOS, and Linux
-   - Address platform-specific security and path handling requirements
-   - Create appropriate wrapper scripts for each platform
+- Use TypeScript consistently throughout the codebase
+- Maintain separation of concerns between services and UI components
+- Focus on accessibility compliance for all new components
+- Prioritize performance optimization for configuration management
+- Ensure secure handling of authentication tokens and user data
 
-2. **Security Enhancements**
-   - Implement secure token storage using platform credential stores
-   - Never store sensitive credentials in plain text
-   - Create secure runtime environment for credential injection
-   - Provide clear security documentation and best practices
-
-3. **Performance Optimization**
-   - Optimize large model list rendering
-   - Implement lazy loading for configuration components
-   - Improve validation speed and feedback
-   - Add caching for frequently accessed data
-
-4. **Authentication Architecture**
-   - Leverage modular authentication system
-   - Use multi-strategy profile creation approach
-   - Implement proper error handling and recovery
-   - Ensure secure token management
-
-## Milestones & Timeline
-
-| Milestone | Target Date | Status |
-|-----------|-------------|--------|
-| Core Authentication | Completed | ✅ |
-| Authentication Refactoring | April 7, 2025 | 🟡 |
-| Basic Configuration UI | Completed | ✅ |
-| Service Integrations | Completed | ✅ |
-| Dashboard Views | Completed | ✅ |
-| Hugging Face Enhancements | April 14, 2025 | 🟡 |
-| Configuration Validation | April 21, 2025 | 🔴 |
-| Subscription Integration | April 28, 2025 | 🔴 |
-| Analytics & Reporting | May 15, 2025 | 🔴 |
-| Enterprise Features | June 30, 2025 | 🔴 |
-
-## Implementation Details
-
-### Authentication System Architecture
-
-The refactored authentication system follows this structure:
-
-```
-src/services/auth/
-├── core/
-│   ├── authClient.ts     (Supabase client initialization)
-│   └── authService.ts    (Core authentication functions)
-├── email/
-│   ├── emailAuthService.ts  (Email auth functions)
-│   └── emailTemplates.ts    (Email templates)
-├── oauth/
-│   └── oauthService.ts      (OAuth auth functions)
-├── profile/
-│   └── profileService.ts    (Profile management)
-├── types/
-│   └── authTypes.ts         (Shared types and interfaces)
-└── index.ts                 (Re-exports everything)
-```
-
-Key features of the new authentication system:
-
-1. **Multi-Strategy Profile Creation**
-   - Direct insert attempt first
-   - Fallback to upsert approach
-   - Final fallback to RPC function that bypasses RLS
-
-2. **Improved Error Handling**
-   - Comprehensive error logging
-   - Graceful fallbacks at each step
-   - Clear user feedback
-
-3. **Better Code Organization**
-   - Specific modules for different authentication aspects
-   - Clear separation of concerns
-   - Improved testability and maintainability
-
-### Hugging Face Tier Selection UI
-
-The tiered model selection UI will:
-
-1. **Show All Models for All Users**
-   - Display all 10 models to every user
-   - Clearly indicate which models are available based on tier
-
-2. **Implement Tier-Specific Behaviors**
-   - Non-subscribers: "Subscribe to Enable" button
-   - Basic Tier: Select up to 3 models from entire pool
-   - Complete Tier: Access all 10 models
-
-3. **Provide Clear Upgrade Paths**
-   - Show inline upgrade prompts when tier limits are reached
-   - Provide tier comparison information
-   - Implement smooth upgrade flow
-
-### Configuration Validation Flow
-
-The configuration validation system will:
-
-1. **Validate Configurations Locally**
-   - Check for required fields
-   - Verify token formats
-   - Validate path formats
-
-2. **Perform Server-Side Validation**
-   - Test API token validity
-   - Check directory access permissions
-   - Validate against Claude's requirements
-
-3. **Provide Clear Feedback**
-   - Show validation status for each service
-   - Provide actionable error messages
-   - Offer guided remediation steps
-
-This implementation plan will be reviewed and updated bi-weekly to reflect current progress and any shifting priorities.
+This implementation plan will be reviewed weekly to track progress and adjust priorities as needed.

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import './Dashboard.css';
@@ -14,10 +14,10 @@ import TestimonialCard from './TestimonialCard';
 import ComingSoon from './ComingSoon';
 import SharedFooter from '../shared/SharedFooter';
 
-// Import assets
-import santaBeachImage from '../../assets/images/Santa.webp';
-import holidayBeachMusic from '../../assets/audio/tropical-christma.wav';
-import abstractVideo from '../../assets/videos/abstract.mp4';
+// Assets are now directly referenced from public directory in the ExampleShowcase component
+console.log('Loading assets from /demo-assets directory');
+// Force refresh asset paths to avoid caching issues
+const forceRefresh = '?v=' + new Date().getTime();
 
 const Dashboard = () => {
   // Get the auth state from context
@@ -379,9 +379,9 @@ const Dashboard = () => {
     {
       id: 'santa-beach',
       title: 'Santa on the Beach',
-      model: 'Flux.1-dev-infer',
-      prompt: 'Santa Claus relaxing on a tropical beach, wearing sunglasses and shorts, photorealistic style',
-      assetPath: santaBeachImage,
+      model: 'Flux.1',
+      prompt: 'Santa Claus on the beach giving Christmas gifts to sea creatures',
+      assetPath: '/demo-assets/images/flux-santa-beach.jpg' + forceRefresh,
       type: 'image'
     },
     {
@@ -389,7 +389,7 @@ const Dashboard = () => {
       title: 'Holiday Beach Music',
       model: 'MusicGen',
       prompt: 'Create upbeat holiday music with a tropical beach vibe',
-      assetPath: holidayBeachMusic,
+      assetPath: '/demo-assets/audio/tropical-christma.wav' + forceRefresh,
       type: 'audio'
     },
     {
@@ -397,10 +397,41 @@ const Dashboard = () => {
       title: 'Abstract Visualization',
       model: 'VideoGen',
       prompt: 'Create an abstract visualization with dynamic patterns and vibrant colors',
-      assetPath: abstractVideo,
+      assetPath: '/demo-assets/videos/abstract.mp4' + forceRefresh,
       type: 'video'
     }
   ];
+  
+  // Debug examples
+  console.log('Examples with public asset paths:', examples);
+  
+  // Asset verification function for debugging
+  const verifyAssets = () => {
+    examples.forEach(example => {
+      console.log(`Verifying asset: ${example.assetPath}`);
+      fetch(example.assetPath)
+        .then(response => {
+          console.log(`Asset ${example.assetPath} status: ${response.status} ${response.ok ? 'OK' : 'NOT FOUND'}`);
+        })
+        .catch(error => {
+          console.error(`Error fetching ${example.assetPath}:`, error);
+        });
+    });
+    
+    // Also check if the directory structure is correct
+    fetch('/demo-assets/')
+      .then(response => {
+        console.log(`Demo-assets directory status: ${response.status} ${response.ok ? 'OK' : 'NOT FOUND'}`);
+      })
+      .catch(error => {
+        console.error('Error fetching demo-assets directory:', error);
+      });
+  };
+  
+  // Automatically verify assets on load
+  useEffect(() => {
+    verifyAssets();
+  }, []);
   
   // Testimonials data
   const testimonials = [
@@ -568,7 +599,7 @@ const Dashboard = () => {
                       console.log('Navigating to configuration page from Free Plan selection');
                       // Store the tier in localStorage for more reliable persistence
                       localStorage.setItem('user_subscription_tier', 'none');
-                      window.location.hash = '/configure';
+                      window.location.hash = '/configuration';
                       // Force scroll to top
                       setTimeout(() => window.scrollTo(0, 0), 100);
                     }}>

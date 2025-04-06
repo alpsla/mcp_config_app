@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo Assets Test</title>
+    <base href="/">
+</head>
+<body>
+    <h1>Demo Assets Test</h1>
+    
+    <h2>Image Test</h2>
+    <img src="/demo-assets/images/flux-santa-beach.jpg" alt="Santa Beach Image" style="max-width: 400px;">
+    
+    <h2>Audio Test</h2>
+    <audio controls>
+        <source src="/demo-assets/audio/tropical-christma.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <h2>Video Test</h2>
+    <video controls style="max-width: 400px;">
+        <source src="/demo-assets/videos/abstract.mp4" type="video/mp4">
+        Your browser does not support the video element.
+    </video>
+    
+    <script>
+        // Load assets directly and report results to console
+        window.onload = function() {
+            console.log("Testing direct asset loading...");
+            
+            // Test image
+            const testImage = new Image();
+            testImage.onload = function() {
+                console.log("✅ Image loaded successfully: /demo-assets/images/flux-santa-beach.jpg");
+            };
+            testImage.onerror = function() {
+                console.error("❌ Failed to load image: /demo-assets/images/flux-santa-beach.jpg");
+            };
+            testImage.src = "/demo-assets/images/flux-santa-beach.jpg";
+            
+            // Test audio
+            const testAudio = new Audio();
+            testAudio.oncanplaythrough = function() {
+                console.log("✅ Audio loaded successfully: /demo-assets/audio/tropical-christma.wav");
+            };
+            testAudio.onerror = function() {
+                console.error("❌ Failed to load audio: /demo-assets/audio/tropical-christma.wav");
+            };
+            testAudio.src = "/demo-assets/audio/tropical-christma.wav";
+            
+            // Test video
+            const testVideo = document.createElement('video');
+            testVideo.oncanplaythrough = function() {
+                console.log("✅ Video loaded successfully: /demo-assets/videos/abstract.mp4");
+            };
+            testVideo.onerror = function() {
+                console.error("❌ Failed to load video: /demo-assets/videos/abstract.mp4");
+            };
+            testVideo.src = "/demo-assets/videos/abstract.mp4";
+        };
+    </script>
+</body>
+</html>

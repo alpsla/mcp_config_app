@@ -1,5 +1,0 @@
-This directory contains demo assets for the MCP Configuration Tool dashboard:
-
-1. flux-santa-beach.jpg - A demo image showing an AI-generated image of Santa Claus on a beach giving Christmas gifts to sea creatures using the Flux.1 model.
-
-2. Additional model demos will be added here.

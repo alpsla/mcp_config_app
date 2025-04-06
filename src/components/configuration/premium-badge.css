@@ -1,0 +1,39 @@
+/* Premium badge styles */
+.mcp-paid-feature-badge {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  background-color: #FF5722 !important;
+  color: white !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  z-index: 10 !important;
+  display: block !important;
+}
+
+.service-option {
+  position: relative !important;
+}
+
+.premium-option {
+  position: relative !important;
+  border: 1px solid #E1E1E1 !important;
+}
+
+.premium-option::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.service-option:hover .mcp-paid-feature-badge,
+.premium-option:hover .mcp-paid-feature-badge {
+  background-color: #F4511E !important;
+}

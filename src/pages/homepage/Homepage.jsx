@@ -6,21 +6,12 @@ import { useAuth } from '../../auth/AuthContext';
 
 const Homepage = () => {
   // Get real authentication state from context
-  const { authState, signOut } = useAuth();
+  const { authState } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
-  // Real sign out function
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
   
   // Set document to light theme by default
   useEffect(() => {
-  document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark');
   }, []);
   
   // Force re-check auth state on component mount
@@ -271,30 +262,30 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Features Section (unchanged) */}
+      {/* Features Section */}
       <section className="features">
-        {/* ... Keep existing features content ... */}
+        {/* Content remains unchanged */}
       </section>
 
-      {/* Pricing Hero Section (unchanged) */}
+      {/* Pricing Hero Section */}
       <section className="pricing-hero-new">
-        {/* ... Keep existing pricing-hero-new content ... */}
+        {/* Content remains unchanged */}
       </section>
 
-      {/* Pricing Section (unchanged) */}
+      {/* Pricing Section */}
       <section className="pricing">
-        {/* ... Keep existing pricing content ... */}
+        {/* Content remains unchanged */}
       </section>
 
-      {/* Use Cases Section (unchanged) */}
+      {/* Use Cases Section */}
       <section className="use-cases">
-        {/* ... Keep existing use-cases content ... */}
+        {/* Content remains unchanged */}
       </section>
 
       {/* Using our new reusable FAQ component */}
       <FAQSection title="Frequently Asked Questions" faqs={faqData} />
 
-      {/* CTA Section (unchanged) */}
+      {/* CTA Section */}
       <section className="cta">
         <div className="container">
           <h2>Ready to Enhance Your Claude Experience?</h2>

@@ -17,12 +17,17 @@ const PricingPage: React.FC = () => {
           <div className="card-body">
             <h2 className="card-price">$0<small>/month</small></h2>
             <ul className="features-list">
-              <li>Basic Configuration</li>
-              <li>File System Integration</li>
+              <li>File System Access</li>
               <li>Web Search Integration</li>
-              <li>Community Support</li>
+              <li style={{ opacity: 0 }}>&nbsp;</li>
+              <li style={{ opacity: 0 }}>&nbsp;</li>
             </ul>
-            <button className="plan-button current">
+            <button 
+              className="plan-button current" 
+              onClick={() => {
+                window.location.hash = '/configuration';
+              }}
+            >
               Current Plan
             </button>
           </div>
@@ -36,11 +41,19 @@ const PricingPage: React.FC = () => {
             <h2 className="card-price">$2<small>/month</small></h2>
             <ul className="features-list">
               <li>Everything in Free</li>
-              <li>Hugging Face Integration</li>
-              <li>Up to 3 AI Models</li>
-              <li>Email Support</li>
+              <li>3 Hugging Face model integrations</li>
+              <li>Save up to 3 configurations</li>
+              <li>Basic email support</li>
             </ul>
-            <button className="plan-button subscribe">
+            <button 
+              className="plan-button subscribe"
+              onClick={() => {
+                const confirmed = window.confirm(`You're about to subscribe to the Basic plan for $2/month. Proceed to subscription page?`);
+                if (confirmed) {
+                  window.location.hash = '/subscribe?plan=basic';
+                }
+              }}
+            >
               Subscribe
             </button>
           </div>
@@ -54,11 +67,19 @@ const PricingPage: React.FC = () => {
             <h2 className="card-price">$5<small>/month</small></h2>
             <ul className="features-list">
               <li>Everything in Basic</li>
-              <li>Unlimited AI Models</li>
-              <li>Priority Support</li>
-              <li>Advanced Configuration Options</li>
+              <li>Up to 10 Hugging Face model integrations</li>
+              <li>Unlimited saved configurations</li>
+              <li>Configuration export/import</li>
             </ul>
-            <button className="plan-button subscribe-alt">
+            <button 
+              className="plan-button subscribe-alt"
+              onClick={() => {
+                const confirmed = window.confirm(`You're about to subscribe to the Complete plan for $5/month. Proceed to subscription page?`);
+                if (confirmed) {
+                  window.location.hash = '/subscribe?plan=complete';
+                }
+              }}
+            >
               Subscribe
             </button>
           </div>

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import WelcomeBanner from '../../components/dashboard/WelcomeBanner';
-import ConfigureButton from '../../components/dashboard/ConfigureButton';
 import ComingSoonSection from '../../components/dashboard/ComingSoon';
 import ReturningUserDashboard from '../../components/dashboard/ReturningUserDashboard';
-import EmptyState from '../../components/dashboard/EmptyState';
 import { useSafeNavigation } from '../../utils/navigation';
 import ConfigurationService from '../../services/configurationService';
 import './Dashboard.css';
+
+// Removed unused imports: ConfigureButton, EmptyState
 
 /**
  * Main dashboard component that serves as the landing page after authentication
@@ -18,6 +18,38 @@ const Dashboard: React.FC = () => {
   const { navigateSafely } = useSafeNavigation();
   const [hasConfigurations, setHasConfigurations] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
+  // Media player states
+  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  
+  // Function to handle audio playback
+  const toggleAudioPlayback = () => {
+    const audio = document.getElementById('demoAudio') as HTMLAudioElement;
+    if (audio) {
+      if (audio.paused) {
+        audio.play();
+        setAudioPlaying(true);
+      } else {
+        audio.pause();
+        setAudioPlaying(false);
+      }
+    }
+  };
+  
+  // Function to handle video playback
+  const toggleVideoPlayback = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setVideoPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setVideoPlaying(false);
+      }
+    }
+  };
   
   // Check if the current route is the intro dashboard
   const isIntroDashboard = window.location.hash.includes('/dashboard/intro');
@@ -57,12 +89,10 @@ const Dashboard: React.FC = () => {
   }
 
   const handleConfigureClick = () => {
-    navigateSafely('/configure');
+    window.location.hash = '#/configure';
   };
 
-  const handleEmptyStateButtonClick = (configType: string) => {
-    navigateSafely('/configure');
-  };
+  // handleEmptyStateButtonClick removed as it's no longer used
 
   return (
     <div className="dashboard-container">
@@ -100,7 +130,15 @@ const Dashboard: React.FC = () => {
                     <div className="model-demo-example">
                       <div className="example-prompt">"Santa Claus on the beach giving Christmas gifts to sea creatures"</div>
                       <div className="example-result model-image-placeholder">
-                        <img src="/assets/flux-santa-beach.jpg" alt="AI generated image of Santa on a beach with sea creatures" className="demo-image" onError={(e) => e.currentTarget.style.display = 'none'} />
+                        <img 
+                          src="/assets/images/flux-santa-beach.jpg" 
+                          alt="Santa on a beach with sea creatures" 
+                          className="demo-image" 
+                          onError={(e) => {
+                            console.error('Image failed to load:', e);
+                            e.currentTarget.style.display = 'none';
+                          }} 
+                        />
                       </div>
                       <div className="model-tag">Model: Flux.1</div>
                     </div>
@@ -113,10 +151,22 @@ const Dashboard: React.FC = () => {
                     <div className="model-demo-example">
                       <div className="example-prompt">"Create upbeat holiday music with a tropical beach vibe"</div>
                       <div className="example-result audio-player-placeholder">
+                        <audio 
+                          src="/assets/audio/musicgen-tropical-christmas.wav" 
+                          id="demoAudio" 
+                          style={{display: 'none'}}
+                          onError={(e) => {
+                            console.error('Audio failed to load:', e);
+                          }}
+                          onEnded={() => setAudioPlaying(false)}
+                        ></audio>
                         <div className="audio-player-controls">
-                          <span className="play-button">▶️</span>
-                          <div className="audio-timeline"></div>
-                          <span className="audio-duration">00:30</span>
+                          <span 
+                            className={`play-button ${audioPlaying ? 'playing' : ''}`}
+                            onClick={toggleAudioPlayback}
+                          >
+                            {audioPlaying ? '⏸️' : '▶️'}
+                          </span>
                         </div>
                       </div>
                       <div className="model-tag">Model: MusicGen</div>
@@ -130,8 +180,51 @@ const Dashboard: React.FC = () => {
                     <div className="model-demo-example">
                       <div className="example-prompt">"Create an abstract visualization with dynamic patterns and vibrant colors"</div>
                       <div className="example-result video-player-placeholder">
-                        <div className="video-player-controls">
-                          <span className="play-button">▶️</span>
+                        <div className="video-container" style={{ position: 'relative' }}>
+                          <video 
+                            src="/assets/videos/videogen-abstract-visualization.mp4" 
+                            id="demoVideo"
+                            style={{maxWidth: '100%', borderRadius: '8px', display: 'block'}}
+                            onError={(e) => {
+                              console.error('Video failed to load:', e);
+                              const controls = document.querySelector('.video-player-controls') as HTMLElement;
+                              if (controls) controls.style.display = 'flex';
+                              e.currentTarget.style.display = 'none';
+                            }}
+                            onEnded={() => setVideoPlaying(false)}
+                            ref={videoRef}
+                          ></video>
+                          
+                          {/* Custom play/pause button overlay */}
+                          <div 
+                            className="video-play-overlay"
+                            style={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              transform: 'translate(-50%, -50%)',
+                              opacity: videoPlaying ? '0' : '1',
+                              transition: 'opacity 0.3s ease',
+                              pointerEvents: videoPlaying ? 'none' : 'auto',
+                            }}
+                            onClick={toggleVideoPlayback}
+                          >
+                            <span 
+                              className="play-button video-play-button"
+                              style={{ fontSize: '36px' }}
+                            >
+                              {videoPlaying ? '⏸️' : '▶️'}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="video-player-controls" style={{display: 'none'}}>
+                          <span 
+                            className={`play-button ${videoPlaying ? 'playing' : ''}`}
+                            onClick={toggleVideoPlayback}
+                          >
+                            {videoPlaying ? '⏸️' : '▶️'}
+                          </span>
                         </div>
                       </div>
                       <div className="model-tag">Model: VideoGen</div>
@@ -194,7 +287,7 @@ const Dashboard: React.FC = () => {
                 
                 <div className="services-grid">
                   <div className="service-card">
-                    <div className="service-icon file-system-icon">📂</div>
+                    <div className="service-icon file-system-icon" style={{ fontSize: '40px', marginBottom: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70px', height: '70px', borderRadius: '50%', backgroundColor: 'rgba(78, 93, 222, 0.1)' }}>📂</div>
                     <h3>File System Access</h3>
                     <p>Allow Claude to read files from your computer securely</p>
                     <ul className="service-features">
@@ -206,7 +299,7 @@ const Dashboard: React.FC = () => {
                   </div>
                   
                   <div className="service-card">
-                    <div className="service-icon web-search-icon">🔍</div>
+                    <div className="service-icon web-search-icon" style={{ fontSize: '40px', marginBottom: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70px', height: '70px', borderRadius: '50%', backgroundColor: 'rgba(78, 93, 222, 0.1)' }}>🔍</div>
                     <h3>Web Search</h3>
                     <p>Enable Claude to search the web for up-to-date information</p>
                     <ul className="service-features">
@@ -218,7 +311,7 @@ const Dashboard: React.FC = () => {
                   </div>
                   
                   <div className="service-card">
-                    <div className="service-icon huggingface-icon">🤗</div>
+                    <div className="service-icon huggingface-icon" style={{ fontSize: '40px', marginBottom: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70px', height: '70px', borderRadius: '50%', backgroundColor: 'rgba(78, 93, 222, 0.1)' }}>🤗</div>
                     <h3>Hugging Face Models</h3>
                     <p>Extend Claude with specialized AI models for specific tasks</p>
                     <ul className="service-features">
@@ -244,12 +337,12 @@ const Dashboard: React.FC = () => {
                       <div className="tier-period">forever</div>
                     </div>
                     <ul className="tier-features">
-                      <li>3 pre-configured model integrations</li>
-                      <li>Basic search functionality</li>
-                      <li>Community support</li>
-                      <li>Perfect for individual exploration</li>
+                      <li>File System Access</li>
+                      <li>Web Search Integration</li>
+                      <li style={{ opacity: 0 }}>&nbsp;</li>
+                      <li style={{ opacity: 0 }}>&nbsp;</li>
                     </ul>
-                    <button className="tier-button current-tier">Current Plan</button>
+                    <button className="tier-button current-tier" onClick={() => { window.location.hash = '#/configure'; }}>Current Plan</button>
                   </div>
                   
                   <div className="pricing-tier basic-tier">
@@ -260,12 +353,22 @@ const Dashboard: React.FC = () => {
                     </div>
                     <div className="tier-badge">Popular</div>
                     <ul className="tier-features">
-                      <li>6 model configurations</li>
-                      <li>Save up to 5 configuration profiles</li>
-                      <li>Email support</li>
-                      <li>Ideal for regular users</li>
+                      <li>Everything in Free tier</li>
+                      <li>3 Hugging Face model integrations</li>
+                      <li>Save up to 3 configurations</li>
+                      <li>Basic email support</li>
                     </ul>
-                    <button className="tier-button upgrade-button">Upgrade</button>
+                    <button 
+                      className="tier-button upgrade-button"
+                      onClick={() => {
+                        const confirmed = window.confirm(`You're about to subscribe to the Basic plan for $2/month. Proceed to subscription page?`);
+                        if (confirmed) {
+                          window.location.hash = '#/subscribe/basic';
+                        }
+                      }}
+                    >
+                      Upgrade
+                    </button>
                   </div>
                   
                   <div className="pricing-tier complete-tier">
@@ -275,13 +378,22 @@ const Dashboard: React.FC = () => {
                       <div className="tier-period">per month</div>
                     </div>
                     <ul className="tier-features">
-                      <li>All 10 model configurations</li>
-                      <li>Unlimited saved profiles</li>
-                      <li>Priority support</li>
-                      <li>Early access to new features</li>
-                      <li>Best for power users and developers</li>
+                      <li>Everything in Basic tier</li>
+                      <li>Up to 10 Hugging Face model integrations</li>
+                      <li>Unlimited saved configurations</li>
+                      <li>Configuration export/import</li>
                     </ul>
-                    <button className="tier-button upgrade-button">Upgrade</button>
+                    <button 
+                      className="tier-button upgrade-button"
+                      onClick={() => {
+                        const confirmed = window.confirm(`You're about to subscribe to the Complete plan for $5/month. Proceed to subscription page?`);
+                        if (confirmed) {
+                          window.location.hash = '#/subscribe/complete';
+                        }
+                      }}
+                    >
+                      Upgrade
+                    </button>
                   </div>
                 </div>
                 

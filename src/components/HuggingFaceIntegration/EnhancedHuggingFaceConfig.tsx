@@ -104,8 +104,11 @@ const EnhancedHuggingFaceConfig: React.FC<EnhancedHuggingFaceConfigProps> = ({
     });
   };
 
-  // Handle subscription prompt
-  const handleSubscribe = () => {
+  // Handle subscription prompt with specific tier
+  const handleSubscribe = (tier?: SubscriptionTierSimple) => {
+    if (tier) {
+      setCurrentTier(tier);
+    }
     setShowSubscriptionFlow(true);
   };
 
@@ -141,16 +144,38 @@ const EnhancedHuggingFaceConfig: React.FC<EnhancedHuggingFaceConfigProps> = ({
               <div className="banner-content">
                 <h3>Unlock Hugging Face Integration</h3>
                 <p>
-                  Subscribe to access powerful AI models from Hugging Face.
-                  Enhance Claude with specialized capabilities for image generation,
-                  code assistance, and more.
+                  Hugging Face integration is only available on paid plans. Subscribe to
+                  access powerful AI models that enhance Claude with specialized capabilities
+                  for image generation, code assistance, and more.
                 </p>
-                <button 
-                  className="subscribe-button"
-                  onClick={handleSubscribe}
-                >
-                  Subscribe Now
-                </button>
+                <div className="premium-benefits">
+                  <div className="benefit-item">
+                    <span className="benefit-icon">🎨</span>
+                    <span className="benefit-text">Image Generation</span>
+                  </div>
+                  <div className="benefit-item">
+                    <span className="benefit-icon">💻</span>
+                    <span className="benefit-text">Code Assistance</span>
+                  </div>
+                  <div className="benefit-item">
+                    <span className="benefit-icon">🔍</span>
+                    <span className="benefit-text">Data Analysis</span>
+                  </div>
+                </div>
+                <div className="subscription-options">
+                  <button 
+                    className="subscribe-button basic-tier"
+                    onClick={() => handleSubscribe('basic')}
+                  >
+                    Basic Plan - $9.99/month
+                  </button>
+                  <button 
+                    className="subscribe-button complete-tier"
+                    onClick={() => handleSubscribe('complete')}
+                  >
+                    Complete Plan - $19.99/month
+                  </button>
+                </div>
               </div>
               <div className="banner-feature">
                 <div className="feature-icons">
@@ -175,7 +200,7 @@ const EnhancedHuggingFaceConfig: React.FC<EnhancedHuggingFaceConfigProps> = ({
                 </p>
                 <button 
                   className="upgrade-button"
-                  onClick={handleSubscribe}
+                  onClick={() => handleSubscribe('complete')}
                 >
                   Upgrade to Complete
                 </button>
@@ -197,7 +222,7 @@ const EnhancedHuggingFaceConfig: React.FC<EnhancedHuggingFaceConfigProps> = ({
                 </div>
                 <button 
                   className="edit-params-button"
-                  onClick={handleSubscribe}
+                  onClick={() => handleSubscribe()}
                 >
                   Edit Parameters
                 </button>
@@ -237,7 +262,7 @@ const EnhancedHuggingFaceConfig: React.FC<EnhancedHuggingFaceConfigProps> = ({
                 </div>
                 <button 
                   className="edit-params-button"
-                  onClick={handleSubscribe}
+                  onClick={() => handleSubscribe()}
                 >
                   Edit Parameters
                 </button>

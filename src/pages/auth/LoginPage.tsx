@@ -5,23 +5,14 @@ import './LoginPage.css';
 import ConfigurationService from '../../services/configurationService';
 
 const LoginPage: React.FC = () => {
-  const { socialLogin, signOut, authState } = useAuth();
+  const { socialLogin, authState } = useAuth();
   const isAuthenticated = authState?.user !== null;
   const [signingIn, setSigningIn] = useState<boolean>(false);
   const [redirecting, setRedirecting] = useState<boolean>(false);
-  const [redirectAttempts, setRedirectAttempts] = useState<number>(0);
+  // Removed unused variable redirectAttempts
   const [fadingOut, setFadingOut] = useState<boolean>(false);
   
-  // Handle sign out
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      // Redirect to home after sign out
-      window.location.hash = '/';
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+  // Handle sign out (removed unused function)
   
   // Enhanced social login with sign-in state tracking
   const handleSocialLogin = (provider: string) => {
@@ -66,7 +57,6 @@ const LoginPage: React.FC = () => {
     if (isAuthenticated && !signingIn && !redirecting) {
       // Set redirecting state to prevent multiple redirections
       setRedirecting(true);
-      setRedirectAttempts(1);
       
       // Check if the user has any configurations
       const checkConfigurations = async () => {
@@ -110,13 +100,12 @@ const LoginPage: React.FC = () => {
       console.log('Authentication successful, starting immediate redirect');
       setSigningIn(false);
       setRedirecting(true);
-      setRedirectAttempts(1);
       setFadingOut(true);
       
       // Skip configurations check and go straight to dashboard
       immediateRedirect('/dashboard/intro');
     }
-  }, [isAuthenticated, signingIn, authState?.user?.id, redirecting]);
+  }, [isAuthenticated, signingIn, authState?.user, redirecting]);
   
   // Add a faster fallback for redirection
   useEffect(() => {

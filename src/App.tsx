@@ -5,6 +5,7 @@ import ConfigurationService from './services/configurationService';
 import { MCPServer, MCPConfiguration } from './types';
 import RouteHandler from './utils/RouteHandler';
 import { navigate } from './utils/RouteHandler';
+import SubscriptionFlow from './components/subscription/SubscriptionFlow';
 
 // Import page components
 import HomePage from './pages/main/HomePage';
@@ -20,6 +21,11 @@ import { useAuth } from './auth/AuthContext';
 // Import shared header and footer components
 import SharedHeader from './components/shared/SharedHeader';
 import SharedFooter from './components/shared/SharedFooter';
+import AuthCallbackPage from './pages/auth/callback';
+
+// Import test and configuration components
+import TestHuggingFaceRender from './components/TestHuggingFaceRender';
+import Configure from './pages/configuration/Configure';
 
 const App: React.FC = () => {
   const { authState, signOut } = useAuth();
@@ -92,13 +98,16 @@ const App: React.FC = () => {
 
   // Define routes, conditionally rendering based on auth and configuration state
   const routes = [
-  // Home page - different based on authentication
-  { 
-  path: '/', 
-  component: isAuthenticated ? HomePage : Homepage 
-  },
-  { path: '/login', component: LoginPage },
-  { path: '/signin', component: LoginPage },
+    // Home page - different based on authentication
+    { 
+      path: '/', 
+      component: isAuthenticated ? HomePage : Homepage 
+    },
+    { path: '/login', component: LoginPage },
+    { path: '/signin', component: LoginPage },
+    { path: '/subscribe', component: (props) => <SubscriptionFlow onComplete={() => navigate('/configuration')} {...props} /> },
+    { path: '/subscribe/basic', component: (props) => <SubscriptionFlow initialTier="basic" onComplete={() => navigate('/configuration')} {...props} /> },
+    { path: '/subscribe/complete', component: (props) => <SubscriptionFlow initialTier="complete" onComplete={() => navigate('/configuration')} {...props} /> },
     // Dashboard - different based on configuration history
     { 
       path: '/dashboard', 
@@ -130,6 +139,21 @@ const App: React.FC = () => {
       path: '/legacy-configuration/:id', 
       component: ConfigurationPage 
     },
+    // Auth callback route for magic links and OAuth
+    {
+      path: '/auth/callback',
+      component: AuthCallbackPage
+    },
+    // Test route
+    {
+      path: '/test-huggingface',
+      component: TestHuggingFaceRender
+    },
+    // Redirect from old route to new route
+    {
+      path: '/configure',
+      component: Configure
+    },
   ];
 
   // Show message with auto-dismiss
@@ -138,8 +162,8 @@ const App: React.FC = () => {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  // Get the current path from hash
-  const currentPath = window.location.hash.substring(1).split('?')[0] || '/';
+  // We no longer need this since we're using RouteHandler
+  // const currentPath = window.location.hash.substring(1).split('?')[0] || '/';
   
   // Create the navigation links array for the header
   const navLinks = [

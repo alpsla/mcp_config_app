@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../../services/supabase/supabaseClient';
 import { repairUserProfile } from '../../utils/profileRepair';
-import { SubscriptionTier } from '../../types';
 import { ensureProfileExists } from '../../utils/createProfileBypass';
 
 /**
@@ -16,8 +14,6 @@ import { ensureProfileExists } from '../../utils/createProfileBypass';
  * It ensures that user profiles are created before redirecting to the app.
  */
 const AuthCallback: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [status, setStatus] = useState<string>('Processing authentication...');
   const [errorType, setErrorType] = useState<string | null>(null);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
@@ -164,8 +160,9 @@ const AuthCallback: React.FC = () => {
         
         // Redirect to dashboard instead of home page
         const redirectTo = '/dashboard';
+        console.log('Redirecting to dashboard...');
         setTimeout(() => {
-          navigate(redirectTo);
+          window.location.hash = redirectTo;
         }, 1000);
       } catch (err: any) {
         console.error('Auth callback error:', err);
@@ -194,7 +191,7 @@ const AuthCallback: React.FC = () => {
     };
 
     handleCallback();
-  }, [navigate, location]);
+  }, []); // No dependencies needed
 
   return (
     <div style={{ 
@@ -263,7 +260,7 @@ const AuthCallback: React.FC = () => {
               <button 
                 onClick={() => {
                   // Replace the current page instead of opening a new one
-                  window.location.href = '/login';
+                  window.location.href = '#/login';
                 }} 
                 style={{
                   backgroundColor: '#6750A4',
@@ -281,7 +278,7 @@ const AuthCallback: React.FC = () => {
               
               <div style={{ marginTop: '16px' }}>
                 <button 
-                  onClick={() => window.location.href = '/magic-link'} 
+                  onClick={() => window.location.href = '#/login'} 
                   style={{
                     backgroundColor: 'transparent',
                     color: '#6750A4',

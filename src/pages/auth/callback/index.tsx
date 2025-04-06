@@ -27,6 +27,29 @@ const AuthCallbackPage: React.FC = () => {
         // Continue with normal flow if redirect fails
       }
     }
+    
+    // Extract and handle access_token from URL if present
+    // This is needed because we're using hash-based routing and some auth providers might not handle it correctly
+    const url = new URL(window.location.href);
+    const hashParams = new URLSearchParams(url.hash.substring(1));
+    const searchParams = new URLSearchParams(url.search);
+    
+    // Check if we have tokens in URL search params that need to be moved to the hash
+    const accessToken = searchParams.get('access_token');
+    
+    if (accessToken && !hashParams.has('access_token')) {
+      console.log('AuthCallbackPage: Found access_token in URL search params, handling it');
+      // We have tokens in the wrong place - manually handle them
+      // This happens with some providers when hash routing is used
+      try {
+        // Move tokens from search params to hash
+        const newHash = '#/auth/callback';
+        window.location.hash = newHash;
+        console.log('AuthCallbackPage: Moved token parameters to hash');
+      } catch (err) {
+        console.error('AuthCallbackPage: Error handling token in URL:', err);
+      }
+    }
   }, []);
   
   return <AuthCallback />;

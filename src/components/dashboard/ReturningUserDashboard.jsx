@@ -318,7 +318,7 @@ const ReturningUserDashboard = () => {
               <h2 className="section-title">Your Configurations</h2>
               <button 
                 className="create-config-button"
-                onClick={() => window.location.href = '#/configure'}
+                onClick={() => window.location.href = '#/configuration'}
               >
                 + New Configuration
               </button>
