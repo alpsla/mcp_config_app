@@ -1,1 +1,0 @@
-- /subsribe/profile page has no buttons and progress bar missing Interests and Parameters

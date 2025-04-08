@@ -1,6 +1,121 @@
 import React, { useState, useEffect } from 'react';
 import '../SubscriptionFlow.css';
 
+// Add a direct fix for the progress bar steps
+const fixProgressBarOnce = () => {
+  console.log('ProfileStep: Running progress bar fix');
+  
+  // Find the progress bar  
+  const progressBar = document.querySelector('.subscription-progress');
+  if (!progressBar) return;
+  
+  // Check if we already have all steps
+  const steps = progressBar.querySelectorAll('.progress-step');
+  const stepNames = Array.from(steps).map(step => {
+    const nameEl = step.querySelector('.step-name');
+    return nameEl ? nameEl.textContent : null;
+  }).filter(Boolean);
+  
+  // Only fix if we're missing the Interests or Parameters steps
+  if (stepNames.includes('Interests') && stepNames.includes('Parameters')) {
+    console.log('ProfileStep: No fix needed - all steps present');
+    return;
+  }
+  
+  console.log('ProfileStep: Missing steps, rebuilding progress bar');
+  
+  // Define all required steps
+  const requiredSteps = [
+    { name: 'Welcome', completed: true, active: false },
+    { name: 'Profile', completed: false, active: true },
+    { name: 'Interests', completed: false, active: false },
+    { name: 'Parameters', completed: false, active: false },
+    { name: 'Payment', completed: false, active: false },
+    { name: 'Success', completed: false, active: false }
+  ];
+  
+  // Clear the progress bar
+  progressBar.innerHTML = '';
+  
+  // Create the connecting line
+  const line = document.createElement('div');
+  line.style.position = 'absolute';
+  line.style.top = '16px';
+  line.style.left = '0';
+  line.style.right = '0';
+  line.style.height = '2px';
+  line.style.backgroundColor = '#e0e0e0';
+  line.style.zIndex = '1';
+  progressBar.appendChild(line);
+  
+  // Create all steps
+  requiredSteps.forEach((step, index) => {
+    // Create step element
+    const stepDiv = document.createElement('div');
+    stepDiv.className = `progress-step ${step.active ? 'active' : ''} ${step.completed ? 'completed' : ''}`;
+    stepDiv.style.display = 'flex';
+    stepDiv.style.flexDirection = 'column';
+    stepDiv.style.alignItems = 'center';
+    stepDiv.style.position = 'relative';
+    stepDiv.style.zIndex = '2';
+    stepDiv.style.flex = '1';
+    stepDiv.style.minWidth = '80px';
+    stepDiv.style.marginBottom = '10px';
+    
+    // Create number element
+    const numberDiv = document.createElement('div');
+    numberDiv.className = 'step-number';
+    numberDiv.style.width = '32px';
+    numberDiv.style.height = '32px';
+    numberDiv.style.borderRadius = '50%';
+    numberDiv.style.display = 'flex';
+    numberDiv.style.alignItems = 'center';
+    numberDiv.style.justifyContent = 'center';
+    numberDiv.style.marginBottom = '0.5rem';
+    numberDiv.style.fontWeight = '600';
+    numberDiv.style.border = '2px solid #fff';
+    
+    if (step.completed) {
+      numberDiv.innerHTML = '✓';
+      numberDiv.style.backgroundColor = '#34a853';
+      numberDiv.style.color = 'white';
+    } else if (step.active) {
+      numberDiv.textContent = (index + 1).toString();
+      numberDiv.style.backgroundColor = '#4285f4';
+      numberDiv.style.color = 'white';
+    } else {
+      numberDiv.textContent = (index + 1).toString();
+      numberDiv.style.backgroundColor = '#e0e0e0';
+      numberDiv.style.color = '#757575';
+    }
+    
+    // Create name element
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'step-name';
+    nameDiv.textContent = step.name;
+    nameDiv.style.fontSize = '0.85rem';
+    nameDiv.style.textAlign = 'center';
+    
+    if (step.active) {
+      nameDiv.style.color = '#4285f4';
+      nameDiv.style.fontWeight = '600';
+    } else if (step.completed) {
+      nameDiv.style.color = '#34a853';
+    } else {
+      nameDiv.style.color = '#757575';
+    }
+    
+    // Add elements to step
+    stepDiv.appendChild(numberDiv);
+    stepDiv.appendChild(nameDiv);
+    
+    // Add step to progress bar
+    progressBar.appendChild(stepDiv);
+  });
+  
+  console.log('ProfileStep: Progress bar rebuilt with all steps');
+};
+
 interface ProfileStepProps {
   initialData: {
     firstName: string;
@@ -34,14 +149,16 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
   useEffect(() => {
     console.log('ProfileStep initialData changed:', initialData);
     if (initialData) {
-      setProfileData({
-        firstName: initialData.firstName || profileData.firstName,
-        lastName: initialData.lastName || profileData.lastName,
-        displayName: initialData.displayName || profileData.displayName,
-        company: initialData.company || profileData.company,
-        role: initialData.role || profileData.role
-      });
+      setProfileData(prevData => ({
+        ...prevData,
+        firstName: initialData.firstName || prevData.firstName,
+        lastName: initialData.lastName || prevData.lastName,
+        displayName: initialData.displayName || prevData.displayName,
+        company: initialData.company || prevData.company,
+        role: initialData.role || prevData.role
+      }));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -88,210 +205,129 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
     }
   };
   
-  // Fix profile step navigation - ensure buttons are displayed
+  // Run the progress bar fix after the component mounts
   useEffect(() => {
-    // Force buttons to be visible
-    const fixButtons = () => {
-      console.log('ProfileStep: Ensuring button visibility');
-      
-      // Get the button container by class or by ID
-      let actionContainer = document.querySelector('.step-actions') || 
-                           document.getElementById('profile-buttons-container');
-      
-      // If not found, the component might not be fully rendered yet
-      if (!actionContainer) {
-        console.log('ProfileStep: Button container not found, will retry');
-        return; // Will retry on next timer
-      }
-      
-      console.log('ProfileStep: Found button container, applying fixes');
-      
-      // Add class and force visibility with high specificity styles
-      actionContainer.classList.add('profile-fixed-buttons');
-      actionContainer.setAttribute('style', 
-        'display: flex !important; ' + 
-        'visibility: visible !important; ' + 
-        'opacity: 1 !important; ' + 
-        'position: relative !important; ' + 
-        'z-index: 9999 !important; ' +
-        'width: 100% !important; ' +
-        'justify-content: space-between !important; ' + 
-        'padding-top: 20px !important; ' + 
-        'margin-top: 30px !important; ' + 
-        'border-top: 1px solid #e0e0e0 !important;'
-      );
-      
-      // Fix the buttons too - extra specificity
-      const buttons = actionContainer.querySelectorAll('button');
-      if (buttons.length === 0) {
-        console.log('ProfileStep: No buttons found in container');
-      } else {
-        console.log('ProfileStep: Fixing', buttons.length, 'buttons');
-        buttons.forEach((button, index) => {
-          // Add IDs if missing
-          if (index === 0 && !button.id) button.id = 'profile-back-button';
-          if (index === 1 && !button.id) button.id = 'profile-next-button';
-          
-          // Apply styles with high specificity
-          button.setAttribute('style',
-            'display: inline-block !important; ' +
-            'visibility: visible !important; ' +
-            'opacity: 1 !important; ' +
-            'position: relative !important; ' +
-            'z-index: 9999 !important; ' +
-            'min-width: 150px !important; ' +
-            'padding: 12px 24px !important; ' +
-            'border-radius: 4px !important; ' +
-            'cursor: pointer !important; ' +
-            'font-weight: 600 !important; ' +
-            'font-size: 16px !important; ' +
-            `background-color: ${index === 0 ? '#f2f2f2' : '#4285F4'} !important; ` +
-            `color: ${index === 0 ? '#333' : 'white'} !important; ` +
-            `border: ${index === 0 ? '1px solid #ddd' : 'none'} !important; ` +
-            `${index === 1 ? 'box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;' : ''}`
-          );
-        });
-      }
-    };
-    
-    // Apply multiple times to ensure visibility
-    fixButtons();
-    const timer1 = setTimeout(fixButtons, 100);
-    const timer2 = setTimeout(fixButtons, 500);
-    const timer3 = setTimeout(fixButtons, 1000);
-    const timer4 = setTimeout(fixButtons, 2000);
-    
+    // Wait for rendering to complete
+    setTimeout(() => {
+      fixProgressBarOnce();
+    }, 100);
+  }, []);
+
+
+  // Add code to execute when the component mounts
+  useEffect(() => {
+    // Set up a MutationObserver to watch for changes to the DOM
+    const observer = new MutationObserver((mutations) => {
+      // On any DOM change, check if we need to fix the progress bar
+      ensureProgressSteps();
+    });
+
+    // Start observing the document with the configured parameters
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Run the fix function immediately
+    ensureProgressSteps();
+
+    // Clean up the observer when the component unmounts
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
+      observer.disconnect();
     };
   }, []);
 
-  // Add a special function to ensure progress bar shows correctly
-  useEffect(() => {
-    // This will check for and fix missing progress bar steps
-    const ensureProgressSteps = () => {
-      console.log('ProfileStep: Checking progress steps...');
-      
-      // Find the progress bar
-      const progressBar = document.querySelector('.subscription-progress');
-      if (!progressBar) {
-        console.log('ProfileStep: No progress bar found yet');
-        return; // Will retry on next timer
-      }
-      
-      // Check how many steps are visible
-      const steps = progressBar.querySelectorAll('.progress-step');
-      console.log(`ProfileStep: Found ${steps.length} progress steps`);
-      
-      // If we don't have all 6 steps, we need to fix it
-      if (steps.length < 6) {
-        console.log('ProfileStep: Missing steps, need to fix the progress bar');
-        
-        // The required step names in order
-        const requiredSteps = ['Welcome', 'Profile', 'Interests', 'Parameters', 'Payment', 'Success'];
-        
-        // Clear and recreate all steps
-        progressBar.innerHTML = '';
-        
-        // Create line underneath steps
-        const progressLine = document.createElement('div');
-        progressLine.style.position = 'absolute';
-        progressLine.style.top = '16px';
-        progressLine.style.left = '0';
-        progressLine.style.right = '0';
-        progressLine.style.height = '2px';
-        progressLine.style.backgroundColor = '#e0e0e0';
-        progressLine.style.zIndex = '1';
-        progressBar.appendChild(progressLine);
-        
-        // Create each step
-        requiredSteps.forEach((stepName, index) => {
-          // Determine step state (Welcome completed, Profile active)
-          const isCompleted = index < 1;
-          const isActive = index === 1;
-          
-          // Create step div
-          const stepDiv = document.createElement('div');
-          stepDiv.className = `progress-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
-          stepDiv.style.display = 'flex';
-          stepDiv.style.flexDirection = 'column';
-          stepDiv.style.alignItems = 'center';
-          stepDiv.style.position = 'relative';
-          stepDiv.style.zIndex = '2';
-          stepDiv.style.flex = '1';
-          stepDiv.style.minWidth = '80px';
-          stepDiv.style.marginBottom = '10px';
-          stepDiv.style.visibility = 'visible';
-          stepDiv.style.opacity = '1';
-          
-          // Create step number circle
-          const numberDiv = document.createElement('div');
-          numberDiv.className = 'step-number';
-          numberDiv.style.width = '32px';
-          numberDiv.style.height = '32px';
-          numberDiv.style.borderRadius = '50%';
-          numberDiv.style.display = 'flex';
-          numberDiv.style.alignItems = 'center';
-          numberDiv.style.justifyContent = 'center';
-          numberDiv.style.marginBottom = '0.5rem';
-          numberDiv.style.fontWeight = '600';
-          numberDiv.style.border = '2px solid #fff';
-          numberDiv.style.visibility = 'visible';
-          numberDiv.style.opacity = '1';
-          
-          if (isActive) {
-            numberDiv.style.backgroundColor = '#4285f4';
-            numberDiv.style.color = 'white';
-            numberDiv.textContent = (index + 1).toString();
-          } else if (isCompleted) {
-            numberDiv.style.backgroundColor = '#34a853';
-            numberDiv.style.color = 'white';
-            numberDiv.innerHTML = '✓';
-          } else {
-            numberDiv.style.backgroundColor = '#e0e0e0';
-            numberDiv.style.color = '#757575';
-            numberDiv.textContent = (index + 1).toString();
-          }
-          
-          // Create step name
-          const nameDiv = document.createElement('div');
-          nameDiv.className = 'step-name';
-          nameDiv.textContent = stepName;
-          nameDiv.style.fontSize = '0.85rem';
-          nameDiv.style.color = isActive ? '#4285f4' : (isCompleted ? '#34a853' : '#757575');
-          nameDiv.style.textAlign = 'center';
-          nameDiv.style.visibility = 'visible';
-          nameDiv.style.opacity = '1';
-          nameDiv.style.display = 'block';
-          nameDiv.style.fontWeight = isActive ? '600' : 'normal';
-          
-          // Add to step div
-          stepDiv.appendChild(numberDiv);
-          stepDiv.appendChild(nameDiv);
-          
-          // Add to progress bar
-          progressBar.appendChild(stepDiv);
-        });
-        
-        console.log('ProfileStep: Fixed progress bar with all steps');
-      }
-    };
+  // Function to ensure the progress bar has all required steps
+  const ensureProgressSteps = () => {
+    // Find the progress bar
+    const progressBar = document.querySelector('.subscription-progress');
+    if (!progressBar) {
+      console.log('Progress bar not found');
+      return;
+    }
+
+    // Required steps in the correct order
+    const requiredSteps = ['Welcome', 'Profile', 'Interests', 'Parameters', 'Payment', 'Success'];
     
-    // Run immediately and set up timers to check again after DOM updates
-    ensureProgressSteps();
-    const timer1 = setTimeout(ensureProgressSteps, 100);
-    const timer2 = setTimeout(ensureProgressSteps, 500);
-    const timer3 = setTimeout(ensureProgressSteps, 1500);
-    
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
-  }, []);
+    // Replace all steps
+    progressBar.innerHTML = '';
+
+    // Add the progress line
+    const line = document.createElement('div');
+    line.style.position = 'absolute';
+    line.style.top = '16px';
+    line.style.left = '0';
+    line.style.right = '0';
+    line.style.height = '2px';
+    line.style.backgroundColor = '#e0e0e0';
+    line.style.zIndex = '1';
+    progressBar.appendChild(line);
+
+    // Create all steps
+    requiredSteps.forEach((stepName, index) => {
+      const isCompleted = index < 1; // Welcome is completed
+      const isActive = index === 1;  // Profile is active
+
+      const stepDiv = document.createElement('div');
+      stepDiv.className = `progress-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+      stepDiv.style.display = 'flex';
+      stepDiv.style.flexDirection = 'column';
+      stepDiv.style.alignItems = 'center';
+      stepDiv.style.position = 'relative';
+      stepDiv.style.zIndex = '2';
+      stepDiv.style.flex = '1';
+      stepDiv.style.minWidth = '80px';
+      stepDiv.style.marginBottom = '10px';
+
+      // Step number
+      const numberDiv = document.createElement('div');
+      numberDiv.className = 'step-number';
+      if (isCompleted) {
+        numberDiv.innerHTML = '✓';
+        numberDiv.style.backgroundColor = '#34a853';
+        numberDiv.style.color = 'white';
+      } else if (isActive) {
+        numberDiv.textContent = (index + 1).toString();
+        numberDiv.style.backgroundColor = '#4285f4';
+        numberDiv.style.color = 'white';
+      } else {
+        numberDiv.textContent = (index + 1).toString();
+        numberDiv.style.backgroundColor = '#e0e0e0';
+        numberDiv.style.color = '#757575';
+      }
+
+      numberDiv.style.width = '32px';
+      numberDiv.style.height = '32px';
+      numberDiv.style.borderRadius = '50%';
+      numberDiv.style.display = 'flex';
+      numberDiv.style.alignItems = 'center';
+      numberDiv.style.justifyContent = 'center';
+      numberDiv.style.marginBottom = '0.5rem';
+      numberDiv.style.fontWeight = '600';
+      numberDiv.style.border = '2px solid #fff';
+
+      // Step name
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'step-name';
+      nameDiv.textContent = stepName;
+      if (isActive) {
+        nameDiv.style.color = '#4285f4';
+        nameDiv.style.fontWeight = '600';
+      } else if (isCompleted) {
+        nameDiv.style.color = '#34a853';
+      } else {
+        nameDiv.style.color = '#757575';
+      }
+      nameDiv.style.fontSize = '0.85rem';
+      nameDiv.style.textAlign = 'center';
+
+      // Add to step
+      stepDiv.appendChild(numberDiv);
+      stepDiv.appendChild(nameDiv);
+
+      // Add to progress bar
+      progressBar.appendChild(stepDiv);
+    });
+
+    console.log('Progress bar updated with all steps');
+  };
   
   return (
     <div className="subscription-step">

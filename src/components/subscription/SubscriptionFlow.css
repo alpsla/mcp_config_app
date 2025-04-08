@@ -74,11 +74,12 @@ body.subscription-flow-active .completed .step-number {
 
 /* Progress Steps */
 .subscription-progress {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  position: relative;
-  flex-wrap: wrap;
+  display: flex !important;
+  justify-content: space-between !important;
+  margin-bottom: 2rem !important;
+  position: relative !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
 }
 
 .subscription-progress::before {
@@ -93,53 +94,60 @@ body.subscription-flow-active .completed .step-number {
 }
 
 .progress-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  min-width: 80px;
-  margin-bottom: 10px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  position: relative !important;
+  z-index: 2 !important;
+  flex: 1 !important;
+  min-width: 80px !important;
+  margin-bottom: 10px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .step-number {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #e0e0e0;
-  color: #757575;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  border: 2px solid #fff;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background-color: #e0e0e0 !important;
+  color: #757575 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 600 !important;
+  border: 2px solid #fff !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .step-name {
-  font-size: 0.85rem;
-  color: #757575;
-  text-align: center;
+  font-size: 0.85rem !important;
+  color: #757575 !important;
+  text-align: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
 }
 
 .progress-step.active .step-number {
-  background-color: #4285f4;
-  color: white;
+  background-color: #4285f4 !important;
+  color: white !important;
 }
 
 .progress-step.active .step-name {
-  color: #4285f4;
-  font-weight: 600;
+  color: #4285f4 !important;
+  font-weight: 600 !important;
 }
 
 .progress-step.completed .step-number {
-  background-color: #34a853;
-  color: white;
+  background-color: #34a853 !important;
+  color: white !important;
 }
 
 .progress-step.completed .step-name {
-  color: #34a853;
+  color: #34a853 !important;
 }
 
 /* Step Common Styles */

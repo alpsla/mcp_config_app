@@ -444,15 +444,23 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
     }
   };
   
-  // Define simple steps for the UI
+  // Define simple steps for the UI - always show all steps consistently
   const displayStepTitles = [
     'Welcome',
-    'Profile',
+    'Profile', 
     'Interests',
     'Parameters',
     'Payment',
     'Success'
   ];
+  
+  // Map current step to display step index correctly
+  // This ensures all steps are shown consistently
+  const getDisplayStepIndex = (currentStep: number) => {
+    // Direct mapping as we now show all 6 steps
+    return currentStep;
+  };
+
   
   // Add a useEffect hook to handle scrolling on component mount or update
   useEffect(() => {
@@ -513,8 +521,8 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
       {/* Progress Steps */}
       <div className="subscription-progress">
         {displayStepTitles.map((title, index) => {
-          // Map the current step to the display steps
-          let displayStepIndex = currentStep;
+          // Use our consistent mapping function
+          let displayStepIndex = getDisplayStepIndex(currentStep);
           
           return (
             <div 
