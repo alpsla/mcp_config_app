@@ -1,0 +1,404 @@
+// Special fix ONLY for /subscribe/profile page buttons and progress bar
+// This script won't affect any other pages
+
+(function() {
+  // Run on load and hash change
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAndFixProfilePage);
+  } else {
+    checkAndFixProfilePage();
+  }
+  
+  window.addEventListener('hashchange', function() {
+    checkAndFixProfilePage();
+  });
+
+  // Check if we're on the profile page before running the fix
+  function checkAndFixProfilePage() {
+    // ONLY run on profile page, not on any other page
+    if (window.location.hash.includes('/subscribe/profile')) {
+      console.log('On profile page, running profile-specific fixes');
+      fixProfilePage();
+    } else {
+      // Not on profile page, do nothing
+      console.log('Not on profile page, profile-fix.js doing nothing');
+    }
+  }
+
+  // Main function to fix the profile page
+  function fixProfilePage() {
+    // Double-check we're only on profile page
+    if (!window.location.hash.includes('/subscribe/profile')) {
+      return;
+    }
+    
+    console.log('Profile page fix script running');
+    
+    // Inject special styles for the profile page
+    injectProfileStyles();
+    
+    // Add delayed fixes to ensure buttons appear
+    setTimeout(fixButtons, 100);
+    setTimeout(fixButtons, 500);
+    setTimeout(fixButtons, 1500);
+    
+    // Add a mutation observer to detect when form loads
+    setupFormObserver();
+
+    // Fix progress steps
+    setTimeout(fixProgressSteps, 200);
+    setTimeout(fixProgressSteps, 800);
+  }
+  
+  function injectProfileStyles() {
+    // Remove existing style if present
+    const existingStyle = document.getElementById('profile-page-fix-styles');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
+    // Create a new style element
+    const style = document.createElement('style');
+    style.id = 'profile-page-fix-styles';
+    style.innerHTML = `
+      /* Fix for profile page specifically - scoped to profile page ONLY */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-form + .step-actions,
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) #profile-buttons-container,
+      .subscription-form + #profile-buttons-container,
+      .subscription-form + .step-actions {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        position: relative !important;
+        z-index: 9999 !important;
+        margin-top: 30px !important;
+        padding-top: 20px !important;
+        border-top: 1px solid #e0e0e0 !important;
+      }
+      
+      /* Make buttons visible */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-form + .step-actions button,
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) #profile-buttons-container button,
+      .subscription-form + #profile-buttons-container button,
+      .subscription-form + .step-actions button,
+      #profile-back-button,
+      #profile-next-button {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 9999 !important;
+        min-width: 150px !important;
+      }
+      
+      /* Fix progress steps - only on profile page */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress,
+      .subscription-form ~ .subscription-progress {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        justify-content: space-between !important;
+        margin-bottom: 2rem !important;
+        position: relative !important;
+        flex-wrap: wrap !important;
+        z-index: 2 !important;
+      }
+      
+      /* Fix progress step elements */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .progress-step,
+      .subscription-form ~ .subscription-progress .progress-step {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        position: relative !important;
+        z-index: 2 !important;
+        flex: 1 !important;
+        min-width: 80px !important;
+        margin-bottom: 10px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      
+      /* Fix step number circles */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .step-number,
+      .subscription-form ~ .subscription-progress .step-number {
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50% !important;
+        background-color: #e0e0e0 !important;
+        color: #757575 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-bottom: 0.5rem !important;
+        font-weight: 600 !important;
+        border: 2px solid #fff !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      
+      /* Fix step names */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .step-name,
+      .subscription-form ~ .subscription-progress .step-name {
+        font-size: 0.85rem !important;
+        color: #757575 !important;
+        text-align: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      
+      /* Active progress step */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .progress-step.active .step-number,
+      .subscription-form ~ .subscription-progress .progress-step.active .step-number {
+        background-color: #4285f4 !important;
+        color: white !important;
+      }
+      
+      /* Fix active step name */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .progress-step.active .step-name,
+      .subscription-form ~ .subscription-progress .progress-step.active .step-name {
+        color: #4285f4 !important;
+        font-weight: 600 !important;
+      }
+      
+      /* Fix completed step */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .progress-step.completed .step-number,
+      .subscription-form ~ .subscription-progress .progress-step.completed .step-number {
+        background-color: #34a853 !important;
+        color: white !important;
+      }
+      
+      /* Fix completed step name */
+      body:has([id^="root"]:has(div:has(a[href*="/subscribe/profile"]))) .subscription-progress .progress-step.completed .step-name,
+      .subscription-form ~ .subscription-progress .progress-step.completed .step-name {
+        color: #34a853 !important;
+      }
+      
+      /* PROFILE-SPECIFIC FIXES FOR MISSING BUTTONS */
+      /* This ensures buttons are always visible on profile page */
+      #profile-buttons-container {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 9999 !important;
+        justify-content: space-between !important;
+        padding-top: 20px !important;
+        margin-top: 30px !important;
+        border-top: 1px solid #e0e0e0 !important;
+        width: 100% !important;
+      }
+    `;
+    
+    document.head.appendChild(style);
+    console.log('Profile page styles injected');
+  }
+  
+  function fixButtons() {
+    // Double-check we're on profile page
+    if (!window.location.hash.includes('/subscribe/profile')) {
+      return;
+    }
+    
+    // Wait for both the form and the step-actions to be present
+    const form = document.querySelector('.subscription-form');
+    if (!form) {
+      console.log('Form not found yet, waiting...');
+      return;
+    }
+    
+    // Try to find the buttons container
+    let buttonsContainer = form.nextElementSibling;
+    
+    // Check if this is a step-actions or our custom profile-buttons-container
+    if (!buttonsContainer || 
+        (!buttonsContainer.classList.contains('step-actions') && 
+         !buttonsContainer.id !== 'profile-buttons-container')) {
+      console.log('Step actions container not found yet, waiting...');
+      return;
+    }
+    
+    console.log('Found step actions container, applying fixes...');
+    
+    // Fix container styles
+    buttonsContainer.setAttribute('style', 
+      'display: flex !important; ' +
+      'visibility: visible !important; ' +
+      'opacity: 1 !important; ' +
+      'position: relative !important; ' +
+      'z-index: 9999 !important; ' +
+      'width: 100% !important; ' +
+      'justify-content: space-between !important; ' +
+      'padding-top: 20px !important; ' +
+      'margin-top: 30px !important; ' +
+      'border-top: 1px solid #e0e0e0 !important;'
+    );
+    
+    // Fix buttons
+    const buttons = buttonsContainer.querySelectorAll('button');
+    if (buttons.length === 0) {
+      console.log('No buttons found in step actions');
+      return;
+    }
+    
+    buttons.forEach((button, index) => {
+      const isBackButton = index === 0;
+      const isNextButton = index === 1;
+      
+      // Add IDs to buttons if they don't have them
+      if (isBackButton && !button.id) {
+        button.id = 'profile-back-button';
+      }
+      
+      if (isNextButton && !button.id) {
+        button.id = 'profile-next-button';
+      }
+      
+      // Apply button styles
+      button.setAttribute('style',
+        'display: inline-block !important; ' +
+        'visibility: visible !important; ' +
+        'opacity: 1 !important; ' +
+        'position: relative !important; ' +
+        'z-index: 9999 !important; ' +
+        'min-width: 150px !important; ' +
+        'padding: 12px 24px !important; ' +
+        'border-radius: 4px !important; ' +
+        'cursor: pointer !important; ' +
+        'font-weight: 600 !important; ' +
+        'font-size: 16px !important; ' +
+        `background-color: ${isBackButton ? '#f2f2f2' : '#4285F4'} !important; ` +
+        `color: ${isBackButton ? '#333' : 'white'} !important; ` +
+        `border: ${isBackButton ? '1px solid #ddd' : 'none'} !important; ` +
+        `${isNextButton ? 'box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;' : ''}`
+      );
+    });
+    
+    console.log('Button fixes applied:', buttons.length, 'buttons fixed');
+  }
+
+  function fixProgressSteps() {
+    // Double-check we're on profile page
+    if (!window.location.hash.includes('/subscribe/profile')) {
+      return;
+    }
+
+    // Look for progress steps container
+    const progressContainer = document.querySelector('.subscription-progress');
+    if (!progressContainer) {
+      console.log('Progress steps container not found yet, waiting...');
+      return;
+    }
+
+    console.log('Found progress steps container, ensuring all steps are visible');
+
+    // Make sure the progress container is visible
+    progressContainer.style.display = 'flex';
+    progressContainer.style.visibility = 'visible';
+    progressContainer.style.opacity = '1';
+
+    // Find all progress steps
+    const steps = progressContainer.querySelectorAll('.progress-step');
+    if (steps.length === 0) {
+      console.log('No progress steps found');
+      return;
+    }
+
+    // Make sure we have all the expected steps
+    const expectedSteps = ['Welcome', 'Profile', 'Interests', 'Parameters', 'Payment', 'Success'];
+    
+    // Check if we're missing any steps
+    let missingSteps = false;
+    let foundStepNames = [];
+    
+    steps.forEach(step => {
+      const nameElement = step.querySelector('.step-name');
+      if (nameElement) {
+        foundStepNames.push(nameElement.textContent);
+      }
+    });
+    
+    // Check which steps are missing
+    const missingStepNames = expectedSteps.filter(name => !foundStepNames.includes(name));
+    
+    if (missingStepNames.length > 0) {
+      console.log('Missing steps:', missingStepNames);
+      missingSteps = true;
+    }
+    
+    // Force all steps to be visible
+    steps.forEach((step, index) => {
+      step.style.display = 'flex';
+      step.style.visibility = 'visible';
+      step.style.opacity = '1';
+      
+      // Fix step number
+      const numberElement = step.querySelector('.step-number');
+      if (numberElement) {
+        numberElement.style.display = 'flex';
+        numberElement.style.visibility = 'visible';
+        numberElement.style.opacity = '1';
+      }
+      
+      // Fix step name
+      const nameElement = step.querySelector('.step-name');
+      if (nameElement) {
+        nameElement.style.display = 'block';
+        nameElement.style.visibility = 'visible';
+        nameElement.style.opacity = '1';
+      }
+    });
+    
+    // If we're missing steps, log a warning - we'll rely on the CSS to fix this
+    if (missingSteps) {
+      console.warn('Progress steps are missing. Continuing with CSS-based fix.');
+    } else {
+      console.log('All progress steps are present and visible');
+    }
+  }
+  
+  function setupFormObserver() {
+    // Create a mutation observer to watch for the form and buttons
+    const observer = new MutationObserver(function(mutations) {
+      // Double-check we're on profile page before processing mutations
+      if (!window.location.hash.includes('/subscribe/profile')) {
+        return;
+      }
+      
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          // Check if form was added
+          if (document.querySelector('.subscription-form')) {
+            // Form found, fix buttons
+            fixButtons();
+            
+            // Also fix progress steps
+            fixProgressSteps();
+            
+            // Keep checking for a bit longer
+            setTimeout(fixButtons, 200);
+            setTimeout(fixButtons, 1000);
+            setTimeout(fixProgressSteps, 300);
+          }
+        }
+      }
+    });
+    
+    // Start observing, but only if we're on the profile page
+    if (window.location.hash.includes('/subscribe/profile')) {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      
+      console.log('Form observer started for profile page');
+      
+      // Stop the observer after 10 seconds to avoid unnecessary overhead
+      setTimeout(() => {
+        observer.disconnect();
+        console.log('Form observer stopped');
+      }, 10000);
+    }
+  }
+})();

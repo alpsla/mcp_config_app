@@ -3,11 +3,9 @@ import { useAuth } from '../../auth/AuthContext';
 import WelcomeBanner from '../../components/dashboard/WelcomeBanner';
 import ComingSoonSection from '../../components/dashboard/ComingSoon';
 import ReturningUserDashboard from '../../components/dashboard/ReturningUserDashboard';
-import { useSafeNavigation } from '../../utils/navigation';
 import ConfigurationService from '../../services/configurationService';
+import pricing from '../../config/pricing'; // Import pricing configuration
 import './Dashboard.css';
-
-// Removed unused imports: ConfigureButton, EmptyState
 
 /**
  * Main dashboard component that serves as the landing page after authentication
@@ -15,7 +13,6 @@ import './Dashboard.css';
 const Dashboard: React.FC = () => {
   const { authState } = useAuth();
   const user = authState.user;
-  const { navigateSafely } = useSafeNavigation();
   const [hasConfigurations, setHasConfigurations] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
@@ -91,8 +88,6 @@ const Dashboard: React.FC = () => {
   const handleConfigureClick = () => {
     window.location.hash = '#/configure';
   };
-
-  // handleEmptyStateButtonClick removed as it's no longer used
 
   return (
     <div className="dashboard-container">
@@ -324,84 +319,156 @@ const Dashboard: React.FC = () => {
                 </div>
               </section>
               
-              {/* Tier Comparison Section */}
+              {/* Tier Comparison Section using pricing config */}
               <section className="dashboard-section tier-comparison-section">
                 <h2 className="section-title">Choose Your Perfect Tier</h2>
                 <p className="section-description">Select the plan that best fits your needs</p>
                 
                 <div className="pricing-tiers">
-                  <div className="pricing-tier free-tier">
-                    <div className="tier-header">
-                      <h3>Free Forever</h3>
-                      <div className="tier-price">$0</div>
-                      <div className="tier-period">forever</div>
-                    </div>
-                    <ul className="tier-features">
-                      <li>File System Access</li>
-                      <li>Web Search Integration</li>
-                      <li style={{ opacity: 0 }}>&nbsp;</li>
-                      <li style={{ opacity: 0 }}>&nbsp;</li>
-                    </ul>
-                    <button className="tier-button current-tier" onClick={() => { window.location.hash = '#/configure'; }}>Current Plan</button>
-                  </div>
-                  
-                  <div className="pricing-tier basic-tier">
-                    <div className="tier-header">
-                      <h3>Basic</h3>
-                      <div className="tier-price">$2</div>
-                      <div className="tier-period">per month</div>
-                    </div>
-                    <div className="tier-badge">Popular</div>
-                    <ul className="tier-features">
-                      <li>Everything in Free tier</li>
-                      <li>3 Hugging Face model integrations</li>
-                      <li>Save up to 3 configurations</li>
-                      <li>Basic email support</li>
-                    </ul>
-                    <button 
-                      className="tier-button upgrade-button"
-                      onClick={() => {
-                        const confirmed = window.confirm(`You're about to subscribe to the Basic plan for $2/month. Proceed to subscription page?`);
-                        if (confirmed) {
-                          window.location.hash = '#/subscribe/basic';
+                  {/* Use pricing configuration for tier cards */}
+                  {pricing.tiers.map((tier) => (
+                    <div key={tier.id} className={`pricing-tier ${tier.id}-tier`} style={{ 
+                      borderColor: tier.lightColor,
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      backgroundColor: '#fff',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      margin: '10px' 
+                    }}>
+                      <div className="tier-header" style={{ 
+                        backgroundColor: tier.lightColor,
+                        padding: '15px',
+                        textAlign: 'center' 
+                      }}>
+                        <h3 style={{ 
+                          margin: '0',
+                          color: tier.color,
+                          fontWeight: 600
+                        }}>{tier.displayName}</h3>
+                        <div className="tier-price" style={{ 
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          marginTop: '5px' 
+                        }}>{tier.price.monthly === 0 ? 'Free' : `$${tier.price.monthly}`}</div>
+                        <div className="tier-period" style={{ 
+                          fontSize: '14px',
+                          color: '#666' 
+                        }}>{tier.price.monthly === 0 ? 'forever' : 'per month'}</div>
+                      </div>
+                      {tier.popular && (
+                        <div className="tier-badge" style={{ 
+                          position: 'absolute',
+                          top: '0',
+                          right: '15px',
+                          backgroundColor: tier.color,
+                          color: 'white',
+                          padding: '3px 10px',
+                          borderRadius: '0 0 5px 5px',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}>{tier.badge}</div>
+                      )}
+                      
+                      <ul className="tier-features" style={{ 
+                        listStyle: 'none',
+                        padding: '15px',
+                        margin: '0',
+                        flexGrow: 1 
+                      }}>
+                        {/* Display features that are included for this tier */}
+                        {tier.features
+                          .filter(feature => feature.included)
+                          .map((feature, index) => (
+                            <li key={feature.id} style={{ 
+                              margin: '10px 0',
+                              position: 'relative',
+                              paddingLeft: '20px',
+                              fontSize: '14px'
+                            }}>
+                              <span style={{ 
+                                position: 'absolute',
+                                left: '0',
+                                color: tier.color
+                              }}>✓</span>
+                              {feature.name}
+                              {feature.limits && feature.limits.length > 0 && (
+                                <span className="feature-limit" style={{ 
+                                  fontWeight: 'bold'
+                                }}>
+                                  {` (${feature.limits[0].value} ${feature.limits[0].unit})`}
+                                </span>
+                              )}
+                            </li>
+                          ))
+                          .slice(0, 4) // Limit to 4 features for consistent layout
                         }
-                      }}
-                    >
-                      Upgrade
-                    </button>
-                  </div>
-                  
-                  <div className="pricing-tier complete-tier">
-                    <div className="tier-header">
-                      <h3>Complete</h3>
-                      <div className="tier-price">$5</div>
-                      <div className="tier-period">per month</div>
+                        
+                        {/* Add placeholder items to maintain consistent card height */}
+                        {Array.from({ length: Math.max(0, 4 - tier.features.filter(f => f.included).length) }).map((_, i) => (
+                          <li key={`empty-${i}`} style={{ opacity: 0, margin: '10px 0' }}>&nbsp;</li>
+                        ))}
+                      </ul>
+                      
+                      {tier.id === 'none' ? (
+                        <button 
+                          className="tier-button current-tier" 
+                          style={{
+                            padding: '10px 20px',
+                            backgroundColor: '#f0f0f0',
+                            color: '#333',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            margin: '15px',
+                            textAlign: 'center'
+                          }}
+                          onClick={() => { window.location.hash = '#/configure'; }}
+                        >
+                          Current Plan
+                        </button>
+                      ) : (
+                        <button 
+                          className={`tier-button upgrade-button`}
+                          style={{
+                            padding: '10px 20px',
+                            backgroundColor: tier.color,
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            margin: '15px',
+                            textAlign: 'center'
+                          }}
+                          onClick={() => {
+                            // Use the correct URL format with query parameters
+                            window.location.hash = `#/subscribe?plan=${tier.id}`;
+                          }}
+                        >
+                          Upgrade
+                        </button>
+                      )}
                     </div>
-                    <ul className="tier-features">
-                      <li>Everything in Basic tier</li>
-                      <li>Up to 10 Hugging Face model integrations</li>
-                      <li>Unlimited saved configurations</li>
-                      <li>Configuration export/import</li>
-                    </ul>
-                    <button 
-                      className="tier-button upgrade-button"
-                      onClick={() => {
-                        const confirmed = window.confirm(`You're about to subscribe to the Complete plan for $5/month. Proceed to subscription page?`);
-                        if (confirmed) {
-                          window.location.hash = '#/subscribe/complete';
-                        }
-                      }}
-                    >
-                      Upgrade
-                    </button>
-                  </div>
+                  ))}
                 </div>
                 
-                <div className="early-adopter-callout">
-                  <div className="callout-icon">🎁</div>
+                <div className="early-adopter-callout" style={{
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '8px',
+                  padding: '15px',
+                  margin: '20px 0',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  <div className="callout-icon" style={{ fontSize: '24px', marginRight: '15px' }}>🎁</div>
                   <div className="callout-text">
                     <strong>Beta User? Lock In These Prices!</strong>
-                    <p>Sign up now and keep these rates for a full year after our official launch.</p>
+                    <p style={{ margin: '5px 0 0 0' }}>Sign up now and keep these rates for a full year after our official launch.</p>
                   </div>
                 </div>
               </section>
@@ -412,8 +479,39 @@ const Dashboard: React.FC = () => {
                 <p className="section-description">Create your first configuration and unlock Claude's full potential</p>
                 
                 <div className="cta-container">
-                  <button className="primary-cta" onClick={handleConfigureClick}>Create Your First Configuration</button>
-                  <button className="secondary-cta" onClick={() => window.open('/documentation', '_blank')}>Learn More</button>
+                  <button 
+                    className="primary-cta" 
+                    style={{
+                      padding: '12px 25px',
+                      backgroundColor: '#4285F4',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '5px',
+                      fontWeight: 'bold',
+                      fontSize: '16px',
+                      cursor: 'pointer',
+                      marginRight: '10px'
+                    }}
+                    onClick={handleConfigureClick}
+                  >
+                    Create Your First Configuration
+                  </button>
+                  <button 
+                    className="secondary-cta" 
+                    style={{
+                      padding: '12px 25px',
+                      backgroundColor: '#f0f0f0',
+                      color: '#333',
+                      border: 'none',
+                      borderRadius: '5px',
+                      fontWeight: 'bold',
+                      fontSize: '16px',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => window.open('#/documentation', '_self')}
+                  >
+                    Learn More
+                  </button>
                 </div>
               </section>
             </div>

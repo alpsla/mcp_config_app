@@ -1,0 +1,241 @@
+/* Subscription Wizard */
+.subscription-wizard {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.subscription-wizard h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Wizard Steps */
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #757575;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.wizard-step.active .step-number {
+  background-color: #4285f4;
+  color: white;
+}
+
+.wizard-step h4 {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #757575;
+  text-align: center;
+}
+
+.wizard-step.active h4 {
+  color: #4285f4;
+  font-weight: 600;
+}
+
+.wizard-connector {
+  height: 2px;
+  width: 80px;
+  background-color: #e0e0e0;
+  margin: 0 -10px;
+  margin-top: -36px;
+}
+
+/* Plan Selection */
+.plan-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.plan-card {
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card.premium {
+  border-color: #4285f4;
+}
+
+.recommended-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4285f4;
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.plan-header h4 {
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.month {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #757575;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  flex-grow: 1;
+}
+
+.plan-features li {
+  padding: 0.5rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+  color: #333;
+}
+
+.plan-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #34a853;
+  font-weight: bold;
+}
+
+.plan-features li.feature-not-included {
+  color: #757575;
+}
+
+.plan-features li.feature-not-included::before {
+  content: "×";
+  color: #ea4335;
+}
+
+.plan-button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.plan-button:hover {
+  background-color: #3367d6;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .plan-selection {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .plan-card {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .wizard-steps {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .wizard-connector {
+    width: 2px;
+    height: 20px;
+    margin: 0;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .subscription-wizard {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+  }
+  
+  .subscription-wizard h3,
+  .plan-header h4,
+  .price,
+  .plan-features li:not(.feature-not-included) {
+    color: #e0e0e0;
+  }
+  
+  .plan-card {
+    background-color: #2d2d2d;
+    border-color: #444;
+  }
+  
+  .plan-header {
+    border-bottom-color: #444;
+  }
+  
+  .step-number {
+    background-color: #444;
+  }
+  
+  .wizard-connector {
+    background-color: #444;
+  }
+}

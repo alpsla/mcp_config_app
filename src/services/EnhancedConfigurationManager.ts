@@ -137,7 +137,7 @@ export const GLOBAL_PARAMETER_DEFINITIONS = [
     type: 'number',
     defaultValue: 100,
     min: 1,
-    max: 4096,
+    max: 512,
     step: 1
   },
   {
@@ -632,6 +632,70 @@ export class EnhancedConfigurationManager {
   }
   
   /**
+   * Get user profile data
+   */
+  async getUserProfile(userId: string): Promise<{ data: any, error: any }> {
+    try {
+      // In a real implementation, this would fetch from the database
+      const profileKey = `user_${userId}_profile`;
+      const profileData = localStorage.getItem(profileKey);
+      
+      if (profileData) {
+        return { data: JSON.parse(profileData), error: null };
+      }
+      
+      // Return empty data if no profile exists
+      return { data: {}, error: null };
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      return { data: null, error };
+    }
+  }
+  
+  /**
+   * Update user profile information
+   */
+  async updateUserProfile(
+    userId: string,
+    profileData: {
+      first_name?: string;
+      last_name?: string;
+      display_name?: string;
+      company?: string;
+      role?: string;
+      interests?: string[];
+      primary_use_case?: string;
+      experience_level?: string;
+    }
+  ): Promise<void> {
+    try {
+      // Get existing profile data
+      const profileKey = `user_${userId}_profile`;
+      const existingData = localStorage.getItem(profileKey);
+      let updatedProfile = {};
+      
+      if (existingData) {
+        updatedProfile = JSON.parse(existingData);
+      }
+      
+      // Update with new data
+      updatedProfile = {
+        ...updatedProfile,
+        ...profileData,
+        updated_at: new Date().toISOString()
+      };
+      
+      // Save back to storage
+      localStorage.setItem(profileKey, JSON.stringify(updatedProfile));
+      
+      console.log(`Profile updated for user ${userId}`, profileData);
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Creates a complete subscription profile with global parameters
    * This is called when a user subscribes or updates their subscription
    */
@@ -657,6 +721,84 @@ export class EnhancedConfigurationManager {
     } catch (error) {
       console.error('Error updating subscription profile:', error);
       throw error;
+    }
+  }
+  
+  /**
+   * Get user custom parameters
+   */
+  async getUserCustomParameters(userId: string): Promise<{ data: any, error: any }> {
+    try {
+      // In a real implementation, this would fetch from the database
+      const paramsKey = `user_${userId}_custom_parameters`;
+      const paramsData = localStorage.getItem(paramsKey);
+      
+      if (paramsData) {
+        return { data: JSON.parse(paramsData), error: null };
+      }
+      
+      // Return empty data if no parameters exist
+      return { data: [], error: null };
+    } catch (error) {
+      console.error('Error fetching user custom parameters:', error);
+      return { data: null, error };
+    }
+  }
+  
+  /**
+   * Save user custom parameters
+   */
+  async saveUserCustomParameters(
+    userId: string,
+    parameters: any[]
+  ): Promise<void> {
+    try {
+      const paramsKey = `user_${userId}_custom_parameters`;
+      localStorage.setItem(paramsKey, JSON.stringify(parameters));
+      
+      console.log(`Custom parameters saved for user ${userId}`, parameters);
+    } catch (error) {
+      console.error('Error saving user custom parameters:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Get common parameters shared across users
+   */
+  async getCommonParameters(): Promise<{ data: any, error: any }> {
+    try {
+      // In a real implementation, this would fetch popular params from the server
+      // For now, return a few commonly used examples
+      const commonParams = [
+        {
+          id: 'repetition_penalty',
+          name: 'Repetition Penalty',
+          description: 'Penalizes repeating tokens to avoid loops and repetition.',
+          min: 1.0,
+          max: 2.0,
+          step: 0.05,
+          defaultValue: 1.1,
+          unit: '',
+          advancedOnly: false
+        },
+        {
+          id: 'max_context_length',
+          name: 'Maximum Context Length',
+          description: 'Maximum number of tokens to include from the context.',
+          min: 256,
+          max: 8192,
+          step: 128,
+          defaultValue: 2048,
+          unit: 'tokens',
+          advancedOnly: true
+        }
+      ];
+      
+      return { data: commonParams, error: null };
+    } catch (error) {
+      console.error('Error fetching common parameters:', error);
+      return { data: null, error };
     }
   }
 }

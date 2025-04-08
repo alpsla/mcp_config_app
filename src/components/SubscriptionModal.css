@@ -248,45 +248,22 @@
   margin: 15px 0;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 20px;
+/* Using consistent button styling from buttons.css */
+
+.subscription-modal .step-actions {
+  padding: 20px 25px !important;
+  border-top: 1px solid #eaeaea !important;
+  margin-top: 20px !important;
 }
 
-.cancel-button, .subscribe-button {
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.subscription-modal .button-container {
+  margin: 0 auto !important;
 }
 
-.cancel-button {
-  background-color: white;
-  color: #666;
-  border: 1px solid #ddd;
-}
-
-.cancel-button:hover {
-  background-color: #f5f5f5;
-}
-
-.subscribe-button {
-  background-color: #4e5dde;
-  color: white;
-  border: 1px solid #4e5dde;
-}
-
-.subscribe-button:hover {
-  background-color: #3f4ec3;
-}
-
-.cancel-button:disabled, .subscribe-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Override disabled state */
+.subscription-modal button:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
 }
 
 .paypal-info {
@@ -344,13 +321,7 @@
     gap: 10px;
   }
   
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .cancel-button, .subscribe-button {
-    width: 100%;
-  }
+  /* Using responsive design from buttons.css */
   
   .modal-content {
     padding: 15px;

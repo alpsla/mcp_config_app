@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TokenInput from './TokenInput';
+import HuggingFaceTokenInput from './HuggingFaceTokenInput';
 import TieredModelSelector from './TieredModelSelector';
 import ParameterManager from './ParameterManager';
 import { HuggingFaceService } from '../../services/huggingFaceService';
@@ -7,6 +7,8 @@ import { useAuth } from '../../auth/AuthContext';
 import { useSubscription, SubscriptionProvider } from '../../contexts/SubscriptionContext';
 import './config-steps-fix.css';
 import './toggle-fix.css';
+import './HuggingFaceTokenInput.css';
+import './ParameterManager.css';
 
 interface HuggingFaceConfigProps {
   onConfigurationUpdate: (config: { 
@@ -103,10 +105,10 @@ const HuggingFaceConfig: React.FC<HuggingFaceConfigProps> = ({
     initialConfig.modelIds || []
   );
   
-  // Update to handle per-model parameters
+  // Update to handle per-model parameters with maxLength set to 512 as requested
   const [globalParameters, setGlobalParameters] = useState<Record<string, any>>({
     temperature: 0.7,
-    max_length: 100,
+    max_length: 512, // Changed from 2048 to 512 as requested
     top_p: 0.9
   });
   
@@ -294,7 +296,7 @@ const HuggingFaceConfig: React.FC<HuggingFaceConfigProps> = ({
             <div className="step-content" style={{ position: 'relative', zIndex: 5, overflow: 'visible', backgroundColor: 'white' }}>
               {activeStep === 0 && (
                 <div className="token-step">
-                  <TokenInput onTokenValidated={handleTokenValidated} />
+                  <HuggingFaceTokenInput onTokenValidated={handleTokenValidated} />
                 </div>
               )}
               

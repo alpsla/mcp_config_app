@@ -159,56 +159,27 @@
   border-color: #4e5dde;
 }
 
-.modal-footer {
-  padding: 20px 25px;
-  border-top: 1px solid #eaeaea;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .modal-note {
   font-size: 13px;
   color: #777;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 10px;
+/* Overriding buttons.css styles for modal context */
+.subscription-modal .step-actions {
+  padding: 20px 25px !important;
+  border-top: 1px solid #eaeaea !important;
+  margin-top: 10px !important;
 }
 
-.cancel-button, .subscribe-button {
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.subscription-modal .button-container {
+  margin: 0 auto !important;
 }
 
-.cancel-button {
-  background-color: white;
-  border: 1px solid #ddd;
-  color: #555;
-}
-
-.cancel-button:hover {
-  background-color: #f5f5f5;
-}
-
-.subscribe-button {
-  background-color: #4e5dde;
-  border: 1px solid #4e5dde;
-  color: white;
-}
-
-.subscribe-button:hover {
-  background-color: #3f4ec3;
-}
-
-.cancel-button:disabled, .subscribe-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.subscription-modal button:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
 }
 
 /* Responsive adjustments */

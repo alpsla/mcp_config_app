@@ -23,21 +23,37 @@ const SharedHeader = ({
     try {
       // First call the provided onSignOut function if it exists
       if (onSignOut) {
+        console.log('Calling provided onSignOut function');
         await onSignOut();
+      } else {
+        console.log('No onSignOut function provided');
       }
       
       // Then clear local storage as a fallback
       localStorage.clear();
       sessionStorage.clear();
       
-      // Navigate to home page
-      window.location.hash = '/';
+      // Navigate to home page - ensure it starts with #/
+      window.location.hash = '#/';
       
-      // Force reload if needed
+      // Force reload if needed (uncomment if necessary)
       // window.location.reload();
     } catch (error) {
       console.error('Error during sign out:', error);
+      // Force navigation to home in case of error
+      window.location.hash = '#/';
     }
+  };
+
+  // Helper function to ensure proper hash format for navigation
+  const getFormattedLink = (link) => {
+    if (!link) return '#/';
+    // If link already starts with #, return as is
+    if (link.startsWith('#')) return link;
+    // If link starts with /, add # to the beginning
+    if (link.startsWith('/')) return `#${link}`;
+    // Otherwise, add #/ to the beginning
+    return `#/${link}`;
   };
 
   return (
@@ -55,7 +71,7 @@ const SharedHeader = ({
           <ul className="shared-header-nav-list">
             {navLinks.map((link, index) => (
               <li key={index} className="shared-header-nav-item">
-                <a href={`#${link.to}`} className="shared-header-nav-link">{link.label}</a>
+                <a href={getFormattedLink(link.to)} className="shared-header-nav-link">{link.label}</a>
               </li>
             ))}
           </ul>
@@ -73,9 +89,6 @@ const SharedHeader = ({
           
           {isAuthenticated ? (
             <>
-              <a href="#/new-configuration" className="shared-header-new-config-btn">
-                New Configuration
-              </a>
               <button className="shared-header-sign-out" onClick={handleSignOut}>
                 Sign Out
               </button>

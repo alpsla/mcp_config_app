@@ -3,6 +3,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { enhancedConfigurationManager, GLOBAL_PARAMETER_DEFINITIONS } from '../../services/EnhancedConfigurationManager';
 import { SubscriptionTierSimple } from '../../types/enhanced-types';
 import './GlobalParameterConfig.css';
+import './steps/buttons.css';
 
 interface GlobalParameterConfigProps {
   onComplete?: (params: Record<string, any>) => void;
@@ -211,20 +212,22 @@ const GlobalParameterConfig: React.FC<GlobalParameterConfigProps> = ({
         </div>
       )}
       
-      <div className="parameter-config-actions">
-        {onCancel && (
-          <button className="cancel-button" onClick={onCancel}>
-            Cancel
+      <div className="step-actions">
+        <div className="button-container">
+          {onCancel && (
+            <button className="secondary-button" onClick={onCancel}>
+              Cancel
+            </button>
+          )}
+          
+          <button
+            className={`primary-button ${tier}`}
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save Parameters'}
           </button>
-        )}
-        
-        <button
-          className="save-button"
-          onClick={handleSave}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Saving...' : 'Save Parameters'}
-        </button>
+        </div>
       </div>
       
       <div className="parameter-help">

@@ -4,18 +4,13 @@ import { useAuth } from '../../auth/AuthContext';
 import './Dashboard.css';
 import SharedHeader from '../shared/SharedHeader';
 import WelcomeBanner from './WelcomeBanner';
-// PricingTier not used after removing pricing section
-// eslint-disable-next-line no-unused-vars
-import PricingTier from './PricingTier';
 import ModelCard from './ModelCard';
 import ExampleShowcase from './ExampleShowcase';
 import TestimonialCard from './TestimonialCard';
-// EmptyState import removed as we now use direct UI for subscription selection
+import TierSelector from './TierSelector';
 import ComingSoon from './ComingSoon';
 import SharedFooter from '../shared/SharedFooter';
 
-// Assets are now directly referenced from public directory in the ExampleShowcase component
-console.log('Loading assets from /demo-assets directory');
 // Force refresh asset paths to avoid caching issues
 const forceRefresh = '?v=' + new Date().getTime();
 
@@ -23,8 +18,6 @@ const Dashboard = () => {
   // Get the auth state from context
   const { authState, signOut: authSignOut } = useAuth();
   const isAuthenticated = authState && authState.user !== null;
-  // Log that the dashboard is loaded
-  console.log('Dashboard loaded successfully');
   
   // State for active example in the showcase
   const [activeExample, setActiveExample] = useState('santa-beach');
@@ -35,7 +28,6 @@ const Dashboard = () => {
   // State for user's subscription tier and package configuration
   const [userTier, setUserTier] = useState('free'); // 'free', 'basic', or 'complete'
   const [selectedModels, setSelectedModels] = useState([]);
-  // Removed unused packageConfiguration variable
   
   // Maximum allowed models per tier
   const MAX_BASIC_TIER_MODELS = 3;
@@ -92,7 +84,6 @@ const Dashboard = () => {
     scrollToElement('.configurations-view');
   };
   
-  
   // React Router's navigate function
   const navigate = useNavigate();
   
@@ -108,8 +99,6 @@ const Dashboard = () => {
           btn.textContent = 'Signing out...';
         }
       }
-      
-      console.log('Sign out clicked');
       
       // Call the auth context's signOut function
       await authSignOut();
@@ -128,64 +117,6 @@ const Dashboard = () => {
     setActiveExample(id);
   };
   
-  // Handle model selection toggle - removed unused function
-  
-  // Handler for configuration actions (still needed for model selection)
-  // eslint-disable-next-line no-unused-vars
-  const handleConfigurationAction = (type) => {
-    // Set the user's tier based on selection
-    setUserTier(type);
-    
-    // Clear any previously selected models
-    setSelectedModels([]);
-    
-    // For free tier, no models are available
-    if (type === 'free') {
-      // Create the free configuration directly
-      const configuration = {
-        name: 'My Free Configuration',
-        services: ['websearch', 'filesystem'],
-        models: [],
-        tier: 'free',
-        createdAt: new Date().toISOString()
-      };
-      
-      setConfigurations([configuration]);
-      
-      // Show success message with next steps
-      showSuccessMessage(
-        'Free Configuration Created!', 
-        'Your configuration has been created successfully with Web Search and File System capabilities only. No premium models are included in this tier.'
-      );
-      
-      // Scroll to the configuration card
-      scrollToElement('.configurations-view');
-    } else {
-      // For paid tiers, show subscription confirmation first
-      if (showSubscriptionConfirmation(type)) {
-        // Create a basic configuration for the tier
-        const configuration = {
-          name: `My ${type.charAt(0).toUpperCase() + type.slice(1)} Configuration`,
-          services: ['websearch', 'filesystem'],
-          models: [],
-          tier: type,
-          createdAt: new Date().toISOString()
-        };
-        
-        setConfigurations([configuration]);
-        
-        // Show next step message
-        showSuccessMessage(
-          'Now Select Your Models', 
-          `Great! You've selected the ${type} plan with access to ${type === 'basic' ? '3' : '10'} Hugging Face models. Choose which models you'd like to include in your configuration.`
-        );
-        
-        // Scroll to model selection section
-        scrollToElement('.model-selection-section');
-      }
-    }
-  };
-  
   // Helper function to show success messages
   const showSuccessMessage = (title, message) => {
     // This could be implemented with a toast notification library
@@ -200,105 +131,6 @@ const Dashboard = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
-  
-  // Helper function to show subscription confirmation
-  const showSubscriptionConfirmation = (tier) => {
-    // In a real implementation, this would open a payment processing flow
-    // For now, we'll simulate with a confirmation dialog
-    const confirmed = window.confirm(
-      `You're about to subscribe to the ${tier.charAt(0).toUpperCase() + tier.slice(1)} plan for ${tier === 'basic' ? '2' : '5'}/month. Proceed?`
-    );
-    
-    if (confirmed) {
-      // If user confirms subscription, store tier and navigate
-      console.log(`Subscription to ${tier} tier confirmed, navigating to configuration page`);
-      
-      // Store the tier in localStorage for more reliable persistence
-      localStorage.setItem('user_subscription_tier', tier);
-      
-      // Use hash-based navigation and force scroll to top
-      setTimeout(() => {
-        window.location.hash = '/configure';
-        setTimeout(() => window.scrollTo(0, 0), 100);
-      }, 500); // Add a small delay to make it feel like processing happened
-    }
-    
-    return confirmed;
-  };
-  
-  // Available services data
-  // This variable is not directly used in this version of the dashboard
-  // but is kept for reference/future use
-  /*
-  const services = [
-    {
-      id: 'filesystem',
-      title: 'File System Integration',
-      icon: 'folder',
-      description: 'Securely access local files for your AI assistant',
-      bulletPoints: [
-        'Secure local file access',
-        'Desktop integration',
-        'Directory selection'
-      ],
-      compatibility: 'Desktop Only'
-    },
-    {
-      id: 'websearch',
-      title: 'Web Search',
-      icon: 'search',
-      description: 'Enable web search capabilities for your AI assistant',
-      bulletPoints: [
-        'Real-time information',
-        'Customizable search parameters',
-        'Safe search options'
-      ],
-      compatibility: 'All Platforms'
-    }
-  ];
-  */
-  
-  // Pricing plans data - kept for reference but not used after removing pricing section
-  // eslint-disable-next-line no-unused-vars
-  const pricingPlans = [
-    {
-      id: 'free',
-      name: 'Free',
-      price: 0,
-      features: [
-        'Web Search integration',
-        'File System access',
-        'Basic configurations'
-      ],
-      highlight: false,
-      badge: null
-    },
-    {
-      id: 'basic',
-      name: 'Basic',
-      price: 2,
-      features: [
-        'Everything in Free',
-        '3 premium models',
-        'Configuration sharing'
-      ],
-      highlight: false,
-      badge: 'Beta Price'
-    },
-    {
-      id: 'complete',
-      name: 'Complete',
-      price: 5,
-      features: [
-        'Everything in Basic',
-        '10 premium models',
-        'Advanced configurations',
-        'Priority support'
-      ],
-      highlight: true,
-      badge: 'Most Popular'
-    }
-  ];
   
   // Updated Premium models data with the new list
   const premiumModels = [
@@ -401,9 +233,6 @@ const Dashboard = () => {
       type: 'video'
     }
   ];
-  
-  // Debug examples
-  console.log('Examples with public asset paths:', examples);
   
   // Asset verification function for debugging
   const verifyAssets = () => {
@@ -526,8 +355,6 @@ const Dashboard = () => {
             </div>
           </section>
           
-          {/* Pricing Plans Section removed to avoid duplication */}
-          
           {/* Available Models Section - Now before Your Configurations */}
           <section className="models-section">
             <h2 className="section-title">Available Models</h2>
@@ -563,83 +390,7 @@ const Dashboard = () => {
               Select a tier to begin creating your configuration.
             </p>
             {configurations.length === 0 ? (
-              <div className="subscription-wizard">
-                <h3>Start Building Your Configuration</h3>
-                
-                <div className="wizard-steps">
-                  <div className="wizard-step active">
-                    <div className="step-number">1</div>
-                    <h4>Choose a Plan</h4>
-                  </div>
-                  <div className="wizard-connector"></div>
-                  <div className="wizard-step inactive">
-                    <div className="step-number">2</div>
-                    <h4>Select Models</h4>
-                  </div>
-                  <div className="wizard-connector"></div>
-                  <div className="wizard-step inactive">
-                    <div className="step-number">3</div>
-                    <h4>Configure &amp; Export</h4>
-                  </div>
-                </div>
-                
-                <div className="plan-selection">
-                  <div className="plan-card free">
-                    <div className="plan-header">
-                      <h4>Free Plan</h4>
-                      <span className="price">$0</span>
-                    </div>
-                    <ul className="plan-features">
-                      <li>1 Free model (File System Access)</li>
-                      <li>1 Free model (Web Search Integration)</li>
-                      <li className="feature-not-included">No Hugging Face models</li>
-                    </ul>
-                    <button className="plan-button" onClick={() => {
-                      // Use direct hash-based URL navigation with scroll behavior
-                      console.log('Navigating to configuration page from Free Plan selection');
-                      // Store the tier in localStorage for more reliable persistence
-                      localStorage.setItem('user_subscription_tier', 'none');
-                      window.location.hash = '/configuration';
-                      // Force scroll to top
-                      setTimeout(() => window.scrollTo(0, 0), 100);
-                    }}>
-                      Select Free Plan
-                    </button>
-                  </div>
-                  
-                  <div className="plan-card basic">
-                    <div className="plan-header">
-                      <h4>Basic Plan</h4>
-                      <span className="price">$2<span className="month">/month</span></span>
-                    </div>
-                    <ul className="plan-features">
-                      <li>1 Free model (File System Access)</li>
-                      <li>1 Free model (Web Search Integration)</li>
-                      <li>3 Hugging Face models</li>
-                    </ul>
-                    <button className="plan-button" onClick={() => showSubscriptionConfirmation('basic')}>
-                      Select Basic Plan
-                    </button>
-                  </div>
-                  
-                  <div className="plan-card premium">
-                    <div className="recommended-badge">RECOMMENDED</div>
-                    <div className="plan-header">
-                      <h4>Complete Plan</h4>
-                      <span className="price">$5<span className="month">/month</span></span>
-                    </div>
-                    <ul className="plan-features">
-                      <li>1 Free model (File System Access)</li>
-                      <li>1 Free model (Web Search Integration)</li>
-                      <li>10 Hugging Face models</li>
-                      <li>Priority Support</li>
-                    </ul>
-                    <button className="plan-button" onClick={() => showSubscriptionConfirmation('complete')}>
-                      Select Complete Plan
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <TierSelector />
             ) : (
               <div className="configurations-view">
                 <div className="configuration-card">

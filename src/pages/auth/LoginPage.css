@@ -1,3 +1,14 @@
+/* Override any dark mode settings for login form inputs */
+.login-form input {
+  background-color: #fff !important;
+  color: #333 !important;
+  border: 1px solid #ddd !important;
+}
+
+.login-form input::placeholder {
+  color: #999 !important;
+}
+
 .login-page-container {
   display: flex;
   justify-content: center;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SubscriptionModal.css';
+import './subscription/steps/buttons.css';
 
 interface SubscriptionModalProps {
   currentTier: 'none' | 'basic' | 'complete';
@@ -210,23 +211,25 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
               </div>
             )}
             
-            <div className="form-actions">
-              <button 
-                type="button" 
-                className="cancel-button"
-                onClick={onCancel}
-                disabled={isProcessing}
-              >
-                Cancel
-              </button>
-              
-              <button 
-                type="submit" 
-                className="subscribe-button"
-                disabled={isProcessing}
-              >
-                {isProcessing ? 'Processing...' : `Subscribe to ${selectedTier === 'basic' ? 'Basic' : 'Complete'} Tier`}
-              </button>
+            <div className="step-actions">
+              <div className="button-container">
+                <button 
+                  type="button" 
+                  className="secondary-button"
+                  onClick={onCancel}
+                  disabled={isProcessing}
+                >
+                  Cancel
+                </button>
+                
+                <button 
+                  type="submit" 
+                  className={`primary-button ${selectedTier}`}
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? 'Processing...' : `Subscribe to ${selectedTier === 'basic' ? 'Basic' : 'Complete'} Tier`}
+                </button>
+              </div>
             </div>
           </form>
           

@@ -1,0 +1,518 @@
+/* MainPages.css - Common styles for main application pages */
+
+/* Common container styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Page layout */
+.app-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-content {
+  flex: 1;
+  padding: 40px 0;
+}
+
+/* Dashboard page styles */
+.dashboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.dashboard-header {
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.dashboard-header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Welcome message box for new users */
+.welcome-box {
+  background-color: #f0f7ff;
+  border: 1px solid #cfe2ff;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.welcome-box h2 {
+  margin-top: 0;
+  color: #3A86FF;
+}
+
+.welcome-box p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Configuration cards grid */
+.configs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px 0;
+  color: #666;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+.quick-actions {
+  margin-top: 30px;
+}
+
+.quick-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 25px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #444;
+  cursor: pointer;
+}
+
+.quick-action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-color: #3A86FF;
+  color: #3A86FF;
+}
+
+.quick-action-icon {
+  font-size: 1.4rem;
+}
+
+/* Action buttons */
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.primary-action {
+  background-color: #3A86FF;
+  color: white;
+}
+
+.primary-action:hover {
+  background-color: #1a69ff;
+  transform: translateY(-2px);
+}
+
+.secondary-action {
+  background-color: #f0f0f0;
+  color: #444;
+}
+
+.secondary-action:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+/* Pricing page styles */
+.pricing-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.pricing-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.pricing-header p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Billing Toggle Styles */
+.billing-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.billing-toggle span {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 10px;
+}
+
+.billing-toggle span.active {
+  color: #3A86FF;
+  font-weight: 600;
+}
+
+.save-badge {
+  background-color: #28a745;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* Pricing cards */
+.pricing-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Feature comparison section */
+.feature-comparison {
+  margin: 60px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.feature-comparison h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.comparison-table-container {
+  overflow-x: auto;
+}
+
+/* FAQ section */
+.pricing-faq {
+  margin: 60px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.pricing-faq h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Configuration page styles */
+.configuration-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.configuration-header {
+  margin-bottom: 40px;
+}
+
+.configuration-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.configuration-header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.configuration-steps {
+  display: flex;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 20px;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 15px 10px;
+  position: relative;
+}
+
+.step:not(:last-child):after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 2px;
+  background-color: #e0e0e0;
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.step.active .step-number {
+  background-color: #3A86FF;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.step.active .step-label {
+  color: #3A86FF;
+  font-weight: 600;
+}
+
+.step.completed .step-number {
+  background-color: #28a745;
+  color: white;
+}
+
+.step.completed .step-label {
+  color: #28a745;
+}
+
+/* Services grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.service-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border-color: #3A86FF;
+}
+
+.service-card.selected {
+  border-color: #3A86FF;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.service-card.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.service-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.service-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.service-title {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #333;
+}
+
+.service-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.service-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.badge-premium {
+  background-color: #FFD700;
+  color: #333;
+}
+
+.badge-desktop {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.badge-beta {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #1890ff;
+}
+
+/* Action footer */
+.action-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+/* Form elements */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3A86FF;
+}
+
+.form-helper {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.form-error {
+  font-size: 0.8rem;
+  color: #e63946;
+  margin-top: 5px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-col {
+  flex: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pricing-cards,
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .action-footer {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .action-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .configuration-steps {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .step:not(:last-child):after {
+    content: none;
+  }
+}

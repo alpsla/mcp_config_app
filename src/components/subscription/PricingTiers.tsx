@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { subscriptionPlans, processPayment } from '../../services/subscriptionService';
 import { useAuth } from '../../auth/AuthContext';
 import './PricingTiers.css';
+import './steps/buttons.css';
 
 export const PricingTiers: React.FC = () => {
   const { authState, updateSubscriptionTier, getUserSubscriptionTier } = useAuth();
@@ -104,7 +105,7 @@ export const PricingTiers: React.FC = () => {
               ))}
             </ul>
             <button 
-              className="btn btn-outline tier-select-btn"
+              className="secondary-button"
               disabled={userSubscriptionTier === plan.tier || processing}
             >
               {userSubscriptionTier === plan.tier ? 'Current Plan' : 'Select Plan'}
@@ -114,14 +115,16 @@ export const PricingTiers: React.FC = () => {
       </div>
 
       {selectedPlan && selectedPlan !== userSubscriptionTier && (
-        <div className="pricing-action">
-          <button 
-            className="btn btn-primary"
-            onClick={handleSubscribe}
-            disabled={processing}
-          >
-            {processing ? 'Processing...' : 'Subscribe Now'}
-          </button>
+        <div className="step-actions">
+          <div className="button-container">
+            <button 
+              className={`primary-button ${selectedPlan === 'plan_basic' ? 'basic' : 'complete'}`}
+              onClick={handleSubscribe}
+              disabled={processing}
+            >
+              {processing ? 'Processing...' : 'Subscribe Now'}
+            </button>
+          </div>
         </div>
       )}
     </div>

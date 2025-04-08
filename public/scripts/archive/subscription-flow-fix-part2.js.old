@@ -1,0 +1,179 @@
+// Subscription flow fix - Part 2
+// Contains style functions and DOM manipulation
+(function() {
+  // References to the main module
+  const mainModule = window.subscriptionFix || {};
+  
+  // Apply styles for the subscription page
+  function applyStyles(colors) {
+    console.log('Applying subscription flow styles with colors:', colors);
+    
+    // Remove existing styles
+    const existingStyle = document.getElementById('subscription-flow-styles');
+    if (existingStyle) {
+      existingStyle.remove();
+      console.log('Removed existing style element');
+    }
+    
+    // Create new style element
+    const styleElement = document.createElement('style');
+    styleElement.id = 'subscription-flow-styles';
+    
+    // Define the styles
+    styleElement.innerHTML = `
+      /* Main container styling */
+      .subscription-step, div[style*="max-width: 900px"] {
+        max-width: 900px !important;
+        margin: 30px auto !important;
+        background-color: white !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+        border: 1px solid ${colors.light} !important;
+        padding: 40px !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+      
+      /* Top accent bar */
+      .subscription-step::before, div[style*="max-width: 900px"]::before {
+        content: "" !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 8px !important;
+        background: linear-gradient(to right, ${colors.primary}, ${colors.primary}cc) !important;
+      }
+      
+      /* Content styling */
+      .subscription-step h2, div[style*="max-width: 900px"] h2 {
+        font-size: 28px !important;
+        margin: 0 0 10px 0 !important;
+        color: #333 !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+      }
+      
+      .subscription-step p[style*="margin: 0 auto"], div[style*="max-width: 900px"] p[style*="margin: 0 auto"] {
+        margin: 0 auto !important;
+        color: #666 !important;
+        font-size: 16px !important;
+        max-width: 600px !important;
+        text-align: center !important;
+      }
+      
+      /* Remove horizontal lines in subscription flows */
+      hr, div[style*="border-top:"], div[style*="border-bottom:"], 
+      div[style*="border-top: "], div[style*="border-bottom: "] {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
+      
+      /* Override any competing progress indicators */
+      .fixed-subscription-progress {
+        display: flex !important;
+        justify-content: center !important;
+        margin-bottom: 30px !important;
+        margin-top: 10px !important;
+        position: relative !important;
+        z-index: 100 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0 20px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        height: auto !important;
+      }
+      
+      /* Completely hide any competing progress indicators */
+      .progress-indicator-hidden,
+      .progress-indicator:not(.fixed-subscription-progress), 
+      div.progress-steps:not(.fixed-subscription-progress), 
+      div.subscription-progress:not(.fixed-subscription-progress) {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: absolute !important;
+        pointer-events: none !important;
+      }
+      
+      /* Make sure button containers and buttons are always visible */
+      .step-actions, .button-container, .navigation-buttons {
+        display: flex !important;
+        justify-content: space-between !important;
+        margin-top: 40px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+      }
+      
+      .step-actions button, .button-container button, 
+      button.primary-button, button.secondary-button,
+      .navigation-buttons button, .button-cancel, .button-continue {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-width: 120px !important;
+        padding: 10px 24px !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+      }
+      
+      .step-actions button.primary-button, button.primary-button, .button-continue {
+        background-color: ${colors.primary} !important;
+        color: white !important;
+        border: none !important;
+      }
+      
+      .step-actions button.primary-button:hover, button.primary-button:hover, .button-continue:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-2px) !important;
+      }
+      
+      .step-actions button.secondary-button, button.secondary-button, .button-cancel {
+        background-color: white !important;
+        color: #333 !important;
+        border: 1px solid #ddd !important;
+      }
+      
+      .step-actions button.secondary-button:hover, button.secondary-button:hover, .button-cancel:hover {
+        background-color: #f5f5f5 !important;
+      }
+    `;
+    
+    // Add to document head
+    document.head.appendChild(styleElement);
+    console.log('Added new style element to document head');
+  }
+
+  // Export the styles function to the main module
+  if (window.subscriptionFix) {
+    window.subscriptionFix.applyStyles = applyStyles;
+  }
+  
+  // Make the styling module available
+  window.subscriptionFixStyles = { applyStyles };
+
+  // Import part 3 (indicator functions)
+  function loadPart3() {
+    const scriptElement = document.createElement('script');
+    scriptElement.src = window.location.origin + '/subscription-flow-fix-part3.js';
+    scriptElement.async = false; // Changed to false for more reliable loading order
+    document.head.appendChild(scriptElement);
+    console.log('Loading part 3...');
+  }
+
+  // Load the third part
+  loadPart3();
+})();

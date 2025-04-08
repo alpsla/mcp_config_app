@@ -1,471 +1,145 @@
-/* Exact Progress Bar - matching screenshot */
-.exact-progress-bar {
-  width: 100%;
-  margin: 20px 0 40px;
-  position: relative;
+/**
+ * Progress Bar and Subscription Flow Fixes
+ * Ensures progress bar and navigation buttons are visible
+ */
+
+/* Progress bar container */
+.subscription-progress {
+  display: flex \!important;
+  justify-content: space-between \!important;
+  margin-bottom: 2rem \!important;
+  position: relative \!important;
+  z-index: 2 \!important;
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  width: 100% \!important;
+  flex-wrap: wrap \!important;
 }
 
-.progress-steps-container {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  position: relative;
-  width: 100%;
-  margin-bottom: 10px;
+/* Progress steps */
+.subscription-progress .progress-step {
+  display: flex \!important;
+  flex-direction: column \!important;
+  align-items: center \!important;
+  position: relative \!important;
+  z-index: 2 \!important;
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  margin-bottom: 10px \!important;
+  flex: 1 \!important;
+  min-width: 80px \!important;
 }
 
-.progress-step-number-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 2;
+/* Step circles */
+.subscription-progress .step-number {
+  width: 32px \!important;
+  height: 32px \!important;
+  border-radius: 50% \!important;
+  display: flex \!important;
+  align-items: center \!important;
+  justify-content: center \!important;
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  margin-bottom: 8px \!important;
+  background-color: #e0e0e0 \!important;
+  color: #757575 \!important;
+  font-weight: 600 \!important;
+  border: 2px solid #fff \!important;
 }
 
-.progress-step-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #e2e8f0;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  margin-bottom: 5px;
-  transition: all 0.2s ease;
+/* Active step circle */
+.subscription-progress .progress-step.active .step-number {
+  background-color: #4285f4 \!important;
+  color: white \!important;
 }
 
-.progress-step-circle.active {
-  background-color: #3b82f6;
-  color: white;
+/* Completed step circle */
+.subscription-progress .progress-step.completed .step-number {
+  background-color: #34a853 \!important;
+  color: white \!important;
 }
 
-.progress-step-label {
-  font-size: 14px;
-  color: #64748b;
-  text-align: center;
-  white-space: nowrap;
+/* Step names */
+.subscription-progress .step-name {
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  display: block \!important;
+  font-size: 0.85rem \!important;
+  color: #757575 \!important;
+  text-align: center \!important;
 }
 
-.progress-line-container {
-  flex-grow: 1;
-  height: 1px;
-  position: relative;
-  z-index: 1;
-  margin: 0 10px;
-  min-width: 80px;
-  flex: 1;
+/* Active step name */
+.subscription-progress .progress-step.active .step-name {
+  color: #4285f4 \!important;
+  font-weight: 600 \!important;
 }
 
-.progress-line {
-  height: 1px;
-  background-color: #e2e8f0;
-  width: 100%;
-  position: absolute;
-  top: 15px;
+/* Completed step name */
+.subscription-progress .progress-step.completed .step-name {
+  color: #34a853 \!important;
 }
 
-.progress-percentage {
-  font-size: 14px;
-  font-weight: 500;
-  color: #3b82f6;
-  margin-left: 15px;
-  white-space: nowrap;
-  margin-top: 8px;
+/* Navigation buttons container - more specific selectors */
+.step-actions,
+#profile-buttons-container,
+.button-container,
+.navigation-buttons,
+.subscription-form + .step-actions,
+.subscription-form + #profile-buttons-container {
+  display: flex \!important;
+  justify-content: space-between \!important; 
+  width: 100% \!important;
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  margin-top: 30px \!important;
+  padding-top: 20px \!important;
+  position: relative \!important;
+  z-index: 100 \!important;
+  border-top: 1px solid #e0e0e0 \!important;
 }
 
-.progress-indicator-container {
-  width: 100%;
-  height: 4px;
-  background-color: transparent;
-  position: relative;
+/* Buttons in profile step */
+.step-actions button,
+#profile-buttons-container button,
+.button-container button,
+.navigation-buttons button,
+#profile-back-button,
+#profile-next-button,
+.subscription-form + .step-actions button {
+  display: inline-block \!important;
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  position: relative \!important;
+  z-index: 101 \!important;
+  min-width: 100px \!important;
 }
 
-.progress-indicator-background {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background-color: #e2e8f0;
-  border-radius: 2px;
-  overflow: hidden;
+/* Back button styles */
+.secondary-button,
+.button-cancel,
+#profile-back-button {
+  background-color: #f2f2f2 \!important;
+  color: #333 \!important;
+  border: 1px solid #ddd \!important;
 }
 
-.progress-indicator-fill {
-  height: 100%;
-  background-color: #3b82f6;
-  transition: width 0.3s ease;
+/* Next button styles */
+.primary-button,
+.button-continue,
+#profile-next-button {
+  background-color: #4285F4 \!important;
+  color: white \!important;
+  border: none \!important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) \!important;
 }
 
-/* Use CSS variable to control the width from JavaScript */
-.progress-bar::before {
-  content: '';
-  position: absolute;
-  height: 4px;
-  background-color: #3b82f6;
-  top: 20px;
-  z-index: 1;
-  left: 40px;
-  right: 40px; /* Set right position instead of width */
-  transform: scaleX(var(--progress-width, 0)); /* Use transform to scale the element */
-  transform-origin: left; /* Scale from left to right */
-  transition: transform 0.3s ease;
-}
-
-/* Hidden marker to help position the progress bar end */
-.progress-end-marker {
-  position: absolute;
-  right: 40px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.progress-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.step-number {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #e5e7eb;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.step-label {
-  position: relative;
-  font-size: 0.875rem;
-  color: #6b7280;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.step-label .step-description {
-  font-size: 0.8rem;
-  font-weight: normal;
-  color: #6b7280;
-  margin-top: 0.25rem;
-}
-
-.progress-connector {
-  flex: 1;
-  height: 3px;
-  background-color: #e5e7eb;
-  margin: 0 0.5rem;
-  position: relative;
-  top: -20px;
-  z-index: 0;
-}
-
-/* Active connector styling */
-.progress-connector.active {
-  background-color: #3b82f6;
-}
-
-/* Active step */
-.progress-step.active {
-  font-weight: bold;
-  transform: scale(1.05);
-}
-
-.progress-step.active .step-number {
-  background-color: #3b82f6;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
-  color: white;
-}
-
-.progress-step.active .step-label {
-  color: #3b82f6;
-  font-weight: 600;
-}
-
-/* Current step indicator */
-.current-indicator {
-  font-size: 0.8rem;
-  color: #3b82f6;
-  position: absolute;
-  top: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-weight: bold;
-}
-
-/* Progress connectors fill based on completion */
-.progress-step.active + .progress-connector,
-.progress-step.completed + .progress-connector {
-  background-color: #3b82f6;
-}
-
-/* Completed step */
-.progress-step.completed .step-number {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.progress-step.completed .step-label {
-  color: #3b82f6;
-}
-
-/* Step content */
-.step-content {
-  padding: 1.5rem 2rem; /* Reduced padding */
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem; /* Further reduced margin */
-}
-
-.step-description {
-  color: #6b7280;
-  margin-bottom: 1rem;
-}
-
-.step-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem; /* Reduced margin */
-}
-
-/* Selection step */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
-}
-
-/* Validation step */
-.validation-summary {
-  background-color: #f9fafb;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.validation-services {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.validation-service {
-  background-color: white;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  border: 1px solid #e5e7eb;
-}
-
-.validation-service h4 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.5rem;
-}
-
-.service-summary {
-  font-size: 0.875rem;
-}
-
-.service-summary p {
-  margin: 0.5rem 0;
-}
-
-.directories-summary, 
-.models-summary {
-  list-style: none;
-  padding-left: 1rem;
-  margin: 0.5rem 0;
-}
-
-.directories-summary li, 
-.models-summary li {
-  margin-bottom: 0.25rem;
-  font-family: monospace;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  background-color: #f3f4f6;
-  border-radius: 0.25rem;
-}
-
-.validation-errors {
-  background-color: #fee2e2;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  color: #b91c1c;
-}
-
-.validation-errors h4 {
-  color: #b91c1c;
-  margin-top: 0;
-}
-
-.validation-errors ul {
-  margin: 0.5rem 0;
-  padding-left: 1.5rem;
-}
-
-.validation-success {
-  background-color: #ecfdf5;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  color: #047857;
-}
-
-.validation-success h4 {
-  color: #047857;
-  margin-top: 0;
-}
-
-.validate-button {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.validate-button:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-}
-
-/* Deployment step */
-.deployment-options {
-  background-color: #f9fafb;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-}
-
-.configuration-name {
-  margin-bottom: 1.5rem;
-}
-
-.configuration-name label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-}
-
-.export-options {
-  margin-top: 1.5rem;
-}
-
-.export-options h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.export-button,
-.deploy-button {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.deployment-error {
-  background-color: #fee2e2;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  color: #b91c1c;
-}
-
-.deployment-success {
-  background-color: #ecfdf5;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  color: #047857;
-}
-
-.deployment-success h4 {
-  color: #047857;
-  margin-top: 0;
-}
-
-/* MCP Studio main container */
-.mcp-studio-main {
-  padding: 2rem;
-  min-height: calc(100vh - 60px - 80px); /* Adjust for header and footer */
-  background-color: #f9fafc;
-}
-
-.mcp-studio-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.studio-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.studio-title {
-  margin: 0;
-  font-size: 1.875rem;
-  font-weight: 700;
-}
-
-/* Button styles */
-.btn-primary {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.btn-primary:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: white;
-  color: #4b5563;
-  border: 1px solid #d1d5db;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.btn-secondary:disabled {
-  color: #9ca3af;
-  border-color: #e5e7eb;
-  cursor: not-allowed;
+/* Ensure profile-fixed-buttons class has proper styles */
+.profile-fixed-buttons {
+  display: flex \!important;
+  visibility: visible \!important;
+  opacity: 1 \!important;
+  width: 100% \!important;
+  justify-content: space-between \!important;
+  margin-top: 30px \!important;
 }

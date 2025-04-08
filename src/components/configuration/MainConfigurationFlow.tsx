@@ -17,6 +17,7 @@ import './MainConfigurationFlow.css';
 const MainConfigurationFlow: React.FC = () => {
   const { authState, getUserSubscriptionTier } = useAuth();
   const location = useLocation();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
   const { configId } = useParams<{ configId?: string }>();
   

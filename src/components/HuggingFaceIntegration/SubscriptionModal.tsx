@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SubscriptionModal.css';
+import '../subscription/steps/buttons.css';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -91,20 +92,20 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
           </div>
         </div>
         
-        <div className="modal-footer">
+        <div className="step-actions">
           <div className="modal-note">
             You can change or cancel your subscription at any time.
           </div>
-          <div className="modal-actions">
+          <div className="button-container">
             <button 
-              className="cancel-button" 
+              className="secondary-button" 
               onClick={onClose}
               disabled={isProcessing}
             >
               Cancel
             </button>
             <button 
-              className="subscribe-button"
+              className={`primary-button ${selectedTier}`}
               onClick={handleSubscribe}
               disabled={isProcessing}
             >

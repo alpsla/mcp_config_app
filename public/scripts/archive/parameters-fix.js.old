@@ -1,0 +1,127 @@
+// This script injects styles directly into the page to improve the parameters UI ONLY
+// NOT for profile page - that has its own profile-fix.js
+
+(function() {
+  // Wait for the document to be loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectStyles);
+  } else {
+    injectStyles();
+  }
+
+  // Watch for route changes - ONLY for parameters page
+  window.addEventListener('hashchange', function() {
+    // ONLY check for parameters page - not for profile page
+    if (window.location.hash.includes('/subscribe/parameters') && 
+        !window.location.hash.includes('/subscribe/profile')) {
+      injectStyles();
+    }
+  });
+
+  function injectStyles() {
+    // VERY specific - ONLY apply to parameters page, not any other page
+    // ESPECIALLY not the profile page, which has its own fix script
+    if (!window.location.hash.includes('/subscribe/parameters') || 
+        window.location.hash.includes('/subscribe/profile')) {
+      return;
+    }
+    
+    console.log('On parameters page only - applying parameters fix (NOT for profile page)');
+
+    // Remove any existing styles
+    const existingStyle = document.getElementById('subscription-fixes-styles');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+    
+    // Create a new style element
+    const styleElement = document.createElement('style');
+    styleElement.id = 'subscription-fixes-styles';
+    
+    // Define enhanced styles
+    styleElement.innerHTML = `
+      /* PARAMETER PAGE STYLES */
+      
+      /* Main container styling */
+      .subscription-step, div[style*="max-width: 900px"] {
+        max-width: 900px !important;
+        margin: 30px auto !important;
+        background-color: white !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+        border: 1px solid #e3f2fd !important;
+        padding: 40px !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+      
+      /* Blue top bar */
+      .subscription-step::before, div[style*="max-width: 900px"]::before {
+        content: "" !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 8px !important;
+        background: linear-gradient(to right, #1976d2, rgba(25, 118, 210, 0.8)) !important;
+      }
+      
+      /* Header styling */
+      h2 {
+        font-size: 28px !important;
+        margin: 20px 0 15px !important;
+        color: #333 !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+      }
+      
+      p[style*="margin: 0 auto"] {
+        text-align: center !important;
+        color: #666 !important;
+        max-width: 650px !important;
+        margin: 0 auto 30px !important;
+      }
+      
+      /* Parameter section styling */
+      div[style*="backgroundColor: #FAFAFA"] {
+        background-color: #f8f9fa !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+        transition: all 0.3s ease !important;
+      }
+      
+      div[style*="backgroundColor: #FAFAFA"]:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+      }
+
+      /* PARAMETERS PAGE SPECIFIC STYLES */
+      
+      /* Button styles specific to the parameters page */
+      .subscription-step .step-actions, 
+      .subscription-step .button-container, 
+      .subscription-step .navigation-buttons {
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 20px !important;
+        margin-top: 30px !important;
+        padding-top: 20px !important;
+        border-top: 1px solid #e0e0e0 !important;
+        width: 100% !important;
+      }
+      
+      /* Parameters page button styles */
+      .subscription-step .secondary-button, 
+      .subscription-step .primary-button {
+        display: inline-block !important;
+        min-width: 150px !important;
+      }
+    `;
+    
+    // Add the styles to the document head
+    document.head.appendChild(styleElement);
+    
+    console.log('Parameters page styles injected!');
+  }
+})();

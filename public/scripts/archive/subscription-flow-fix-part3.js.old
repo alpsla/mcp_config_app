@@ -1,0 +1,558 @@
+// Subscription flow fix - Part 3
+// Contains indicator and observer functions
+(function() {
+  // Reference to main module
+  const mainModule = window.subscriptionFix || {};
+
+  // More aggressive removal strategy specifically for circles in page header
+  function removeHeaderProgressBar() {
+    // Target for top circles (in grey/green) that appear at the top of some pages
+    const headerCircles = document.querySelectorAll('div > div[style*="borderRadius: 50%"], div[style*="border-radius: 50%"]');
+    headerCircles.forEach(circle => {
+      try {
+        // Find if this is part of a header bar
+        const possibleHeader = circle.parentNode;
+        if (possibleHeader && possibleHeader.children) {
+          // Check if it's a row of circles with step labels
+          if (possibleHeader.children.length >= 3) {
+            // This might be a header progress bar, hide it
+            possibleHeader.style.display = 'none';
+            possibleHeader.style.visibility = 'hidden';
+            possibleHeader.style.height = '0';
+            possibleHeader.style.overflow = 'hidden';
+            console.log('Hidden header progress bar');
+            
+            // Try to find the parent container and also hide it
+            if (possibleHeader.parentNode && possibleHeader.parentNode.children.length < 5) {
+              possibleHeader.parentNode.style.display = 'none';
+              possibleHeader.parentNode.style.visibility = 'hidden';
+              possibleHeader.parentNode.style.height = '0';
+              console.log('Hidden header progress parent container');
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error handling header circle:', e);
+      }
+    });
+  }
+
+  // Remove ALL progress indicators
+  function removeAllProgressIndicators() {
+    console.log('Removing all progress indicators');
+    
+    // First run the header-specific removal
+    removeHeaderProgressBar();
+    
+    // Check for our custom indicator
+    const customIndicator = document.querySelector('.fixed-subscription-progress');
+    if (customIndicator) {
+      customIndicator.parentNode.removeChild(customIndicator);
+      console.log('Removed custom progress indicator');
+    }
+    
+    // Find all possible progress indicators by various class names and structures
+    const possibleIndicators = [
+      // Direct class selectors
+      '.progress-indicator',
+      'div.progress-steps',
+      'div.subscription-progress',
+      '.progress-indicator:not(.fixed-subscription-progress)',
+      // Parent containers that might contain steps
+      'div[class*="progress"]',
+      // Any container with circles that looks like a progress bar
+      'div[style*="display: flex"][style*="justify-content: center"]'
+    ];
+    
+    // Create a combined selector
+    const combinedSelector = possibleIndicators.join(', ');
+    
+    // Find all elements matching any of these selectors
+    const elements = document.querySelectorAll(combinedSelector);
+    
+    elements.forEach(el => {
+      try {
+        // Verify this is actually a progress indicator by checking for step elements
+        const hasStepElements = 
+          el.querySelectorAll('.step-number, .progress-step, [class*="step-"]').length > 0 ||
+          (el.children.length >= 3 && Array.from(el.children).some(child => 
+            child.textContent && /Welcome|Profile|Parameters|Payment|Success|Interests/i.test(child.textContent)
+          ));
+          
+        // Only hide elements that are actually progress indicators
+        if (hasStepElements) {
+          // Hide it completely
+          el.style.display = 'none';
+          el.style.visibility = 'hidden';
+          el.style.height = '0';
+          el.style.overflow = 'hidden';
+          el.style.margin = '0';
+          el.style.padding = '0';
+          el.style.opacity = '0';
+          el.style.position = 'absolute';
+          el.style.pointerEvents = 'none';
+          
+          // Add a class to mark it as hidden
+          el.classList.add('progress-indicator-hidden');
+          
+          console.log('Hidden progress indicator:', el.className);
+        }
+      } catch (e) {
+        console.error('Error handling element:', e);
+      }
+    });
+    
+    // Additional passes to find more complex progress indicators
+    // Look for ANY flexbox container with multiple items that might be a step indicator
+    document.querySelectorAll('div[style*="display: flex"]').forEach(div => {
+      try {
+        // Don't affect our own indicator
+        if (div.classList.contains('fixed-subscription-progress')) {
+          return;
+        }
+        
+        // Skip action buttons and button containers
+        if (div.classList.contains('step-actions') || 
+            div.classList.contains('button-container') ||
+            div.querySelectorAll('button').length > 0) {
+          console.log('Skipping button container:', div);
+          return;
+        }
+        
+        // Try to determine if this is a progress indicator
+        // It should have multiple child items and step-related text
+        const childCount = div.children.length;
+        const hasStepText = div.textContent && /Welcome.*Profile|Profile.*Parameters|Parameters.*Payment/i.test(div.textContent);
+        const hasCircles = div.querySelectorAll('div[style*="border-radius: 50%"], div[style*="borderRadius: 50%"]').length > 1;
+        
+        if (childCount >= 3 && (hasStepText || hasCircles)) {
+          div.style.display = 'none';
+          div.style.visibility = 'hidden';
+          div.style.height = '0';
+          div.style.overflow = 'hidden';
+          div.classList.add('progress-indicator-hidden');
+          console.log('Hidden flex container progress indicator');
+        }
+      } catch (e) {
+        console.error('Error checking flex container:', e);
+      }
+    });
+    
+    // Remove horizontal lines that might be interfering with layout
+    document.querySelectorAll('hr, div[style*="border-top:"], div[style*="border-bottom:"]').forEach(line => {
+      try {
+        // Skip the line if it's inside a button container
+        if (line.closest('.step-actions') || line.closest('.button-container')) {
+          return;
+        }
+        line.style.display = 'none';
+        line.style.visibility = 'hidden';
+        line.style.height = '0';
+        console.log('Hidden horizontal line element');
+      } catch (e) {
+        console.error('Error hiding horizontal line:', e);
+      }
+    });
+    
+    // Make sure buttons are still visible
+    ensureButtonsVisible();
+    
+    console.log('Finished handling progress indicators');
+  }
+  
+  // Function to ensure navigation buttons remain visible only on the appropriate pages
+  function ensureButtonsVisible() {
+    // IMPORTANT: Do not apply to profile page - that is handled by profile-fix.js
+    if (window.location.hash.includes('/subscribe/profile')) {
+      console.log('Skipping button visibility in subscription-flow-fix - handled by profile-fix.js');
+      return;
+    }
+
+    console.log('Ensuring buttons are visible on pages OTHER than profile');
+
+    // Find all button containers
+    const buttonContainers = document.querySelectorAll('.step-actions, .button-container, .navigation-buttons');
+    buttonContainers.forEach(container => {
+      if (container) {
+        container.style.display = 'flex';
+        container.style.visibility = 'visible';
+        container.style.height = 'auto';
+        container.style.opacity = '1';
+        container.style.position = 'relative';
+        
+        // Make sure buttons inside are also visible
+        const buttons = container.querySelectorAll('button');
+        buttons.forEach(button => {
+          button.style.display = 'inline-block';
+          button.style.visibility = 'visible';
+          button.style.opacity = '1';
+        });
+      }
+    });
+    
+    // Specifically handle navigation buttons for subscription steps
+    const navButtons = document.querySelectorAll('.navigation-buttons');
+    navButtons.forEach(container => {
+      if (container) {
+        container.style.display = 'flex';
+        container.style.justifyContent = 'space-between';
+        container.style.marginTop = '30px';
+        container.style.paddingTop = '20px';
+        container.style.borderTop = '1px solid rgba(0, 0, 0, 0.1)';
+        container.style.width = '100%';
+        
+        // Apply specific button styles
+        const backButtons = container.querySelectorAll('.button-cancel, button[type="button"]:first-child');
+        backButtons.forEach(button => {
+          button.style.backgroundColor = '#f5f5f5';
+          button.style.border = '1px solid #ddd';
+          button.style.fontWeight = '500';
+          button.style.transition = 'all 0.2s ease';
+          button.style.minWidth = '120px';
+          button.style.padding = '12px 24px';
+        });
+        
+        const nextButtons = container.querySelectorAll('.button-continue, button[type="button"]:last-child');
+        nextButtons.forEach(button => {
+          button.style.color = 'white';
+          button.style.fontWeight = '600';
+          button.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+          button.style.transition = 'all 0.2s ease';
+          button.style.minWidth = '120px';
+          button.style.padding = '12px 24px';
+        });
+      }
+    });
+  }
+
+  // Create the progress indicator
+  function createProgressIndicator(currentStep, activeStepNumber, currentColors) {
+    console.log('Creating progress indicator for step:', currentStep);
+    
+    // Access constants from the main module
+    const STANDARD_STEPS = window.subscriptionFix.STANDARD_STEPS;
+    
+    // First check if our progress indicator already exists
+    const existingIndicator = document.querySelector('.fixed-subscription-progress');
+    if (existingIndicator) {
+      console.log('Progress indicator already exists, removing it');
+      existingIndicator.parentNode.removeChild(existingIndicator);
+    }
+    
+    // Use the better container finding method
+    const mainContainer = window.subscriptionFix.findMainContainer();
+    if (!mainContainer) {
+      console.error('Could not find a suitable container for the progress bar');
+      return null;
+    }
+    
+    // Create new progress indicator
+    const progressIndicator = document.createElement('div');
+    progressIndicator.className = 'fixed-subscription-progress';
+    progressIndicator.style.marginTop = '0';
+    progressIndicator.style.marginBottom = '20px';
+    progressIndicator.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+    
+    // Create a container for steps
+    const stepsContainer = document.createElement('div');
+    stepsContainer.style.display = 'flex';
+    stepsContainer.style.alignItems = 'center';
+    stepsContainer.style.justifyContent = 'center';
+    stepsContainer.style.width = '100%';
+    stepsContainer.style.position = 'relative';
+    
+    // Create connecting lines between circles
+    const linesContainer = document.createElement('div');
+    linesContainer.style.position = 'absolute';
+    linesContainer.style.top = '15px'; // Center with circles
+    linesContainer.style.left = '0';
+    linesContainer.style.right = '0';
+    linesContainer.style.height = '2px';
+    linesContainer.style.backgroundColor = '#E0E0E0';
+    linesContainer.style.zIndex = '1';
+    
+    // Add lines container to steps container
+    stepsContainer.appendChild(linesContainer);
+    
+    // Detect which steps we need to show based on the URL
+    let stepsToShow = [...STANDARD_STEPS]; // Default to all steps
+    
+    // If the URL has 'payment' right after 'profile', we're in the shorter flow
+    if (window.location.hash.match(/\/profile.*\/payment/)) {
+      // Use a shorter variant without Interests/Parameters
+      stepsToShow = [
+        { number: 1, name: 'Welcome' },
+        { number: 2, name: 'Profile' },
+        { number: 3, name: 'Payment' },
+        { number: 4, name: 'Success' }
+      ];
+      console.log('Using shorter flow variant (without Interests/Parameters)');
+    }
+    
+    // Create steps
+    stepsToShow.forEach((step, index) => {
+      // Skip Success step on non-success pages unless we're in the short flow
+      if (step.name === 'Success' && currentStep !== 'success' && stepsToShow.length > 4) {
+        return;
+      }
+      
+      // Adjust display number to handle either flow
+      const displayNumber = stepsToShow.length <= 4 ? 
+        index + 1 : // For short flow, use index directly
+        step.number; // For full flow, use standard numbers
+      
+      // Create step container
+      const stepContainer = document.createElement('div');
+      stepContainer.style.display = 'flex';
+      stepContainer.style.flexDirection = 'column';
+      stepContainer.style.alignItems = 'center';
+      stepContainer.style.marginRight = index < stepsToShow.length - 1 ? '40px' : '0';
+      stepContainer.style.position = 'relative';
+      stepContainer.style.zIndex = '2'; // Above the lines
+      
+      // Create step circle
+      const circle = document.createElement('div');
+      circle.style.width = '30px';
+      circle.style.height = '30px';
+      circle.style.borderRadius = '50%';
+      circle.style.display = 'flex';
+      circle.style.alignItems = 'center';
+      circle.style.justifyContent = 'center';
+      circle.style.fontSize = '14px';
+      circle.style.fontWeight = 'bold';
+      circle.style.marginBottom = '8px';
+      circle.style.transition = 'all 0.3s ease';
+      circle.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+      
+      // Map the current active step number to the appropriate step in our flow
+      const isActiveStep = (stepsToShow.length <= 4) ? 
+        // For short flow
+        (displayNumber === activeStepNumber ||
+         (currentStep === 'payment' && displayNumber === 3) ||
+         (currentStep === 'success' && displayNumber === 4)) :
+        // For standard flow
+        (displayNumber === activeStepNumber);
+      
+      // Set the circle color based on step state
+      if (isActiveStep) {
+        // Active step
+        circle.style.backgroundColor = currentColors.primary;
+        circle.style.color = 'white';
+        circle.style.transform = 'scale(1.1)'; // Slightly larger
+      } else if (displayNumber < activeStepNumber ||
+                (currentStep === 'success' && displayNumber < stepsToShow.length)) {
+        // Completed step
+        circle.style.backgroundColor = '#4CAF50';
+        circle.style.color = 'white';
+        
+        // Add check mark instead of number for completed steps
+        const checkMark = document.createElement('span');
+        checkMark.innerHTML = '✓';
+        checkMark.style.fontSize = '16px';
+        circle.textContent = '';
+        circle.appendChild(checkMark);
+      } else {
+        // Future step
+        circle.style.backgroundColor = '#E0E0E0';
+        circle.style.color = '#666';
+        circle.textContent = displayNumber;
+      }
+      
+      // Add the number (if not already replaced with checkmark)
+      if (!circle.hasChildNodes()) {
+        circle.textContent = displayNumber;
+      }
+      
+      // Create step label
+      const label = document.createElement('div');
+      label.style.fontSize = '14px';
+      label.style.textAlign = 'center';
+      label.style.transition = 'all 0.3s ease';
+      
+      // Style label based on active state
+      if (isActiveStep) {
+        label.style.color = '#333';
+        label.style.fontWeight = 'bold';
+      } else {
+        label.style.color = '#666';
+        label.style.fontWeight = 'normal';
+      }
+      
+      // Add the name
+      label.textContent = step.name;
+      
+      // Add to step container
+      stepContainer.appendChild(circle);
+      stepContainer.appendChild(label);
+      
+      // Add step container to steps container
+      stepsContainer.appendChild(stepContainer);
+    });
+    
+    // Add container to indicator
+    progressIndicator.appendChild(stepsContainer);
+    
+    // Insert at the very top of the container
+    try {
+      // Always insert at top
+      if (mainContainer.firstChild) {
+        mainContainer.insertBefore(progressIndicator, mainContainer.firstChild);
+        console.log('Inserted progress indicator at the top of container');
+      } else {
+        mainContainer.appendChild(progressIndicator);
+        console.log('Appended progress indicator to empty container');
+      }
+    } catch (e) {
+      console.error('Error inserting progress indicator:', e);
+      
+      // Last resort: append to body
+      try {
+        document.body.insertBefore(progressIndicator, document.body.firstChild);
+        console.log('Inserted progress indicator at top of body as fallback');
+      } catch (e) {
+        console.error('Failed to insert progress indicator anywhere:', e);
+      }
+    }
+    
+    // Ensure buttons are still visible
+    setTimeout(ensureButtonsVisible, 100);
+    // Call the header removal again to be sure
+    setTimeout(removeHeaderProgressBar, 150);
+    
+    return progressIndicator;
+  }
+
+  // Set up mutation observer to catch dynamically added indicators
+  function setupObserver() {
+    console.log('Setting up mutation observer');
+    
+    // Disconnect any existing observer to prevent multiple instances
+    if (window.subscriptionFlowObserver) {
+      try {
+        window.subscriptionFlowObserver.disconnect();
+        console.log('Disconnected existing observer');
+      } catch (e) {
+        console.error('Error disconnecting observer:', e);
+      }
+    }
+    
+    // Create an observer instance with improved detection
+    const observer = new MutationObserver(function(mutations) {
+      // Check if this mutation added any progress indicators
+      let foundProgressIndicator = false;
+      
+      for (const mutation of mutations) {
+        try {
+          // Only process childList mutations (node additions)
+          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            for (let i = 0; i < mutation.addedNodes.length; i++) {
+              const node = mutation.addedNodes[i];
+              
+              // Skip text nodes and our own fixed progress indicator
+              if (node.nodeType !== 1 || 
+                  (node.className && node.className.includes('fixed-subscription-progress'))) {
+                continue;
+              }
+              
+              // Skip step-actions containers with buttons
+              if (node.className && 
+                 (node.className.includes('step-actions') || 
+                  node.className.includes('button-container'))) {
+                continue;
+              }
+              
+              // Only look for progress indicators by specific class names
+              if (node.className && 
+                  (/progress[-_]?indicator|progress[-_]?steps|subscription[-_]?progress/i.test(node.className))) {
+                console.log('Found progress indicator by class:', node.className);
+                foundProgressIndicator = true;
+                // Hide it immediately
+                node.style.display = 'none';
+                node.style.visibility = 'hidden';
+                node.style.height = '0';
+                break;
+              }
+              
+              // Check for step indicators inside the added node
+              const stepElements = node.querySelectorAll ? 
+                node.querySelectorAll('.step-number, .progress-step, [class*="progress-step"]') : [];
+              
+              if (stepElements.length >= 2) {
+                // This is likely a progress indicator
+                console.log('Found node with multiple step elements');
+                foundProgressIndicator = true;
+                node.style.display = 'none';
+                node.style.visibility = 'hidden';
+                node.style.height = '0';
+                break;
+              }
+            }
+          }
+          
+          if (foundProgressIndicator) break;
+        } catch (e) {
+          console.error('Error processing mutation:', e);
+        }
+      }
+      
+      if (foundProgressIndicator) {
+        // Found a progress indicator, but don't remove everything - just hide it
+        console.log('Detected dynamically added progress indicator');
+        // Make sure buttons are still visible after hiding indicators
+        setTimeout(ensureButtonsVisible, 100);
+        // Check for header bars too
+        setTimeout(removeHeaderProgressBar, 150);
+      }
+    });
+    
+    // Start observing the body with a more robust configuration
+    try {
+      observer.observe(document.body, { 
+        childList: true, 
+        subtree: true,
+        attributes: false
+      });
+      
+      console.log('Observer successfully attached to body');
+      
+      // Store observer reference
+      window.subscriptionFlowObserver = observer;
+    } catch (e) {
+      console.error('Error setting up observer:', e);
+    }
+    
+    // Periodically check that buttons are visible
+    setInterval(ensureButtonsVisible, 2000);
+    // Periodically check for header progress bars
+    setInterval(removeHeaderProgressBar, 2500);
+  }
+
+  // Export functions to main module
+  if (window.subscriptionFix) {
+    window.subscriptionFix.removeAllProgressIndicators = removeAllProgressIndicators;
+    window.subscriptionFix.createProgressIndicator = createProgressIndicator;
+    window.subscriptionFix.setupObserver = setupObserver;
+    window.subscriptionFix.ensureButtonsVisible = ensureButtonsVisible;
+    window.subscriptionFix.removeHeaderProgressBar = removeHeaderProgressBar;
+  }
+  
+  // Make functions globally available
+  window.subscriptionFixUtils = {
+    removeAllProgressIndicators,
+    createProgressIndicator,
+    setupObserver,
+    ensureButtonsVisible,
+    removeHeaderProgressBar
+  };
+  
+  // Apply our functions to the main module
+  console.log('Part 3 loaded - All subscription flow fix functions are now available');
+
+  // For all pages EXCEPT profile (which has its own fix script)
+  if (!window.location.hash.includes('/subscribe/profile')) {
+    // Add a small delay to ensure DOM is fully loaded
+    setTimeout(ensureButtonsVisible, 500);
+    // Make additional checks
+    setTimeout(ensureButtonsVisible, 1500);
+  }
+})();

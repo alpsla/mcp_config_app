@@ -1,0 +1,358 @@
+// Main subscription flow fix wrapper
+(function() {
+  // Import modules
+  const modules = {
+    core: window.subscriptionFixCore || {},
+    styles: window.subscriptionFixStyles || {},
+    utils: window.subscriptionFixUtils || {}
+  };
+
+  // Constants for the progress steps - accommodate both formats we've seen
+  const STANDARD_STEPS = [
+    { number: 1, name: 'Welcome' },
+    { number: 2, name: 'Profile' },
+    { number: 3, name: 'Interests' },
+    { number: 4, name: 'Parameters' },
+    { number: 5, name: 'Payment' },
+    { number: 6, name: 'Success' }
+  ];
+  
+  // Color schemes for each step
+  const COLOR_SCHEMES = {
+    welcome: { primary: '#4285F4', light: '#E8F0FE' },
+    profile: { primary: '#34A853', light: '#E8F5E9' },
+    interests: { primary: '#673AB7', light: '#EDE7F6' },
+    parameters: { primary: '#1976D2', light: '#E3F2FD' },
+    payment: { primary: '#673AB7', light: '#EDE7F6' },
+    success: { primary: '#34A853', light: '#E8F5E9' }
+  };
+  
+  // Map step names to numbers - handle different flow configurations
+  const STEP_NUMBERS = {
+    welcome: 1,
+    profile: 2,
+    interests: 3,
+    parameters: 4,
+    payment: 5,
+    success: 6
+  };
+
+  // Wait for the DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAndFixSubscriptionPage();
+      console.log('Subscription flow fix loaded - DOM Content Loaded event');
+    });
+  } else {
+    checkAndFixSubscriptionPage();
+    console.log('Subscription flow fix loaded - Document already ready');
+  }
+
+  // Set up hash change listener
+  window.addEventListener('hashchange', function() {
+    console.log('Hash changed to:', window.location.hash);
+    
+    // Reset page and check again
+    if (window.location.hash.includes('/subscribe/')) {
+      console.log('Detected subscription page navigation');
+      // Multiple attempts to remove progress indicators
+      for (let i = 0; i < 3; i++) {
+        setTimeout(removeAllProgressIndicators, i * 100);
+      }
+      
+      // Apply the fix with incremental delays
+      setTimeout(checkAndFixSubscriptionPage, 200);
+      setTimeout(checkAndFixSubscriptionPage, 500);
+      setTimeout(checkAndFixSubscriptionPage, 1000);
+    }
+  });
+
+  // Find the main container for insertion
+  function findMainContainer() {
+    // Primary selectors for known containers
+    let mainContainer = document.querySelector('.subscription-step') || 
+                        document.querySelector('div[style*="max-width: 900px"]');
+    
+    if (!mainContainer) {
+      // Alternative strategy: look for a container with a heading inside
+      const profileHeading = document.querySelector('h2, h1');
+      if (profileHeading) {
+        // Go up to find a suitable container
+        let parent = profileHeading.parentNode;
+        while (parent && parent !== document.body) {
+          // Check if this is a large enough container
+          const rect = parent.getBoundingClientRect();
+          if (rect.width > 500 && rect.height > 200) {
+            mainContainer = parent;
+            console.log('Found container via heading element');
+            break;
+          }
+          parent = parent.parentNode;
+        }
+      }
+      
+      // Still not found - try to find any large container elements
+      if (!mainContainer) {
+        const possibleContainers = document.querySelectorAll('div[style*="margin"][style*="padding"], div.subscription-flow-container, div.subscription-content');
+        
+        if (possibleContainers.length > 0) {
+          // Find the largest container by area
+          let maxArea = 0;
+          for (let i = 0; i < possibleContainers.length; i++) {
+            const rect = possibleContainers[i].getBoundingClientRect();
+            const area = rect.width * rect.height;
+            if (area > maxArea) {
+              maxArea = area;
+              mainContainer = possibleContainers[i];
+            }
+          }
+          console.log('Found alternative container:', mainContainer);
+        }
+      }
+    }
+    
+    if (!mainContainer) {
+      console.error('Could not find any suitable container');
+      // Last resort: use body as container
+      mainContainer = document.body;
+      console.log('Falling back to using body as container');
+    }
+    
+    return mainContainer;
+  }
+
+  // Initialize the fix
+  function checkAndFixSubscriptionPage() {
+    console.log('Checking for subscription page at:', window.location.hash);
+    
+    if (window.location.hash.includes('/subscribe/')) {
+      console.log('Subscription page detected - starting fix process');
+      
+      // First, clean up progress indicators only (not content)
+      removeAllProgressIndicators();
+      
+      // Then apply the fix with a delay to ensure DOM is ready
+      setTimeout(applySubscriptionFix, 100);
+      
+      // Only one additional attempt after a delay to avoid over-cleaning
+      setTimeout(() => {
+        // Check if our fixed progress indicator exists before trying again
+        const hasFixedIndicator = document.querySelector('.fixed-subscription-progress');
+        if (!hasFixedIndicator) {
+          console.log('No fixed progress indicator found, trying again');
+          applySubscriptionFix();
+        }
+      }, 800);
+      
+      // Setup observer for progress indicators - less aggressive approach
+      if (!window.progressCheckInterval) {
+        window.progressCheckInterval = setInterval(() => {
+          if (window.location.hash.includes('/subscribe/')) {
+            // Only check for duplicated progress indicators, not all content
+            const progressBars = document.querySelectorAll(
+              '.progress-indicator:not(.fixed-subscription-progress), ' + 
+              '.progress-steps:not(.fixed-subscription-progress), ' + 
+              '.subscription-progress:not(.fixed-subscription-progress)' 
+            );
+            
+            if (progressBars.length > 0) {
+              console.log(`Found ${progressBars.length} additional progress indicators during check`);
+              // Don't remove everything, just hide these specific progress bars
+              progressBars.forEach(bar => {
+                if (bar && bar.style) {
+                  bar.style.display = 'none';
+                  bar.style.visibility = 'hidden';
+                  bar.style.height = '0';
+                }
+              });
+              
+              // Check if we need to recreate our fixed indicator
+              const hasFixedIndicator = document.querySelector('.fixed-subscription-progress');
+              if (!hasFixedIndicator) {
+                applySubscriptionFix();
+              }
+            }
+          } else {
+            // Not on subscription page anymore, clear interval
+            console.log('Leaving subscription page, clearing interval');
+            clearInterval(window.progressCheckInterval);
+            window.progressCheckInterval = null;
+          }
+        }, 2000); // Check every 2 seconds
+        
+        console.log('Started progress check interval');
+      }
+    } else if (window.progressCheckInterval) {
+      // Not on subscription page anymore, clear interval
+      console.log('Not on subscription page, clearing interval');
+      clearInterval(window.progressCheckInterval);
+      window.progressCheckInterval = null;
+    }
+  }
+
+  // Import core functions from part 2
+  function loadPart2() {
+    const scriptElement = document.createElement('script');
+    scriptElement.src = window.location.origin + '/subscription-flow-fix-part2.js';
+    scriptElement.async = true;
+    document.head.appendChild(scriptElement);
+  }
+
+  // Set up initial function exports
+  window.testSubscriptionFlowFix = function() {
+    console.log('🔧 Manually testing subscription flow fix');
+    console.log('📊 Current URL hash:', window.location.hash);
+    
+    // Check if we're on a subscription page
+    if (!window.location.hash.includes('/subscribe/')) {
+      console.log('⚠️ Not on a subscription page. This test works best on subscription pages.');
+    }
+    
+    // Report on existing progress indicators
+    const existingIndicators = document.querySelectorAll('.progress-indicator, .progress-steps, .subscription-progress, .fixed-subscription-progress');
+    console.log(`📋 Found ${existingIndicators.length} progress indicators before cleanup`);
+    
+    // Clean up progress indicators only
+    removeAllProgressIndicators();
+    console.log('🧹 Removed/hidden existing progress indicators');
+    
+    // Apply the fix
+    applySubscriptionFix();
+    console.log('✨ Created new progress indicator');
+    
+    // Check if our fixed indicator exists
+    const hasFixedIndicator = document.querySelector('.fixed-subscription-progress');
+    
+    // Report status
+    if (hasFixedIndicator) {
+      console.log('✅ Fix successful! New progress indicator created.');
+      return { 
+        success: true, 
+        message: 'Subscription flow progress bar fix applied successfully.'
+      };
+    } else {
+      console.log('❌ Fix failed. No progress indicator created.');
+      return { 
+        success: false, 
+        message: 'Fix failed to create new progress indicator.'
+      };
+    }
+  };
+
+  // Load additional script parts
+  loadPart2();
+
+  // Apply the subscription fix (implementation in part 2)
+  function applySubscriptionFix() {
+    try {
+      console.log('Applying subscription flow fix...');
+      
+      // Determine which page we're on
+      const currentPath = window.location.hash;
+      let currentStep = 'welcome';
+      
+      if (currentPath.includes('/profile')) {
+        currentStep = 'profile';
+      } else if (currentPath.includes('/interests')) {
+        currentStep = 'interests';
+      } else if (currentPath.includes('/parameters')) {
+        currentStep = 'parameters';
+      } else if (currentPath.includes('/payment')) {
+        currentStep = 'payment';
+      } else if (currentPath.includes('/success')) {
+        currentStep = 'success';
+      }
+      
+      console.log('Current step detected:', currentStep);
+      
+      // Repeatedly attempt to remove unwanted indicators for a short period
+      // This helps with timing issues when components load dynamically
+      const removalAttempts = 5;
+      for (let i = 0; i < removalAttempts; i++) {
+        setTimeout(() => {
+          removeAllProgressIndicators();
+        }, i * 100); // Try at 0ms, 100ms, 200ms, 300ms, 400ms
+      }
+      
+      // Get the current color scheme
+      const currentColors = COLOR_SCHEMES[currentStep];
+      
+      // Apply styles with a slight delay to ensure cleanup is done
+      setTimeout(() => {
+        // Apply styles
+        applyStyles(currentColors);
+        
+        // Get the active step number
+        const activeStepNumber = STEP_NUMBERS[currentStep];
+        
+        // Create the progress indicator
+        createProgressIndicator(currentStep, activeStepNumber, currentColors);
+        
+        console.log('Single progress indicator created for:', currentStep);
+        
+        // Set up observer to catch dynamically added progress indicators
+        setupObserver();
+      }, 500); // Wait 500ms before creating new indicator
+    } catch (e) {
+      console.error('Error applying subscription flow fix:', e);
+    }
+  }
+
+  // Apply styles for the subscription page - will be defined in part 2
+  function applyStyles(colors) {
+    console.log('Waiting for styles function to load...');
+    // This will be overridden when part 2 loads
+    setTimeout(() => {
+      if (window.subscriptionFixStyles && window.subscriptionFixStyles.applyStyles) {
+        window.subscriptionFixStyles.applyStyles(colors);
+      } else {
+        // Fallback basic styles
+        const styleElement = document.createElement('style');
+        styleElement.id = 'subscription-flow-styles';
+        styleElement.innerHTML = `
+          /* Remove horizontal lines in subscription flows */
+          hr, div[style*="border-top:"], div[style*="border-bottom:"] {
+            display: none !important;
+          }
+        `;
+        document.head.appendChild(styleElement);
+      }
+    }, 50);
+  }
+
+  // Remove ALL progress indicators - will be defined in part 2
+  function removeAllProgressIndicators() {
+    console.log('Waiting for removeAllProgressIndicators function to load...');
+    // This will be overridden when part 2 loads
+    const customIndicator = document.querySelector('.fixed-subscription-progress');
+    if (customIndicator) {
+      customIndicator.parentNode.removeChild(customIndicator);
+    }
+  }
+
+  // Create the progress indicator - will be defined in part 2
+  function createProgressIndicator(currentStep, activeStepNumber, currentColors) {
+    console.log('Waiting for createProgressIndicator function to load...');
+    // This will be overridden when part 2 loads
+    return null;
+  }
+
+  // Set up mutation observer to catch dynamically added indicators - will be defined in part 2
+  function setupObserver() {
+    console.log('Waiting for setupObserver function to load...');
+    // This will be overridden when part 2 loads
+  }
+
+  // Make public exports available
+  window.subscriptionFix = {
+    findMainContainer,
+    removeAllProgressIndicators,
+    createProgressIndicator,
+    applyStyles,
+    setupObserver,
+    testSubscriptionFlowFix: window.testSubscriptionFlowFix,
+    STANDARD_STEPS,
+    COLOR_SCHEMES,
+    STEP_NUMBERS
+  };
+})();

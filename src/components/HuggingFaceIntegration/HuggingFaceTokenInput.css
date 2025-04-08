@@ -1,0 +1,218 @@
+.huggingface-token-container {
+  background-color: #f0f7ff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.token-header {
+  color: #4a76a8;
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.token-description {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #4a76a8;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  position: relative;
+  z-index: 10;
+}
+
+.text-button:hover {
+  text-decoration: underline;
+}
+
+.token-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.token-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+.token-input:focus {
+  outline: none;
+  border-color: #4a76a8;
+  box-shadow: 0 0 0 2px rgba(74, 118, 168, 0.2);
+}
+
+.token-action-buttons {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  z-index: 10;
+}
+
+.help-button {
+  padding: 10px 16px;
+  background-color: #e0f2fe;
+  border: 1px solid #93c5fd;
+  border-radius: 4px;
+  color: #1e40af;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.help-button:hover {
+  background-color: #bfdbfe;
+}
+
+.get-token-button {
+  padding: 10px 16px;
+  background-color: #4a76a8;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.get-token-button:hover {
+  background-color: #3a6595;
+}
+
+.security-note {
+  display: flex;
+  align-items: center;
+  background-color: #f3f9f0;
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.lock-icon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.security-text {
+  color: #555;
+  font-size: 14px;
+}
+
+.validation-result {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.validation-result.valid {
+  background-color: #e6f7f0;
+  color: #10b981;
+  border: 1px solid #10b981;
+}
+
+.validation-result.invalid {
+  background-color: #fee2e2;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.instructions-panel {
+  margin-top: 20px;
+  padding: 0;
+  border-top: 1px dashed #ccc;
+}
+
+.instructions-header {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.instructions-header h4 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.instructions-toggle-button {
+  display: block;
+  margin: 0 auto 16px;
+  padding: 10px 20px;
+  background-color: #7c69ef;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  user-select: none;
+  position: relative;
+  z-index: 10;
+}
+
+.instructions-toggle-button:hover {
+  background-color: #6655d8;
+}
+
+.instruction-steps {
+  padding: 0 20px 16px;
+}
+
+.instruction-steps ol {
+  margin-left: 16px;
+  padding-left: 0;
+}
+
+.instruction-steps li {
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.instruction-steps a {
+  color: #4a76a8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.instruction-steps a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .token-input-row {
+    flex-direction: column;
+  }
+  
+  .token-input {
+    width: 100%;
+  }
+  
+  .token-action-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

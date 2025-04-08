@@ -43,24 +43,90 @@ export class TokenService {
   }
 
   /**
-   * Securely stores a token in the OS credential store
+   * Securely stores a token in the OS credential store and as an environment variable
    * @param tokenName Name/key for the token
    * @param tokenValue Token value to store
    * @returns Promise resolving when token is stored
    */
   static async storeToken(tokenName: string, tokenValue: string): Promise<boolean> {
     try {
-      // In a desktop app, this would use the OS credential store
-      // For this web demo, we'll simulate it
+      // Enforce token length limit for security
+      const trimmedToken = tokenValue.substring(0, 512);
       
       if (Platform.isDesktopEnvironment()) {
-        // Simulate a call to the OS credential store via Electron
-        await (window as any).electron.storeCredential(tokenName, tokenValue);
+        // Store in OS credential store via Electron
+        await (window as any).electron.storeCredential(tokenName, trimmedToken);
+        
+        // Create environment variable scripts for different platforms
+        try {
+          // Set in current process if available
+          if (typeof process !== 'undefined' && process.env) {
+            process.env[tokenName.toUpperCase()] = trimmedToken;
+          }
+          
+          // Create environment variable in user's config directory for persistence
+          const configDir = await FileSystemService.getClaudeConfigDirectory();
+          const envVarDir = `${configDir}${Platform.getPathSeparator()}env-vars`;
+          
+          // Create platform-specific environment variable script files
+          const varName = tokenName.toUpperCase();
+          await FileSystemService.createEnvironmentVariableFiles(
+            envVarDir,
+            { [varName]: trimmedToken }
+          );
+          
+          // Create a .env file in the user's home directory as well
+          const homeDir = Platform.getHomePath();
+          const dotEnvPath = `${homeDir}${Platform.getPathSeparator()}.mcp-env`;
+          
+          // Read existing .env file if it exists
+          let envContent = '';
+          try {
+            envContent = await FileSystemService.readFile(dotEnvPath) || '';
+          } catch (e) {
+            // File doesn't exist yet, which is fine
+          }
+          
+          // Update or add the environment variable
+          const envLines = envContent.split('\n');
+          const varDef = `${varName}=${trimmedToken}`;
+          
+          const existingLineIndex = envLines.findIndex(line => 
+            line.trim().startsWith(`${varName}=`));
+            
+          if (existingLineIndex >= 0) {
+            envLines[existingLineIndex] = varDef;
+          } else {
+            envLines.push(varDef);
+          }
+          
+          // Write updated .env file
+          await FileSystemService.writeFile(
+            dotEnvPath, 
+            envLines.join('\n')
+          );
+          
+          console.log(`Token stored as environment variable ${varName} with scripts in ${envVarDir}`);
+        } catch (envError) {
+          console.warn("Could not create environment variable scripts:", envError);
+          // This is not a critical failure, we still have the credential store
+        }
+        
         return true;
       } else {
         // For web, we'll use sessionStorage (not for production use!)
         // In a real app, consider more secure alternatives
-        sessionStorage.setItem(`token_${tokenName}`, tokenValue);
+        sessionStorage.setItem(`token_${tokenName}`, trimmedToken);
+        
+        // For web version, we can also try to store in localStorage with encryption
+        try {
+          // Simple encryption (not secure, just obfuscation)
+          const encryptedToken = btoa(trimmedToken);
+          localStorage.setItem(`secure_token_${tokenName}`, encryptedToken);
+        } catch (e) {
+          console.warn("Could not store encrypted token in localStorage");
+        }
+        
         return true;
       }
     } catch (error) {
@@ -70,19 +136,67 @@ export class TokenService {
   }
 
   /**
-   * Retrieves a token from secure storage
+   * Retrieves a token from secure storage or environment variables
    * @param tokenName Name/key of the token to retrieve
    * @returns Promise resolving to token value or null
    */
   static async getToken(tokenName: string): Promise<string | null> {
     try {
-      if (Platform.isDesktopEnvironment()) {
-        // Simulate a call to the OS credential store via Electron
-        return await (window as any).electron.getCredential(tokenName);
-      } else {
-        // For web demo only
-        return sessionStorage.getItem(`token_${tokenName}`);
+      let token: string | null = null;
+      
+      // First try environment variables (highest priority)
+      if (typeof process !== 'undefined' && process.env) {
+        const envVarName = tokenName.toUpperCase();
+        if (process.env[envVarName]) {
+          return process.env[envVarName] as string;
+        }
       }
+      
+      if (Platform.isDesktopEnvironment()) {
+        // Try the OS credential store via Electron
+        token = await (window as any).electron.getCredential(tokenName);
+        
+        // If not found, check the .env file as fallback
+        if (!token) {
+          try {
+            const homeDir = Platform.getHomePath();
+            const envPath = `${homeDir}${Platform.getPathSeparator()}.mcp-env`;
+            const envContent = await FileSystemService.readFile(envPath);
+            
+            if (envContent) {
+              const envVarName = tokenName.toUpperCase();
+              const envLines = envContent.split('\n');
+              
+              for (const line of envLines) {
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith(`${envVarName}=`)) {
+                  token = trimmedLine.substring(envVarName.length + 1);
+                  break;
+                }
+              }
+            }
+          } catch (e) {
+            // .env file doesn't exist or can't be read
+          }
+        }
+      } else {
+        // For web, first try sessionStorage
+        token = sessionStorage.getItem(`token_${tokenName}`);
+        
+        // Then try localStorage with decryption as fallback
+        if (!token) {
+          try {
+            const encryptedToken = localStorage.getItem(`secure_token_${tokenName}`);
+            if (encryptedToken) {
+              token = atob(encryptedToken);
+            }
+          } catch (e) {
+            console.warn("Could not decrypt token from localStorage");
+          }
+        }
+      }
+      
+      return token;
     } catch (error) {
       console.error("Failed to retrieve token:", error);
       return null;
@@ -90,19 +204,55 @@ export class TokenService {
   }
 
   /**
-   * Removes a token from secure storage
+   * Removes a token from secure storage and environment variables
    * @param tokenName Name/key of the token to remove
    * @returns Promise resolving when token is removed
    */
   static async removeToken(tokenName: string): Promise<boolean> {
     try {
+      // Remove from environment variables if possible
+      if (typeof process !== 'undefined' && process.env) {
+        const envVarName = tokenName.toUpperCase();
+        delete process.env[envVarName];
+      }
+      
       if (Platform.isDesktopEnvironment()) {
-        // Simulate a call to the OS credential store via Electron
+        // Remove from OS credential store via Electron
         await (window as any).electron.removeCredential(tokenName);
+        
+        // Remove from .env file if it exists
+        try {
+          const homeDir = Platform.getHomePath();
+          const envPath = `${homeDir}${Platform.getPathSeparator()}.mcp-env`;
+          const envContent = await FileSystemService.readFile(envPath);
+          
+          if (envContent) {
+            const envVarName = tokenName.toUpperCase();
+            const envLines = envContent.split('\n');
+            const filteredLines = envLines.filter(line => 
+              !line.trim().startsWith(`${envVarName}=`));
+              
+            // Write updated .env file
+            if (filteredLines.length !== envLines.length) {
+              await FileSystemService.writeFile(
+                envPath, 
+                filteredLines.join('\n')
+              );
+            }
+          }
+        } catch (e) {
+          // .env file doesn't exist or can't be read/written
+          console.warn("Could not update .env file:", e);
+        }
+        
         return true;
       } else {
-        // For web demo only
+        // For web, remove from sessionStorage
         sessionStorage.removeItem(`token_${tokenName}`);
+        
+        // Also remove from localStorage if it exists
+        localStorage.removeItem(`secure_token_${tokenName}`);
+        
         return true;
       }
     } catch (error) {

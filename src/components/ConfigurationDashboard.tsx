@@ -198,12 +198,8 @@ const ConfigurationDashboard: React.FC<ConfigurationDashboardProps> = ({
           <h3>Getting Started</h3>
           <p>
             Create your first configuration to connect Claude with file access, web search,
-            or Hugging Face models.
+            or Hugging Face models. Select one of the available plans to get started.
           </p>
-          
-          <button className="create-button" onClick={onNewConfiguration}>
-            Create Your First Configuration
-          </button>
         </div>
       </div>
     );
@@ -244,9 +240,6 @@ const ConfigurationDashboard: React.FC<ConfigurationDashboardProps> = ({
     <div className="configuration-dashboard">
       <div className="dashboard-header">
         <h2>Your Configurations</h2>
-        <button className="create-button" onClick={onNewConfiguration}>
-          Create New Configuration
-        </button>
       </div>
       
       {error && (

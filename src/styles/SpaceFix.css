@@ -37,10 +37,51 @@
   gap: 0.75rem !important;
 }
 
-/* Make action buttons have less bottom space */
-.step-actions {
-  margin-top: 1rem !important;
-  margin-bottom: 1.5rem !important;
+/* Make subscription action buttons always visible */
+.subscription-step .step-actions,
+.subscription-flow-container .step-actions,
+.subscription-step .button-container,
+.subscription-flow-container .button-container,
+.subscription-step .navigation-buttons,
+.subscription-flow-container .navigation-buttons {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  margin-top: 30px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #e0e0e0 !important;
+  width: 100% !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure subscription buttons are visible */
+.subscription-step .secondary-button, 
+.subscription-flow-container .secondary-button,
+.subscription-step .primary-button,
+.subscription-flow-container .primary-button,
+.subscription-step .button-cancel,
+.subscription-flow-container .button-cancel,
+.subscription-step .button-continue,
+.subscription-flow-container .button-continue,
+.subscription-step button[type="button"],
+.subscription-flow-container button[type="button"] {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+/* Fix for profile page specifically */
+[href*="/subscribe/profile"] ~ * .step-actions,
+[href*="/subscribe/profile"] ~ * .button-container,
+[href*="/subscribe/profile"] ~ * .navigation-buttons {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Adjust step description */

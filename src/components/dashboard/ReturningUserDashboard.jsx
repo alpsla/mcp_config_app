@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import SharedHeader from '../shared/SharedHeader';
 import SharedFooter from '../shared/SharedFooter';
 import ConfigurationCard from './ConfigurationCard';
 import ModelCard from './ModelCard.jsx';
+import { getTierById, formatPrice } from '../../config/pricing'; // Only import what's used
 import './Dashboard.css';
 import './ReturnUserDashboard.css';
 import './ComingSoonSection.css';
@@ -13,7 +13,7 @@ import './ComingSoonSection.css';
 const MOCK_USER = {
   id: 'user-123',
   name: 'Test User',
-  tier: 'Standard',
+  tier: 'basic', // Changed to match pricing config tiers
   lastLogin: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 };
 
@@ -23,7 +23,7 @@ const MOCK_CONFIGURATIONS = [
     name: "Web + FileSystem Config", 
     lastModified: "2 days ago", 
     lastUsed: "Yesterday",
-    type: "Complete", 
+    type: "complete", // Changed to match pricing config tiers
     status: "Valid",
     services: {
       webSearch: true,
@@ -39,7 +39,7 @@ const MOCK_CONFIGURATIONS = [
     name: "Basic Web Search", 
     lastModified: "1 week ago", 
     lastUsed: "3 days ago",
-    type: "Basic",
+    type: "basic", // Changed to match pricing config tiers
     status: "Valid", 
     services: {
       webSearch: true,
@@ -53,7 +53,7 @@ const MOCK_CONFIGURATIONS = [
     name: "Content Generation", 
     lastModified: "2 weeks ago", 
     lastUsed: "1 week ago",
-    type: "Standard",
+    type: "basic", // Changed to match pricing config tiers
     status: "Invalid", 
     services: {
       webSearch: true,
@@ -71,7 +71,7 @@ const MOCK_NEW_MODELS = [
     id: 1, 
     name: "DALL-E 3", 
     type: "Image Generation", 
-    tier: "Complete", 
+    tier: "complete", // Changed to match pricing config tiers
     isNew: true, 
     isFree: false,
     description: "Latest version of OpenAI's image generation model with enhanced photorealism and prompt following.",
@@ -85,7 +85,7 @@ const MOCK_NEW_MODELS = [
     id: 2, 
     name: "GPT-4o", 
     type: "Text Generation", 
-    tier: "Standard", 
+    tier: "basic", // Changed to match pricing config tiers
     isNew: true, 
     isFree: false,
     description: "OpenAI's multimodal model capable of reasoning across text, vision, and audio inputs.",
@@ -99,7 +99,7 @@ const MOCK_NEW_MODELS = [
     id: 3, 
     name: "Stable Audio 3", 
     type: "Audio Generation", 
-    tier: "Complete", 
+    tier: "complete", // Changed to match pricing config tiers
     isNew: true, 
     isFree: true,
     description: "High-fidelity audio generation model capable of creating realistic sounds, music, and voice.",
@@ -112,9 +112,8 @@ const MOCK_NEW_MODELS = [
 ];
 
 const ReturningUserDashboard = () => {
-  const navigate = useNavigate();
   // Get the auth state from context
-  const { authState, signOut: authSignOut } = useAuth();
+  const { authState, signOut } = useAuth();
   const isAuthenticated = authState && authState.user !== null;
   
   const [compactView, setCompactView] = useState(false);
@@ -132,16 +131,22 @@ const ReturningUserDashboard = () => {
   const [configurations] = useState(MOCK_CONFIGURATIONS);
   const [newModels] = useState(MOCK_NEW_MODELS);
   
+  // Get tier details from pricing configuration
+  const userTierInfo = getTierById(user.tier);
+  
+  // Get the complete tier for upgrade section
+  const completeTier = getTierById('complete');
+  
   // Function to handle sign out - simplified for the mock
   const handleSignOut = async () => {
     try {
       // Call the auth context's signOut function
-      await authSignOut();
+      await signOut();
       // Navigate to home page
-      navigate('/');
+      window.location.hash = '#/';
     } catch (error) {
       console.error('Error signing out:', error);
-      navigate('/');
+      window.location.hash = '#/';
     }
   };
   
@@ -239,7 +244,7 @@ const ReturningUserDashboard = () => {
     });
     
     // Navigate to edit page (mock)
-    navigate(`/configurations/${configId}/edit`);
+    window.location.hash = `#/configurations/${configId}/edit`;
   };
   
   // Handle use configuration button
@@ -283,7 +288,7 @@ const ReturningUserDashboard = () => {
           { to: '/documentation', label: 'Documentation' }
         ]}
         isAuthenticated={isAuthenticated}
-        onSignOut={handleSignOut}
+        onSignOut={handleSignOut} // Pass the correct sign-out function here
         languageSelector={true}
       />
       
@@ -306,7 +311,9 @@ const ReturningUserDashboard = () => {
             </div>
             
             <div className="user-info">
-              <span className="user-tier">{user.tier} Tier</span>
+              <span className="user-tier" style={{ backgroundColor: userTierInfo.color }}>
+                {userTierInfo.displayName}
+              </span>
             </div>
           </div>
         </div>
@@ -318,7 +325,7 @@ const ReturningUserDashboard = () => {
               <h2 className="section-title">Your Configurations</h2>
               <button 
                 className="create-config-button"
-                onClick={() => window.location.href = '#/configuration'}
+                onClick={() => window.location.hash = '#/configuration'}
               >
                 + New Configuration
               </button>
@@ -362,23 +369,49 @@ const ReturningUserDashboard = () => {
           </section>
           
           {/* Upgrade Card - only shown if not on highest tier */}
-          {user.tier !== 'Complete' && (
-            <section className="upgrade-card">
-              <h3 className="upgrade-title">Upgrade your tier</h3>
+          {user.tier !== 'complete' && (
+            <section className="upgrade-card" style={{ borderColor: completeTier.lightColor }}>
+              <h3 className="upgrade-title" style={{ color: completeTier.color }}>Upgrade your tier</h3>
               <p className="upgrade-description">
-                You're currently on the {user.tier} tier. Upgrade to unlock all 10 models and advanced features.
+                You're currently on the {userTierInfo.displayName} tier. Upgrade to {completeTier.displayName} to unlock all models and advanced features.
               </p>
+              <div className="upgrade-features">
+                {completeTier.features
+                  .filter(feature => feature.included && !userTierInfo.features.some(f => f.id === feature.id && f.included))
+                  .slice(0, 3)
+                  .map((feature, index) => (
+                    <div key={feature.id} className="upgrade-feature">
+                      <span className="feature-check">✓</span>
+                      <span className="feature-name">
+                        {feature.name}
+                        {feature.limits && feature.limits.length > 0 && (
+                          <span className="feature-limit">
+                            {` (${feature.limits[0].value} ${feature.limits[0].unit})`}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ))
+                }
+              </div>
               <button 
                 className="upgrade-button"
+                style={{ backgroundColor: completeTier.color }}
                 onClick={() => {
                   // In a real app, this would open a subscription management page
-                  const confirmUpgrade = window.confirm(`Upgrade to Complete plan for $5/month?`);
+                  const priceFormatted = formatPrice(completeTier.price.monthly);
+                  const confirmUpgrade = window.confirm(`Upgrade to ${completeTier.displayName} plan for ${priceFormatted}/month?`);
                   if (confirmUpgrade) {
                     // Mock subscription update
                     setTimeout(() => {
-                      alert('Your subscription has been upgraded to Complete! Now you can access all models.');
-                      // Navigate to configuration page
-                      window.location.href = '#/configure';
+                      alert(`Your subscription has been upgraded to ${completeTier.displayName}! Now you can access all models.`);
+                      // Create a hard reset navigation sequence:
+                      // 1. Force the reset scroll flag in sessionStorage
+                      sessionStorage.setItem('force_scroll_reset', 'true');
+                      // 2. Force window to reset scroll position 
+                      window.scrollTo(0, 0);
+                      // 3. Use the location href for a clean navigation
+                      window.location.href = '#/subscribe';
                     }, 500);
                   }
                 }}

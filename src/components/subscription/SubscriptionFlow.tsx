@@ -1,264 +1,568 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../auth/AuthContext';
-import GlobalParameterConfig from './GlobalParameterConfig';
 import { enhancedConfigurationManager } from '../../services/EnhancedConfigurationManager';
 import { SubscriptionTierSimple, mapSimpleTypeToTier } from '../../types/enhanced-types';
+import { useSubscriptionContext, SubscriptionFlowProvider } from '../../contexts/SubscriptionFlowContext';
+
+// Import step components
+import WelcomeStep from './steps/WelcomeStep';
+import ProfileStep from './steps/ProfileStep';
+import InterestsStepEnhanced from './steps/InterestsStepEnhanced';
+import PaymentStep from './steps/PaymentStep';
+import ParametersStep from './steps/ParametersStep';
+import SuccessStep from './steps/SuccessStep';
+
+// Import styles
 import './SubscriptionFlow.css';
 
+// Error boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode, fallback: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode, fallback: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(_: Error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Error in subscription flow:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 interface SubscriptionFlowProps {
-  onComplete: () => void;
+  onComplete?: () => void;
   onCancel?: () => void;
   initialTier?: SubscriptionTierSimple;
 }
 
-/**
- * Component for the entire subscription flow, including:
- * 1. Tier selection
- * 2. Global parameter configuration
- * 3. Subscription confirmation
- */
-const SubscriptionFlow: React.FC<SubscriptionFlowProps> = ({
+// Fallback component for error state
+const SubscriptionError = ({ onCancel }: { onCancel?: () => void }) => {
+  return (
+    <div className="subscription-error">
+      <h2>Something went wrong</h2>
+      <p>We're sorry, but there was an error loading the subscription flow.</p>
+      <button 
+        className="secondary-button"
+        onClick={() => {
+          // Navigate back to dashboard if onCancel not provided
+          if (onCancel) {
+            onCancel();
+          } else {
+            window.location.hash = '#/dashboard';
+          }
+        }}
+      >
+        Return to Dashboard
+      </button>
+    </div>
+  );
+};
+
+// Loading state component
+const SubscriptionLoading = () => {
+  return (
+    <div className="subscription-loading">
+      <div className="loading-spinner"></div>
+      <p>Loading subscription options...</p>
+    </div>
+  );
+};
+
+// This is the wrapper component that provides the context
+const SubscriptionFlowWithProvider: React.FC<SubscriptionFlowProps> = (props) => {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  console.log('SubscriptionFlow initialTier:', props.initialTier);
+  // Ensure initialTier is a valid value
+  console.log('Received initialTier:', props.initialTier);
+  const safeInitialTier: SubscriptionTierSimple = 
+    props.initialTier && ['none', 'basic', 'complete'].includes(props.initialTier as string) 
+      ? props.initialTier as SubscriptionTierSimple 
+      : 'basic';
+  
+  // Simulate loading to ensure context is fully initialized
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (isLoading) {
+    return <SubscriptionLoading />;
+  }
+      
+  return (
+    <ErrorBoundary fallback={<SubscriptionError onCancel={props.onCancel} />}>
+      <SubscriptionFlowProvider initialTier={safeInitialTier}>
+        <SubscriptionFlowContent {...props} />
+      </SubscriptionFlowProvider>
+    </ErrorBoundary>
+  );
+};
+
+// This is the main component that uses the context
+const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
   onComplete,
   onCancel,
   initialTier
 }) => {
+  // Remove React Router hooks
   const { authState, updateSubscriptionTier } = useAuth();
-  const [currentStep, setCurrentStep] = useState<number>(initialTier ? 1 : 0);
-  const [selectedTier, setSelectedTier] = useState<SubscriptionTierSimple>(initialTier || 'basic');
-  const [globalParams, setGlobalParams] = useState<Record<string, any>>({});
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    selectedTier, 
+    currentStep, 
+    setCurrentStep, 
+    formData, 
+    updateFormData, 
+    isProcessing, 
+    setIsProcessing, 
+    error, 
+    setError 
+  } = useSubscriptionContext();
+  
+  // Add body class for styling override
+  useEffect(() => {
+    document.body.classList.add('subscription-flow-active');
+    
+    return () => {
+      document.body.classList.remove('subscription-flow-active');
+    };
+  }, []);
+  
+  // State to track if profile data has been loaded
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
-  // Handle tier selection
-  const handleTierSelect = (tier: SubscriptionTierSimple) => {
-    setSelectedTier(tier);
-    setCurrentStep(1);
+  // Fetch user data on load, with improved error handling and dependencies
+  useEffect(() => {
+    let isMounted = true;
+    const fetchUserData = async () => {
+      try {
+        if (!authState?.user?.id) {
+          console.log('No user ID found. Redirecting to login...');
+          // Redirect to login if not authenticated
+          try {
+            // Use hash navigation instead of React Router
+            window.location.hash = '#/login';
+          } catch (error) {
+            console.error('Navigation error:', error);
+          }
+          return;
+        }
+      
+        try {
+          // Load user profile if available
+          const { data: profileData } = await enhancedConfigurationManager.getUserProfile(authState.user.id);
+          
+          if (profileData && isMounted) {
+            console.log('Loaded user profile:', profileData);
+            updateFormData({
+              firstName: profileData.first_name || '',
+              lastName: profileData.last_name || '',
+              displayName: profileData.display_name || '',
+              company: profileData.company || '',
+              role: profileData.role || '',
+              interests: Array.isArray(profileData.interests) ? profileData.interests : [],
+              primaryUseCase: profileData.primary_use_case || '',
+              experienceLevel: profileData.experience_level || 'intermediate'
+            });
+            
+            // Mark as loaded
+            setProfileLoaded(true);
+          } else {
+            console.log('No profile data found or component unmounted');
+            if (isMounted) {
+              setProfileLoaded(true); // Still mark as loaded to allow progression
+            }
+          }
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+          // Mark as loaded even on error to allow progression
+          if (isMounted) {
+            setProfileLoaded(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error in fetchUserData:', error);
+        // Mark as loaded even on error to allow progression
+        if (isMounted) {
+          setProfileLoaded(true);
+        }
+      }
+    };
+    
+    fetchUserData();
+    
+    // Cleanup function to prevent memory leaks and state updates on unmounted component
+    return () => {
+      isMounted = false;
+    };
+  // Only depend on authState.user.id and updateFormData
+  }, [authState?.user?.id, updateFormData]);
+  
+  // Handle step data updates from step components
+  const handleStepDataUpdate = (stepData: Partial<typeof formData>) => {
+    updateFormData(stepData);
+    
+    // Move to next step
+    setCurrentStep(currentStep + 1);
   };
-
-  // Handle parameter configuration completion
-  const handleParametersComplete = (params: Record<string, any>) => {
-    setGlobalParams(params);
-    setCurrentStep(2);
+  
+  // Handle back button
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    } else if (onCancel) {
+      onCancel();
+    } else {
+      window.location.hash = '#/dashboard';
+    }
   };
-
-  // Handle subscription confirmation
-  const handleConfirmSubscription = async () => {
+  
+  // Handle cancel - improved to ensure proper navigation
+  const handleCancel = () => {
+    console.log('Cancel subscription flow');
+    // First try the callback provided by parent
+    if (onCancel) {
+      console.log('Using provided onCancel handler');
+      onCancel();
+    } else {
+      // Fall back to direct navigation
+      console.log('Falling back to direct navigation');
+      try {
+        window.location.hash = '#/dashboard';
+      } catch (error) {
+        console.error('Navigation error:', error);
+      }
+    }
+  };
+  
+  // Handle completion
+  const handleComplete = async () => {
     if (!authState?.user?.id) {
-      setError('You must be logged in to subscribe');
+      setError('Authentication required');
       return;
     }
-
+    
     try {
       setIsProcessing(true);
       setError(null);
-
-      // Save subscription and parameters
+      
+      // 1. Save subscription profile
       await enhancedConfigurationManager.createOrUpdateSubscriptionProfile(
         authState.user.id,
         selectedTier,
-        globalParams
+        {
+          temperature: formData.temperature,
+          max_tokens: formData.maxLength,
+          top_p: formData.topP,
+          top_k: formData.topK
+        }
       );
-
-      // Update auth context with new tier
+      
+      // 2. Save user profile with all form data
+      await enhancedConfigurationManager.updateUserProfile(
+        authState.user.id,
+        {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          display_name: formData.displayName,
+          company: formData.company,
+          role: formData.role,
+          interests: formData.interests,
+          primary_use_case: formData.primaryUseCase,
+          experience_level: formData.experienceLevel
+        }
+      );
+      
+      // 3. Update auth context subscription tier
       if (updateSubscriptionTier) {
         // Convert simple tier type to SubscriptionTier enum
         const subscriptionTier = mapSimpleTypeToTier(selectedTier);
         updateSubscriptionTier(subscriptionTier);
       }
-
-      // Complete the flow
-      onComplete();
-    } catch (error: any) {
-      console.error('Subscription error:', error);
-      setError(error.message || 'Failed to process subscription');
+      
+      // 4. Mark as complete and show success step
+      setCurrentStep(5); // Move to success step
+      
+    } catch (error) {
+      console.error('Error processing subscription:', error);
+      setError('Failed to process your subscription. Please try again.');
     } finally {
       setIsProcessing(false);
     }
   };
-
-  // Render tier selection step
-  const renderTierSelection = () => (
-    <div className="subscription-tier-selection">
-      <h2>Choose Your Subscription</h2>
-      <p className="step-description">
-        Select a subscription tier to access Hugging Face models and AI enhancements.
-      </p>
-
-      <div className="tier-options">
-        <div 
-          className={`tier-option ${selectedTier === 'basic' ? 'selected' : ''}`}
-          onClick={() => handleTierSelect('basic')}
-        >
-          <div className="tier-header">
-            <h3>Basic</h3>
-            <div className="tier-price">$2/month</div>
-          </div>
-          <ul className="tier-features">
-            <li>Up to 3 Hugging Face models</li>
-            <li>Basic parameter customization</li>
-            <li>Standard integration support</li>
-          </ul>
-          <button className="tier-select-button">
-            Select Basic
+  
+  // Handle final completion
+  const handleFinishFlow = () => {
+    if (onComplete) {
+      onComplete();
+    } else {
+      // Stay on the success page instead of navigating away
+      console.log('Subscription flow completed');
+    }
+  };
+  
+  // Render current step with error handling
+  const renderCurrentStep = () => {
+    try {
+      switch (currentStep) {
+        case 0: // Welcome
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading welcome step</div>}>
+              <WelcomeStep 
+                selectedTier={selectedTier}
+                onNext={() => setCurrentStep(1)}
+                onCancel={handleCancel}
+              />
+            </ErrorBoundary>
+          );
+        
+        case 1: // Profile
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading profile step</div>}>
+              <ProfileStep 
+                initialData={{
+                  firstName: formData.firstName || '',
+                  lastName: formData.lastName || '',
+                  displayName: formData.displayName || '',
+                  company: formData.company || '',
+                  role: formData.role || ''
+                }}
+                onNext={handleStepDataUpdate}
+                onBack={handleBack}
+              />
+            </ErrorBoundary>
+          );
+        
+        case 2: // Interests
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading interests step</div>}>
+              <InterestsStepEnhanced 
+                initialData={{
+                  interests: Array.isArray(formData.interests) ? formData.interests : [],
+                  primaryUseCase: formData.primaryUseCase || '',
+                  experienceLevel: formData.experienceLevel || 'intermediate'
+                }}
+                onNext={handleStepDataUpdate}
+                onBack={handleBack}
+              />
+            </ErrorBoundary>
+          );
+        
+        case 3: // Payment
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading payment step</div>}>
+              <PaymentStep 
+                selectedTier={selectedTier}
+                initialData={{
+                  cardNumber: formData.cardNumber || '',
+                  cardExpiry: formData.cardExpiry || '',
+                  cardCvc: formData.cardCvc || '',
+                  billingName: formData.billingName || '',
+                  billingAddress: formData.billingAddress || '',
+                  billingCity: formData.billingCity || '',
+                  billingState: formData.billingState || '',
+                  billingZip: formData.billingZip || '',
+                  billingCountry: formData.billingCountry || 'US'
+                }}
+                onNext={handleStepDataUpdate}
+                onBack={handleBack}
+              />
+            </ErrorBoundary>
+          );
+        
+        case 4: // Parameters
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading parameters step</div>}>
+              <ParametersStep 
+                selectedTier={selectedTier}
+                initialData={{
+                  useDefaultParameters: formData.useDefaultParameters !== undefined ? formData.useDefaultParameters : true,
+                  temperature: formData.temperature !== undefined ? formData.temperature : 0.7,
+                  maxLength: formData.maxLength !== undefined ? formData.maxLength : 100,
+                  topP: formData.topP !== undefined ? formData.topP : 0.9,
+                  topK: formData.topK !== undefined ? formData.topK : 40
+                }}
+                onNext={handleComplete}
+                onBack={handleBack}
+              />
+            </ErrorBoundary>
+          );
+        
+        case 5: // Success
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading success step</div>}>
+              <SuccessStep 
+                selectedTier={selectedTier}
+                onComplete={handleFinishFlow}
+              />
+            </ErrorBoundary>
+          );
+        
+        default:
+          // Default to welcome step if currentStep is invalid
+          setCurrentStep(0);
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading welcome step</div>}>
+              <WelcomeStep 
+                selectedTier={selectedTier}
+                onNext={() => setCurrentStep(1)}
+                onCancel={handleCancel}
+              />
+            </ErrorBoundary>
+          );
+      }
+    } catch (error) {
+      console.error("Error rendering step:", error);
+      return (
+        <div className="step-error">
+          <h3>Something went wrong</h3>
+          <p>We encountered an error loading this step. Please try again or go back to the previous step.</p>
+          <button 
+            onClick={handleBack}
+            className="secondary-button"
+          >
+            Go Back
           </button>
         </div>
-
-        <div 
-          className={`tier-option ${selectedTier === 'complete' ? 'selected' : ''} premium`}
-          onClick={() => handleTierSelect('complete')}
-        >
-          <div className="tier-badge">Recommended</div>
-          <div className="tier-header">
-            <h3>Complete</h3>
-            <div className="tier-price">$5/month</div>
-          </div>
-          <ul className="tier-features">
-            <li>Unlimited Hugging Face models</li>
-            <li>Advanced parameter customization</li>
-            <li>Priority integration support</li>
-            <li>Early access to new features</li>
-          </ul>
-          <button className="tier-select-button premium">
-            Select Complete
-          </button>
-        </div>
-      </div>
-
-      {onCancel && (
-        <button className="cancel-button" onClick={onCancel}>
-          Cancel
-        </button>
-      )}
-    </div>
-  );
-
-  // Render global parameter configuration step
-  const renderParameterConfig = () => (
-    <GlobalParameterConfig
-      tier={selectedTier}
-      onComplete={handleParametersComplete}
-      onCancel={() => setCurrentStep(0)}
-    />
-  );
-
-  // Render subscription confirmation step
-  const renderConfirmation = () => (
-    <div className="subscription-confirmation">
-      <h2>Confirm Your Subscription</h2>
+      );
+    }
+  };
+  
+  // Define simple steps for the UI
+  const displayStepTitles = [
+    'Welcome',
+    'Profile',
+    'Interests',
+    'Parameters',
+    'Payment',
+    'Success'
+  ];
+  
+  // Add a useEffect hook to handle scrolling on component mount or update
+  useEffect(() => {
+    // Check if we need to reset scroll position
+    if (sessionStorage.getItem('reset_scroll') === 'true' || 
+        sessionStorage.getItem('force_scroll_reset') === 'true') {
+      // Force scroll to top after render
+      window.scrollTo(0, 0);
+      // Clear all scroll flags
+      sessionStorage.removeItem('reset_scroll');
+      sessionStorage.removeItem('force_scroll_reset');
       
-      <div className="subscription-summary">
-        <div className="summary-item">
-          <span className="summary-label">Selected Plan:</span>
-          <span className="summary-value">{selectedTier === 'basic' ? 'Basic' : 'Complete'} Subscription</span>
-        </div>
-        
-        <div className="summary-item">
-          <span className="summary-label">Price:</span>
-          <span className="summary-value">{selectedTier === 'basic' ? '$2' : '$5'} per month</span>
-        </div>
-        
-        <div className="summary-item">
-          <span className="summary-label">Features:</span>
-          <ul className="summary-features">
-            {selectedTier === 'basic' ? (
-              <>
-                <li>Up to 3 Hugging Face models</li>
-                <li>Basic parameter customization</li>
-                <li>Standard integration support</li>
-              </>
-            ) : (
-              <>
-                <li>Unlimited Hugging Face models</li>
-                <li>Advanced parameter customization</li>
-                <li>Priority integration support</li>
-                <li>Early access to new features</li>
-              </>
-            )}
-          </ul>
-        </div>
-        
-        <div className="parameter-summary">
-          <h3>Your Parameter Settings</h3>
-          <div className="parameter-summary-items">
-            {Object.entries(globalParams).map(([key, value]) => (
-              <div key={key} className="parameter-summary-item">
-                <span className="parameter-name">
-                  {key === 'temperature' ? 'Temperature' : 
-                   key === 'max_tokens' ? 'Maximum Length' :
-                   key === 'top_p' ? 'Top P' :
-                   key === 'top_k' ? 'Top K' :
-                   key === 'presence_penalty' ? 'Presence Penalty' :
-                   key === 'frequency_penalty' ? 'Frequency Penalty' :
-                   key}
-                </span>
-                <span className="parameter-value">{value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      <div className="confirmation-actions">
-        <button 
-          className="back-button" 
-          onClick={() => setCurrentStep(1)}
-          disabled={isProcessing}
-        >
-          Back to Parameters
-        </button>
-        <button 
-          className="confirm-button" 
-          onClick={handleConfirmSubscription}
-          disabled={isProcessing}
-        >
-          {isProcessing ? 'Processing...' : 'Confirm Subscription'}
-        </button>
-      </div>
-      
-      <div className="terms-info">
-        <p>
-          By confirming, you agree to the subscription terms. You can cancel anytime
-          through your account settings.
-        </p>
-        <p>
-          Your subscription will be activated immediately, providing access to all
-          included features.
-        </p>
-      </div>
-    </div>
-  );
-
-  // Render progress indicator
-  const renderProgress = () => (
-    <div className="subscription-progress">
-      <div className={`progress-step ${currentStep >= 0 ? 'active' : ''} ${currentStep > 0 ? 'completed' : ''}`}>
-        <div className="step-number">1</div>
-        <div className="step-name">Choose Plan</div>
-      </div>
-      <div className={`progress-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
-        <div className="step-number">2</div>
-        <div className="step-name">Set Parameters</div>
-      </div>
-      <div className={`progress-step ${currentStep >= 2 ? 'active' : ''}`}>
-        <div className="step-number">3</div>
-        <div className="step-name">Confirm</div>
-      </div>
-    </div>
-  );
-
+      // Add extra handlers for the force flag
+      if (sessionStorage.getItem('force_scroll_reset') === 'true') {
+        // Create a more aggressive scroll reset with multiple attempts
+        const attempts = 5;
+        for (let i = 0; i < attempts; i++) {
+          setTimeout(() => window.scrollTo(0, 0), i * 100);
+        }
+      }
+    }
+  }, [currentStep]); // Re-run on step change
+  
+  // Reset scroll position when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    
+    // Add an event listener to intercept any scroll attempts 
+    // while the component is first rendering
+    const preventScroll = (e: Event) => {
+      window.scrollTo(0, 0);
+    };
+    
+    window.addEventListener('scroll', preventScroll, { once: true });
+    
+    return () => {
+      window.removeEventListener('scroll', preventScroll);
+    };
+  }, []);
+  
   return (
-    <div className="subscription-flow">
-      {renderProgress()}
+    <div className="subscription-flow-container" style={{ backgroundColor: '#fff', color: '#333' }}>
+      {/* Invisible anchor for auto-focus */}
+      <div 
+        className="scroll-anchor" 
+        tabIndex={-1}
+        ref={(el) => {
+          if (el) {
+            // Focus this element when it's rendered, forcing scroll to top
+            setTimeout(() => {
+              window.scrollTo(0, 0);
+              el.focus();
+            }, 0);
+          }
+        }}
+      />
       
-      <div className="subscription-flow-content">
-        {currentStep === 0 && renderTierSelection()}
-        {currentStep === 1 && renderParameterConfig()}
-        {currentStep === 2 && renderConfirmation()}
+      {/* Progress Steps */}
+      <div className="subscription-progress">
+        {displayStepTitles.map((title, index) => {
+          // Map the current step to the display steps
+          let displayStepIndex = currentStep;
+          
+          return (
+            <div 
+              key={index}
+              className={`progress-step ${index === displayStepIndex ? 'active' : ''} ${index < displayStepIndex ? 'completed' : ''}`}
+            >
+              <div className="step-number">
+                {index < displayStepIndex ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                ) : (
+                  index + 1
+                )}
+              </div>
+              <div className="step-name">{title}</div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {/* Content Area */}
+      <div className="subscription-content">
+        {error && (
+          <div className="error-notification">
+            <div className="error-icon">⚠️</div>
+            <div className="error-message">{error}</div>
+            <button 
+              className="error-close"
+              onClick={() => setError(null)}
+            >
+              &times;
+            </button>
+          </div>
+        )}
+        
+        {isProcessing ? (
+          <div className="processing-overlay">
+            <div className="processing-spinner"></div>
+            <div className="processing-message">Processing your subscription...</div>
+          </div>
+        ) : (
+          renderCurrentStep()
+        )}
       </div>
     </div>
   );
 };
 
-export default SubscriptionFlow;
+// Export the wrapper component
+export default SubscriptionFlowWithProvider;

@@ -1,0 +1,217 @@
+.parameter-manager {
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: var(--background-secondary, #f5f7fa);
+  border-radius: 8px;
+}
+
+.parameter-manager h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--text-primary, #333);
+  font-size: 18px;
+}
+
+.parameter-type-toggle {
+  margin-bottom: 16px;
+}
+
+.parameter-type-toggle label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-secondary, #555);
+  cursor: pointer;
+}
+
+.parameter-type-toggle input {
+  margin-right: 8px;
+}
+
+.parameters-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.parameter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.parameter-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #333);
+}
+
+.parameter-group input[type="range"] {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.parameter-group input[type="number"] {
+  width: 120px;
+  padding: 8px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.parameter-value {
+  font-size: 14px;
+  color: var(--text-secondary, #555);
+}
+
+.parameter-description {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary, #555);
+  line-height: 1.5;
+}
+
+/* Advanced Parameters Section */
+.advanced-parameters {
+  margin-top: 8px;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  padding-top: 16px;
+}
+
+.advanced-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.advanced-header h4 {
+  font-size: 16px;
+  color: var(--text-primary, #333);
+  margin: 0;
+  user-select: none;
+}
+
+.advanced-params-content {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: var(--background-tertiary, #edf2f7);
+  border-radius: 6px;
+}
+
+.advanced-description {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-secondary, #555);
+}
+
+.add-param-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.add-param-form input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-param-form button {
+  padding: 8px 16px;
+  background-color: var(--primary-color, #4a6cf7);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-param-form button:hover {
+  background-color: var(--primary-dark, #3a5ae8);
+}
+
+.add-param-form button:disabled {
+  background-color: var(--disabled-color, #cbd5e1);
+  cursor: not-allowed;
+}
+
+.custom-params-list {
+  margin-bottom: 16px;
+}
+
+.custom-params-list h5 {
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--text-primary, #333);
+}
+
+.custom-params-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.custom-param-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--background-secondary, #f5f7fa);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.param-name {
+  font-weight: 500;
+  margin-right: 8px;
+  color: var(--text-primary, #333);
+  font-size: 14px;
+}
+
+.param-value {
+  flex: 1;
+  color: var(--text-secondary, #555);
+  font-size: 14px;
+}
+
+.remove-param {
+  background: none;
+  border: none;
+  color: var(--error-color, #ef4444);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.remove-param:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.no-custom-params {
+  color: var(--text-tertiary, #9ca3af);
+  font-style: italic;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.advanced-help {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color, #e5e7eb);
+  font-size: 13px;
+}
+
+.advanced-help a {
+  color: var(--primary-color, #4a6cf7);
+  text-decoration: none;
+}
+
+.advanced-help a:hover {
+  text-decoration: underline;
+}

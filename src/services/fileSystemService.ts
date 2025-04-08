@@ -198,4 +198,93 @@ export class FileSystemService {
     // Simulate successful operation
     return true;
   }
+  
+  /**
+   * Create platform-specific environment variable declarations
+   * @param envVars Object with environment variable names and values
+   * @returns An object with script content for different platforms
+   */
+  static createEnvironmentVariableScripts(envVars: Record<string, string>): {
+    bash: string;
+    powershell: string;
+    cmd: string;
+  } {
+    // Bash/Zsh script (.sh)
+    let bashScript = '#!/bin/bash\n# Environment variables for MCP Configuration\n\n';
+    
+    // PowerShell script (.ps1)
+    let powershellScript = '# Environment variables for MCP Configuration\n\n';
+    
+    // Command Prompt script (.bat/.cmd)
+    let cmdScript = '@echo off\nREM Environment variables for MCP Configuration\n\n';
+    
+    // Add each environment variable to the scripts
+    Object.entries(envVars).forEach(([name, value]) => {
+      const varName = name.toUpperCase();
+      
+      // Bash format (for Linux/macOS)
+      bashScript += `export ${varName}="${value.replace(/"/g, '\\"')}"\n`;
+      
+      // PowerShell format
+      powershellScript += `$env:${varName} = "${value.replace(/"/g, '`"')}"\n`;
+      
+      // CMD format (for Windows)
+      cmdScript += `SET ${varName}=${value}\n`;
+    });
+    
+    return {
+      bash: bashScript,
+      powershell: powershellScript,
+      cmd: cmdScript
+    };
+  }
+  
+  /**
+   * Creates environment variable script files in the specified directory
+   * @param directory Directory to create the scripts in
+   * @param envVars Object with environment variable names and values
+   * @returns Promise resolving to an object with the paths to the created files
+   */
+  static async createEnvironmentVariableFiles(
+    directory: string,
+    envVars: Record<string, string>
+  ): Promise<{
+    bashPath: string;
+    powershellPath: string;
+    cmdPath: string;
+  }> {
+    if (!Platform.isDesktopEnvironment()) {
+      throw new Error('File system access is only available in desktop environment');
+    }
+    
+    // Create the scripts
+    const scripts = this.createEnvironmentVariableScripts(envVars);
+    
+    // Make sure the directory exists
+    await this.createDirectoryIfNotExists(directory);
+    
+    // Define file paths
+    const separator = Platform.getPathSeparator();
+    const bashPath = `${directory}${separator}mcp_env.sh`;
+    const powershellPath = `${directory}${separator}mcp_env.ps1`;
+    const cmdPath = `${directory}${separator}mcp_env.bat`;
+    
+    // Write the files
+    await this.writeFile(bashPath, scripts.bash);
+    await this.writeFile(powershellPath, scripts.powershell);
+    await this.writeFile(cmdPath, scripts.cmd);
+    
+    // Make the bash script executable on Unix systems
+    if (!Platform.isWindows()) {
+      if (typeof (window as any).electron?.makeFileExecutable === 'function') {
+        await (window as any).electron.makeFileExecutable(bashPath);
+      }
+    }
+    
+    return {
+      bashPath,
+      powershellPath,
+      cmdPath
+    };
+  }
 }

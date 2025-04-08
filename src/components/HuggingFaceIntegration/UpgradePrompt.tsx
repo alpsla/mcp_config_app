@@ -1,5 +1,6 @@
 import React from 'react';
 import './UpgradePrompt.css';
+import '../subscription/steps/buttons.css';
 
 interface UpgradePromptProps {
   currentTier: 'basic' | 'complete' | 'none';
@@ -48,19 +49,21 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
             </div>
           </div>
         </div>
-        <div className="prompt-actions">
-          <button 
-            className="upgrade-button"
-            onClick={handleUpgrade}
-          >
-            Upgrade Now
-          </button>
-          <button 
-            className="dismiss-button"
-            onClick={onClose}
-          >
-            Maybe Later
-          </button>
+        <div className="step-actions">
+          <div className="button-container">
+            <button 
+              className="secondary-button"
+              onClick={onClose}
+            >
+              Maybe Later
+            </button>
+            <button 
+              className={`primary-button ${targetTier}`}
+              onClick={handleUpgrade}
+            >
+              Upgrade Now
+            </button>
+          </div>
         </div>
       </div>
     </div>

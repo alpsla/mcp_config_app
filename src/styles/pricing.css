@@ -290,59 +290,91 @@ tr:last-child td {
 }
 
 /* FAQ Section */
-.faq {
-    padding: 80px 0;
+.pricing-faq {
+    margin: 60px 0;
+    padding: 20px;
     background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.pricing-faq h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
 }
 
 .faq-accordion {
     max-width: 800px;
-    margin: 40px auto 0;
+    margin: 0 auto;
 }
 
 .faq-item {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     overflow: hidden;
 }
 
 .faq-question {
-    padding: 20px;
+    padding: 15px 20px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: #f8f9fa;
 }
 
 .faq-question h3 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.faq-item.active .faq-question h3 {
+    color: #3A86FF;
 }
 
 .faq-toggle {
     font-size: 1.5rem;
-    transition: transform 0.3s ease;
-    display: inline-block;
+    color: #999;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .faq-item.active .faq-toggle {
-    transform: rotate(45deg);
+    color: #3A86FF;
 }
 
 .faq-answer {
-    padding: 0 20px;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s ease;
-    opacity: 0;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 20px;
 }
 
 .faq-item.active .faq-answer {
+    max-height: 500px; /* Large enough to accommodate content */
     padding: 0 20px 20px;
-    max-height: 1000px; /* Large enough to accommodate content */
-    opacity: 1;
+}
+
+.faq-answer p {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Grid layout (old implementation) */
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* Call to Action Section */
@@ -597,6 +629,25 @@ tr:last-child td {
   margin-bottom: 10px;
 }
 
+/* Feature Comparison Section */
+.feature-comparison {
+  margin: 60px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.feature-comparison h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.comparison-table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 992px) {
     .pricing-card.popular {
@@ -631,6 +682,31 @@ tr:last-child td {
     .chat-button {
         padding: 15px;
         border-radius: 50%;
+    }
+    
+    /* Flip to single column layout on mobile */
+    .pricing-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .pricing-card {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    /* Adjust FAQ grid for smaller screens */
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Adjust future tiers layout */
+    .future-tiers {
+        flex-direction: column;
+    }
+    
+    .future-tier {
+        min-width: 100%;
     }
 }
 
