@@ -1,0 +1,149 @@
+/* Hugging Face token input fix */
+.hf-token-fixed-input {
+  width: 100% !important;
+  padding: 12px !important;
+  border-radius: 4px !important;
+  border: 1px solid #ccc !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+  background-color: white !important;
+}
+
+.hf-token-fixed-input:focus {
+  border-color: #1976D2 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+.hf-token-save-button {
+  background-color: #1976D2 !important;
+  color: white !important;
+  padding: 10px 16px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  margin-top: 15px !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  display: block !important;
+  transition: all 0.2s ease !important;
+}
+
+.hf-token-save-button:hover {
+  background-color: #1565C0 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+.hf-token-save-button:disabled {
+  background-color: #B0BEC5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.hf-token-docs-link {
+  display: block !important;
+  margin-top: 10px !important;
+  font-size: 13px !important;
+  color: #1976D2 !important;
+  text-decoration: none !important;
+  text-align: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.hf-token-docs-link:hover {
+  text-decoration: underline !important;
+  color: #1565C0 !important;
+}
+
+/* Hide broken elements */
+div[style*="background-color: rgb(240, 247, 255)"] input:not(.hf-token-fixed-input) {
+  display: none !important;
+}
+/**
+ * token-validation.css
+ * Styling for the Hugging Face token validation elements
+ */
+
+/* Validation feedback styling */
+.token-validation-feedback {
+  font-size: 13px !important;
+  margin-top: 5px !important;
+  transition: all 0.2s ease !important;
+  line-height: 1.5 !important;
+}
+
+.token-validation-feedback.valid {
+  color: #4CAF50 !important;
+}
+
+.token-validation-feedback.invalid {
+  color: #F44336 !important;
+}
+
+/* Save button styling */
+.save-token-button {
+  background-color: #1976D2 !important;
+  color: white !important;
+  padding: 8px 16px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  margin-top: 10px !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+  display: block !important;
+}
+
+.save-token-button:hover {
+  background-color: #1565C0 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+.save-token-button:disabled {
+  background-color: #B0BEC5 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+.save-token-button:active {
+  transform: translateY(1px) !important;
+}
+
+/* Token status indicators */
+.token-status {
+  display: flex !important;
+  align-items: center !important;
+  margin-top: 8px !important;
+  font-size: 13px !important;
+}
+
+.token-status-icon {
+  margin-right: 6px !important;
+  font-size: 16px !important;
+}
+
+.token-status.valid .token-status-icon {
+  color: #4CAF50 !important;
+}
+
+.token-status.invalid .token-status-icon {
+  color: #F44336 !important;
+}
+
+.token-status.warning .token-status-icon {
+  color: #FFA000 !important;
+}
+
+/* Input field enhancements when validated */
+.token-input-validated {
+  border-color: #4CAF50 !important;
+  box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.2) !important;
+}
+
+.token-input-invalidated {
+  border-color: #F44336 !important;
+  box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.2) !important;
+}

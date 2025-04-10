@@ -1,0 +1,109 @@
+/**
+ * token-input-fix.css
+ * CSS fixes to ensure the Hugging Face token input is properly functional
+ */
+
+/* Force token input to be interactive */
+input[placeholder*="API token"],
+input[placeholder*="Hugging Face"],
+div[style*="background-color: rgb(240, 247, 255)"] input,
+.huggingface-token-section input {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+  -moz-user-select: auto !important;
+  -ms-user-select: auto !important;
+  cursor: text !important;
+  caret-color: auto !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  position: relative !important;
+  z-index: 10000 !important;
+}
+
+/* Fix for container that might block input */
+div[style*="background-color: rgb(240, 247, 255)"],
+.huggingface-token-section,
+.token-input-container {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1000 !important;
+}
+
+/* Improved styling for better visibility */
+input[placeholder*="API token"]:focus,
+input[placeholder*="Hugging Face"]:focus,
+div[style*="background-color: rgb(240, 247, 255)"] input:focus,
+.huggingface-token-section input:focus {
+  outline: 2px solid #1976D2 !important;
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2) !important;
+  border-color: #1976D2 !important;
+}
+
+/* Feedback for fixed inputs */
+.fixed-direct-token-input,
+.token-input-fixed,
+.emergency-token-input input {
+  animation: pulse-highlight 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-highlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);
+  }
+}
+
+/* Override any parent container that might block interaction */
+.subscription-step,
+div[style*="max-width: 900px"] {
+  pointer-events: auto !important;
+}
+
+/* Fix for any parent with opacity or pointer-events */
+.subscription-step *,
+div[style*="max-width: 900px"] * {
+  pointer-events: auto;
+}
+
+/* Fix for any disabled state */
+input[placeholder*="API token"][disabled],
+input[placeholder*="Hugging Face"][disabled],
+div[style*="background-color: rgb(240, 247, 255)"] input[disabled],
+.huggingface-token-section input[disabled] {
+  background-color: #f8f9fa !important;
+  cursor: text !important;
+  opacity: 0.9 !important;
+  pointer-events: auto !important;
+}
+
+/* Emergency visible token input */
+.emergency-token-input {
+  background-color: #E8F5E9 !important;
+  border: 1px solid #4CAF50 !important;
+  border-radius: 4px !important;
+  padding: 10px !important;
+  margin: 15px 0 !important;
+  position: relative !important;
+  z-index: 2000 !important;
+}
+
+/* Fixed container styling */
+.token-fixed-container,
+.emergency-token-input-container {
+  position: relative !important;
+  z-index: 2000 !important;
+  margin: 10px 0 !important;
+}
+
+/* Make sure containers don't inherit disabled styles */
+div[style*="opacity: 0.7"],
+div[style*="pointer-events: none"] {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}

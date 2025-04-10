@@ -1,163 +1,166 @@
-import React, { useState, useEffect } from 'react';
-import '../../SubscriptionFlow.css';
-import '../ParametersStep.css';
+import React from 'react';
 
-interface ParameterDefinition {
-  id: string;
-  name: string;
-  description: string;
+interface ParameterSliderProps {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
   min: number;
   max: number;
   step: number;
-  defaultValue: number;
-  unit: string;
-  advancedOnly: boolean;
-}
-
-interface ParameterSliderProps {
-  parameter: ParameterDefinition;
-  value: number;
-  onChange: (value: number) => void;
-  disabled: boolean;
+  leftLabel?: string;
+  rightLabel?: string;
+  description?: string;
+  disabled?: boolean;
+  unit?: string;
 }
 
 const ParameterSlider: React.FC<ParameterSliderProps> = ({
-  parameter,
+  label,
   value,
   onChange,
-  disabled
+  min,
+  max,
+  step,
+  leftLabel = '',
+  rightLabel = '',
+  description = '',
+  disabled = false,
+  unit = ''
 }) => {
-  // Local state for input value to handle transitions
-  const [localValue, setLocalValue] = useState<string>(value.toString());
-  const [isChanging, setIsChanging] = useState<boolean>(false);
-
-  // Update local value when prop value changes
-  useEffect(() => {
-    if (!isChanging) {
-      setLocalValue(value.toString());
+  const percentage = ((value - min) / (max - min)) * 100;
+  
+  const incrementValue = () => {
+    const newValue = Math.min(max, value + step);
+    onChange(newValue);
+  };
+  
+  const decrementValue = () => {
+    const newValue = Math.max(min, value - step);
+    onChange(newValue);
+  };
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseFloat(e.target.value);
+    if (!isNaN(newValue) && newValue >= min && newValue <= max) {
+      onChange(newValue);
     }
-  }, [value, isChanging]);
-
-  // Handle slider change
+  };
+  
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(e.target.value);
     onChange(newValue);
-    setLocalValue(newValue.toString());
   };
-
-  // Handle input focus
-  const handleInputFocus = () => {
-    setIsChanging(true);
-  };
-
-  // Handle input blur
-  const handleInputBlur = () => {
-    setIsChanging(false);
-    let newValue = parseFloat(localValue);
-    
-    // Validate and constrain the value
-    if (isNaN(newValue)) {
-      newValue = parameter.defaultValue;
-    } else {
-      if (newValue < parameter.min) newValue = parameter.min;
-      if (newValue > parameter.max) newValue = parameter.max;
-    }
-    
-    onChange(newValue);
-    setLocalValue(newValue.toString());
-  };
-
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalValue(e.target.value);
-  };
-
-  // Handle key press in input
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      (e.target as HTMLInputElement).blur();
-    }
-  };
-
-  // Calculate gradient color based on value position
-  const percentage = ((value - parameter.min) / (parameter.max - parameter.min)) * 100;
-  const gradientStyle = {
-    background: `linear-gradient(to right, #1976d2 ${percentage}%, #e0e0e0 ${percentage}%)`
-  };
-
-  // Handle value increment/decrement
-  const incrementValue = () => {
-    const newValue = Math.min(parameter.max, value + parameter.step);
-    onChange(newValue);
-  };
-
-  const decrementValue = () => {
-    const newValue = Math.max(parameter.min, value - parameter.step);
-    onChange(newValue);
-  };
-
+  
+  const displayValue = Number.isInteger(value) ? value.toString() : value.toFixed(2);
+  
   return (
-    <div className="parameter-slider-container">
-      <div className="slider-wrapper">
-        <input
-          type="range"
-          min={parameter.min}
-          max={parameter.max}
-          step={parameter.step}
-          value={value}
-          onChange={handleSliderChange}
-          disabled={disabled}
-          className={disabled ? 'disabled' : ''}
-          style={!disabled ? gradientStyle : {}}
-        />
-        
-        <div className="slider-labels">
-          <span className="min-label">{parameter.min}</span>
-          <span className="max-label">{parameter.max}</span>
-        </div>
-      </div>
-      
-      <div className="parameter-value-controls">
-        <button 
-          type="button"
-          className="value-control-button"
-          onClick={decrementValue}
-          disabled={disabled || value <= parameter.min}
-          aria-label={`Decrease ${parameter.name}`}
-        >
-          –
-        </button>
-        
-        <div className="parameter-value-input">
-          <input
-            type="text"
-            min={parameter.min}
-            max={parameter.max}
-            step={parameter.step}
-            value={localValue}
+    <div style={{
+      marginBottom: '40px',
+      backgroundColor: '#FAFAFA',
+      padding: '20px',
+      borderRadius: '10px',
+      opacity: disabled ? 0.7 : 1,
+      pointerEvents: disabled ? 'none' : 'auto'
+    }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '15px'
+      }}>
+        <label style={{ fontWeight: 'bold', color: '#333' }}>
+          {label}: {displayValue}{unit}
+        </label>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <button 
+            onClick={decrementValue}
+            style={{
+              width: '30px',
+              height: '30px',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              backgroundColor: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '10px'
+            }}
+          >-</button>
+          <input 
+            type="number" 
+            value={value} 
+            min={min} 
+            max={max} 
+            step={step}
             onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            onKeyPress={handleKeyPress}
-            disabled={disabled}
-            className={disabled ? 'disabled' : ''}
-            aria-label={`${parameter.name} value`}
+            style={{
+              width: unit === '' ? '60px' : '80px',
+              padding: '5px',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              textAlign: 'center'
+            }}
           />
-          {parameter.unit && (
-            <span className="parameter-unit">{parameter.unit}</span>
-          )}
+          <button 
+            onClick={incrementValue}
+            style={{
+              width: '30px',
+              height: '30px',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              backgroundColor: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: '10px'
+            }}
+          >+</button>
         </div>
-        
-        <button 
-          type="button"
-          className="value-control-button"
-          onClick={incrementValue}
-          disabled={disabled || value >= parameter.max}
-          aria-label={`Increase ${parameter.name}`}
-        >
-          +
-        </button>
       </div>
+      <input 
+        type="range" 
+        min={min} 
+        max={max} 
+        step={step} 
+        value={value} 
+        onChange={handleSliderChange}
+        style={{
+          width: '100%',
+          height: '6px',
+          borderRadius: '5px',
+          outline: 'none',
+          appearance: 'none',
+          background: `linear-gradient(to right, #1976D2 0%, #1976D2 ${percentage}%, #ddd ${percentage}%, #ddd 100%)`,
+          cursor: 'pointer'
+        }}
+      />
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: '10px',
+        fontSize: '14px',
+        color: '#666'
+      }}>
+        <span>{leftLabel}</span>
+        <span>{rightLabel}</span>
+      </div>
+      {description && (
+        <div style={{
+          backgroundColor: '#f1f8ff',
+          padding: '10px',
+          borderRadius: '6px',
+          fontSize: '14px',
+          color: '#666',
+          marginTop: '15px'
+        }}>
+          {description}
+        </div>
+      )}
     </div>
   );
 };

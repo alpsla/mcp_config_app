@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { subscriptionPlans, processPayment } from '../../services/subscriptionService';
 import { useAuth } from '../../auth/AuthContext';
+import SubscriptionConfirmModal from './modals/SubscriptionConfirmModal';
+import pricing, { getTierById } from '../../config/pricing';
 import './PricingTiers.css';
 import './steps/buttons.css';
 
@@ -13,11 +15,20 @@ export const PricingTiers: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlePlanSelect = (planId: string) => {
     setSelectedPlan(planId);
     setSuccessMessage(null);
     setErrorMessage(null);
+  };
+
+  const openSubscriptionModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeSubscriptionModal = () => {
+    setIsModalOpen(false);
   };
 
   const handleSubscribe = async () => {
@@ -119,7 +130,7 @@ export const PricingTiers: React.FC = () => {
           <div className="button-container">
             <button 
               className={`primary-button ${selectedPlan === 'plan_basic' ? 'basic' : 'complete'}`}
-              onClick={handleSubscribe}
+              onClick={openSubscriptionModal}
               disabled={processing}
             >
               {processing ? 'Processing...' : 'Subscribe Now'}
@@ -127,6 +138,15 @@ export const PricingTiers: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Subscription Confirmation Modal */}
+      <SubscriptionConfirmModal
+        isOpen={isModalOpen}
+        onClose={closeSubscriptionModal}
+        onConfirm={handleSubscribe}
+        selectedPlan={selectedPlan ? (selectedPlan === 'plan_basic' ? getTierById('basic') : getTierById('complete')) : null}
+        processing={processing}
+      />
     </div>
   );
 };

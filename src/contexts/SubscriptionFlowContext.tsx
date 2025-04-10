@@ -21,19 +21,27 @@ const safeGetTierById = (tierId: string) => {
   try {
     // Try to import the real implementation
     const { getTierById } = require('../config/pricing');
+    console.log('Using actual pricing config for tier:', tierId);
     if (typeof getTierById === 'function') {
-      return getTierById(tierId);
+      const tierInfo = getTierById(tierId);
+      console.log('Resolved tier info for', tierId, tierInfo);
+      return tierInfo;
     }
+    console.log('Falling back to default tier info for', tierId);
     return getDefaultTierDetails(tierId);
   } catch (error) {
     console.error('Error importing pricing configuration:', error);
+    console.log('Falling back to default tier info (after error) for', tierId);
     return getDefaultTierDetails(tierId);
   }
 };
 
 // Fallback function in case the real implementation is not available
 const getDefaultTierDetails = (tierId: string) => {
+  console.log('Getting default tier details for:', tierId);
+  
   if (tierId === 'complete') {
+    console.log('Returning Complete tier default details');
     return {
       ...defaultTierDetails,
       id: 'complete',
@@ -47,8 +55,36 @@ const getDefaultTierDetails = (tierId: string) => {
       color: '#673AB7',
       lightColor: '#F3E5F5'
     };
+  } else if (tierId === 'basic') {
+    console.log('Returning Basic tier default details');
+    return {
+      ...defaultTierDetails,
+      id: 'basic',
+      name: 'Basic',
+      displayName: 'Basic Plan',
+      description: 'Essential features for individual users',
+      price: {
+        monthly: 4.99,
+        yearly: 49.99
+      },
+      color: '#4285F4',
+      lightColor: '#E8F0FE'
+    };
   }
-  return defaultTierDetails;
+  console.log('Returning Free tier default details');
+  return {
+    ...defaultTierDetails,
+    id: 'none',
+    name: 'Free',
+    displayName: 'Free Plan',
+    description: 'Basic access for everybody',
+    price: {
+      monthly: 0,
+      yearly: 0
+    },
+    color: '#4F4F4F',
+    lightColor: '#F0F0F0'
+  };
 };
 
 interface SubscriptionFlowContextData {
@@ -146,7 +182,18 @@ export const SubscriptionFlowProvider: React.FC<{
   children, 
   initialTier = 'basic' 
 }) => {
+  console.log('SubscriptionFlowProvider initialTier:', initialTier); // Debug log
   const [selectedTier, setSelectedTier] = useState<SubscriptionTierSimple>(initialTier);
+  
+  // Debug logging for tier changes
+  const setSelectedTierWithLogging = (newTier: SubscriptionTierSimple) => {
+    console.log('===== CONTEXT: TIER BEING CHANGED =====');
+    console.log('Current tier:', selectedTier);
+    console.log('New tier:', newTier);
+    console.log('Call stack:', new Error().stack);
+    console.log('=====================================');
+    setSelectedTier(newTier);
+  };
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [formData, setFormData] = useState(initialFormData);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -154,6 +201,7 @@ export const SubscriptionFlowProvider: React.FC<{
   
   // Get tier details from the pricing configuration - with error handling
   const tierDetails = selectedTier ? safeGetTierById(selectedTier) : null;
+  console.log('SubscriptionFlowProvider tierDetails:', tierDetails); // Debug log
   
   // Function to update form data
   const updateFormData = (data: Partial<typeof formData>) => {
@@ -167,7 +215,7 @@ export const SubscriptionFlowProvider: React.FC<{
     <SubscriptionFlowContext.Provider
       value={{
         selectedTier,
-        setSelectedTier,
+        setSelectedTier: setSelectedTierWithLogging,
         currentStep,
         setCurrentStep,
         tierDetails,

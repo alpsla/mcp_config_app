@@ -1285,6 +1285,27 @@ const SubscriptionPayment = () => {
   const color = '#673AB7';
   const lightColor = '#EDE7F6';
   
+  // Get tier from URL parameters
+  const [tier, setTier] = useState('basic'); // Default to basic
+  
+  useEffect(() => {
+    // Parse the URL to get the tier parameter
+    const hash = window.location.hash;
+    const searchParams = new URLSearchParams(hash.includes('?') ? hash.substring(hash.indexOf('?') + 1) : '');
+    const planParam = searchParams.get('plan');
+    if (planParam && ['basic', 'complete'].includes(planParam)) {
+      console.log('Setting tier from URL parameter:', planParam);
+      setTier(planParam);
+    }
+  }, []);
+  
+  // Determine plan display name and price based on tier
+  // These values are used in UI elements below
+  const tierDisplayInfo = {
+    name: tier === 'basic' ? 'Basic Plan' : 'Complete Plan',
+    price: tier === 'basic' ? '$4.99' : '$8.99'
+  };
+  
   // State for form fields
   const [paymentMethod, setPaymentMethod] = useState('credit');
   const [cardNumber, setCardNumber] = useState('');
@@ -1470,8 +1491,8 @@ const SubscriptionPayment = () => {
           padding: '10px 0',
           borderBottom: '1px solid #E1D9F0'
         }}>
-          <div style={{fontWeight: '500'}}>Complete Plan (Monthly)</div>
-          <div style={{fontWeight: 'bold'}}>$8.99</div>
+          <div style={{fontWeight: '500'}}>{tierDisplayInfo.name} (Monthly)</div>
+          <div style={{fontWeight: 'bold'}}>{tierDisplayInfo.price}</div>
         </div>
         
         <div style={{
@@ -1483,7 +1504,7 @@ const SubscriptionPayment = () => {
           fontSize: '16px'
         }}>
           <div>Total (billed monthly)</div>
-          <div>$8.99/month</div>
+          <div>{tierDisplayInfo.price}/month</div>
         </div>
       </div>
       

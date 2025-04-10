@@ -1,0 +1,59 @@
+<!-- 
+EMERGENCY TEXTBOX FIX
+This is a standalone HTML file that you can directly include in your application
+if all other fixes fail.
+
+Instructions:
+1. Open the parameters page in your application
+2. Open the browser developer tools (F12 or right-click > Inspect)
+3. Copy and paste this entire script into the console and press Enter
+-->
+
+<script>
+(function() {
+  // Find the save button
+  const saveButton = document.querySelector('button');
+  
+  if (!saveButton) {
+    console.error('Could not find save button');
+    return;
+  }
+  
+  // Create textbox
+  const textbox = document.createElement('input');
+  textbox.type = 'text';
+  textbox.id = 'emergency-textbox-fix';
+  textbox.placeholder = 'Enter your Hugging Face API token here';
+  
+  // Style the textbox
+  textbox.style.width = '100%';
+  textbox.style.padding = '12px';
+  textbox.style.boxSizing = 'border-box';
+  textbox.style.border = '1px solid #ccc';
+  textbox.style.borderRadius = '4px';
+  textbox.style.fontSize = '14px';
+  textbox.style.marginBottom = '15px';
+  textbox.style.display = 'block';
+  textbox.style.backgroundColor = '#fff';
+  
+  // Insert before save button
+  saveButton.parentNode.insertBefore(textbox, saveButton);
+  
+  // Connect to save button
+  saveButton.addEventListener('click', function() {
+    const token = textbox.value.trim();
+    
+    if (!token) {
+      alert('Please enter a token');
+      return;
+    }
+    
+    // Save token
+    localStorage.setItem('huggingface_token', token);
+    sessionStorage.setItem('huggingface_token', token);
+    alert('Token saved successfully!');
+  });
+  
+  console.log('Emergency textbox added successfully');
+})();
+</script>

@@ -4,12 +4,19 @@ import '../../styles/common.css';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import FAQSection from '../../components/common/FAQSection';
+import SubscriptionConfirmModal from '../subscription/modals/SubscriptionConfirmModal';
+import pricing, { getTierById } from '../../config/pricing';
 
 const Pricing = () => {
   // Theme state
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   // Authentication state (mock for now)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  // Subscription modal states
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  const [selectedTier, setSelectedTier] = useState(null);
+  const [isProcessingSubscription, setIsProcessingSubscription] = useState(false);
 
   // Add theme class to document
   useEffect(() => {
@@ -92,6 +99,40 @@ const Pricing = () => {
     }
   ];
 
+  // Handle subscription modal
+  const openSubscriptionModal = (tierId) => {
+    try {
+      const tierData = getTierById(tierId);
+      setSelectedTier(tierData);
+      setIsSubscriptionModalOpen(true);
+    } catch (error) {
+      console.error('Error opening subscription modal:', error);
+    }
+  };
+  
+  const closeSubscriptionModal = () => {
+    setIsSubscriptionModalOpen(false);
+  };
+  
+  const handleSubscribe = async () => {
+    if (!selectedTier) return;
+    
+    setIsProcessingSubscription(true);
+    
+    try {
+      // Simulate API call for subscription
+      setTimeout(() => {
+        // This would be replaced with your actual subscription API call
+        window.location.href = `/login?plan=${selectedTier.id}`;
+        setIsProcessingSubscription(false);
+        setIsSubscriptionModalOpen(false);
+      }, 1000);
+    } catch (error) {
+      console.error('Subscription error:', error);
+      setIsProcessingSubscription(false);
+    }
+  };
+  
   // Platform-specific footer links
   const platformLinks = [
     { to: '/features', label: 'Features' },
@@ -203,7 +244,7 @@ const Pricing = () => {
                   </ul>
                 </div>
                 <div className="pricing-card-cta">
-                  <a href="/login?plan=basic" className="btn btn-primary">Choose Basic</a>
+                  <button onClick={() => openSubscriptionModal('basic')} className="btn btn-primary">Choose Basic</button>
                 </div>
               </div>
               
@@ -227,7 +268,7 @@ const Pricing = () => {
                   </ul>
                 </div>
                 <div className="pricing-card-cta">
-                  <a href="/login?plan=complete" className="btn btn-primary">Choose Complete</a>
+                  <button onClick={() => openSubscriptionModal('complete')} className="btn btn-primary">Choose Complete</button>
                 </div>
               </div>
             </div>
@@ -407,6 +448,15 @@ const Pricing = () => {
           <span className="chat-text">Chat with us</span>
         </button>
       </div>
+      
+      {/* Subscription Confirmation Modal */}
+      <SubscriptionConfirmModal
+        isOpen={isSubscriptionModalOpen}
+        onClose={closeSubscriptionModal}
+        onConfirm={handleSubscribe}
+        selectedPlan={selectedTier}
+        processing={isProcessingSubscription}
+      />
     </>
   );
 };

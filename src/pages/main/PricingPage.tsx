@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './MainPages.css';
-// Only import the pricing and getDarkerColor function since formatPrice and getTierById are unused
-import pricing, { getDarkerColor } from '../../config/pricing'; // Import pricing configuration
+// Import the necessary pricing functions and types
+import pricing, { getDarkerColor, getTierById, TierPricing } from '../../config/pricing';
+import SubscriptionConfirmModal from '../../components/subscription/modals/SubscriptionConfirmModal';
 
 const PricingPage: React.FC = () => {
   // State for billing period toggle
@@ -15,6 +16,11 @@ const PricingPage: React.FC = () => {
   
   // State for FAQ open/closed status
   const [openFaqItem, setOpenFaqItem] = useState<number | null>(null);
+  
+  // Subscription modal states
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState<boolean>(false);
+  const [selectedTier, setSelectedTier] = useState<TierPricing | null>(null);
+  const [isProcessingSubscription, setIsProcessingSubscription] = useState<boolean>(false);
   
   // FAQ data
   const faqItems = [
@@ -40,10 +46,36 @@ const PricingPage: React.FC = () => {
     }
   ];
   
-  // Handle subscription click
-  const handleSubscribeClick = (tierId: string) => {
-    // Navigate directly to subscription page with plan and billing parameters
-    window.location.hash = `#/subscribe?plan=${tierId}&billing=${billingPeriod}`;
+  // Handle subscription modal
+  const openSubscriptionModal = (tierId: 'basic' | 'complete') => {
+    setSelectedTier(getTierById(tierId));
+    setIsSubscriptionModalOpen(true);
+    console.log('PricingPage - openSubscriptionModal for tier:', tierId);
+  };
+  
+  const closeSubscriptionModal = () => {
+    setIsSubscriptionModalOpen(false);
+  };
+  
+  const handleSubscribe = async () => {
+    if (!selectedTier) return;
+    
+    setIsProcessingSubscription(true);
+    console.log('PricingPage - handleSubscribe for tier:', selectedTier.id);
+    
+    try {
+      // Simulate API call for subscription
+      setTimeout(() => {
+        // This would be replaced with your actual subscription API call
+        console.log('PricingPage - navigating to subscribe with plan:', selectedTier.id, 'and billing:', billingPeriod);
+        window.location.hash = `#/subscribe?plan=${selectedTier.id}&billing=${billingPeriod}`;
+        setIsProcessingSubscription(false);
+        setIsSubscriptionModalOpen(false);
+      }, 1000);
+    } catch (error) {
+      console.error('Subscription error:', error);
+      setIsProcessingSubscription(false);
+    }
   };
   
   // Toggle FAQ item
@@ -166,7 +198,9 @@ const PricingPage: React.FC = () => {
                     className={`plan-button subscribe ${tier.id === 'complete' ? 'subscribe-alt' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent card focus
-                      handleSubscribeClick(tier.id);
+                      if (tier.id === 'basic' || tier.id === 'complete') {
+                        openSubscriptionModal(tier.id);
+                      }
                     }}
                     onMouseEnter={() => setHoveredButton(tier.id)}
                     onMouseLeave={() => setHoveredButton(null)}
@@ -259,6 +293,15 @@ const PricingPage: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Subscription Confirmation Modal */}
+      <SubscriptionConfirmModal
+        isOpen={isSubscriptionModalOpen}
+        onClose={closeSubscriptionModal}
+        onConfirm={handleSubscribe}
+        selectedPlan={selectedTier}
+        processing={isProcessingSubscription}
+      />
     </div>
   );
 };

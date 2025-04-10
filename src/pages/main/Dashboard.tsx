@@ -4,7 +4,8 @@ import WelcomeBanner from '../../components/dashboard/WelcomeBanner';
 import ComingSoonSection from '../../components/dashboard/ComingSoon';
 import ReturningUserDashboard from '../../components/dashboard/ReturningUserDashboard';
 import ConfigurationService from '../../services/configurationService';
-import pricing from '../../config/pricing'; // Import pricing configuration
+import SubscriptionConfirmModal from '../../components/subscription/modals/SubscriptionConfirmModal';
+import pricing, { getTierById, TierPricing } from '../../config/pricing'; // Import pricing configuration
 import './Dashboard.css';
 
 /**
@@ -20,6 +21,11 @@ const Dashboard: React.FC = () => {
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
   const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  
+  // Subscription modal states
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState<boolean>(false);
+  const [selectedTier, setSelectedTier] = useState<TierPricing | null>(null);
+  const [isProcessingSubscription, setIsProcessingSubscription] = useState<boolean>(false);
   
   // Function to handle audio playback
   const toggleAudioPlayback = () => {
@@ -87,6 +93,38 @@ const Dashboard: React.FC = () => {
 
   const handleConfigureClick = () => {
     window.location.hash = '#/configure';
+  };
+  
+  // Subscription modal handlers
+  const openSubscriptionModal = (tierId: 'basic' | 'complete') => {
+    setSelectedTier(getTierById(tierId));
+    setIsSubscriptionModalOpen(true);
+    console.log('Dashboard - openSubscriptionModal for tier:', tierId);
+  };
+  
+  const closeSubscriptionModal = () => {
+    setIsSubscriptionModalOpen(false);
+  };
+  
+  const handleSubscribe = async () => {
+    if (!selectedTier || !user) return;
+    
+    setIsProcessingSubscription(true);
+    console.log('Dashboard - handleSubscribe for tier:', selectedTier.id);
+    
+    try {
+      // Simulate API call for subscription
+      setTimeout(() => {
+        // This would be replaced with your actual subscription API call
+        console.log('Dashboard - navigating to subscribe with plan:', selectedTier.id);
+        window.location.hash = `#/subscribe?plan=${selectedTier.id}`;
+        setIsProcessingSubscription(false);
+        setIsSubscriptionModalOpen(false);
+      }, 1000);
+    } catch (error) {
+      console.error('Subscription error:', error);
+      setIsProcessingSubscription(false);
+    }
   };
 
   return (
@@ -445,10 +483,7 @@ const Dashboard: React.FC = () => {
                             margin: '15px',
                             textAlign: 'center'
                           }}
-                          onClick={() => {
-                            // Use the correct URL format with query parameters
-                            window.location.hash = `#/subscribe?plan=${tier.id}`;
-                          }}
+                          onClick={() => openSubscriptionModal(tier.id as 'basic' | 'complete')}
                         >
                           Upgrade
                         </button>
@@ -519,6 +554,15 @@ const Dashboard: React.FC = () => {
           
           {/* Coming soon section for future features */}
           <ComingSoonSection />
+          
+          {/* Subscription Confirmation Modal */}
+          <SubscriptionConfirmModal
+            isOpen={isSubscriptionModalOpen}
+            onClose={closeSubscriptionModal}
+            onConfirm={handleSubscribe}
+            selectedPlan={selectedTier}
+            processing={isProcessingSubscription}
+          />
         </>
       )}
     </div>

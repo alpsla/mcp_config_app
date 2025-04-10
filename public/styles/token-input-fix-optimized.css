@@ -1,0 +1,96 @@
+/* 
+ * token-input-fix-optimized.css
+ * Styles for the optimized token input fix
+ */
+
+/* Container styling */
+#optimized-token-container {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Input field styling */
+#optimized-token-input {
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+
+#optimized-token-input:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Save button styling */
+#optimized-save-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+#optimized-save-button:hover {
+  background-color: #1565c0;
+}
+
+#optimized-save-button:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
+
+/* Feedback styling */
+#optimized-token-feedback {
+  margin-top: 10px;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+/* Documentation link styling */
+#optimized-token-container a {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 13px;
+  margin-left: 15px;
+  transition: color 0.2s;
+}
+
+#optimized-token-container a:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+/* Helper text styling */
+#optimized-token-container div.helper-text {
+  font-size: 13px;
+  color: #6c757d;
+  margin-bottom: 15px;
+}
+
+/* Ensure all elements in our container have proper pointer events */
+#optimized-token-container,
+#optimized-token-container * {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Hide any existing token inputs that might conflict with ours */
+input[placeholder*="API token"]:not(#optimized-token-input):not(.fixed-direct-token-input):not(#emergency-hf-token-input),
+input[placeholder*="Hugging Face"]:not(#optimized-token-input):not(.fixed-direct-token-input):not(#emergency-hf-token-input) {
+  display: none !important;
+}

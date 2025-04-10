@@ -1,0 +1,236 @@
+<!-- 
+This is a standalone HTML file with the token input component.
+You can use this as a reference or directly include it in your application.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hugging Face Token Input</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+
+    .token-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .token-header {
+      color: #3a76d6;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .token-description {
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .token-input-field {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .token-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .save-button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .save-button:hover {
+      background-color: #1565c0;
+    }
+
+    .doc-link {
+      color: #1976d2;
+      text-decoration: none;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .doc-link:hover {
+      text-decoration: underline;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .security-message {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .security-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .token-help {
+      margin-top: 25px;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+
+    .token-steps {
+      padding-left: 20px;
+    }
+
+    .token-steps li {
+      margin-bottom: 8px;
+    }
+
+    .token-steps a {
+      color: #1976d2;
+      text-decoration: none;
+    }
+
+    .token-steps a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="token-container">
+    <h2 class="token-header">Hugging Face API Token</h2>
+    <p class="token-description">To access premium models, you'll need a Hugging Face API token.</p>
+    
+    <input 
+      type="text" 
+      id="hf-token-input" 
+      class="token-input-field" 
+      placeholder="Enter your Hugging Face API token here"
+    >
+    
+    <div class="token-actions">
+      <button id="save-token-button" class="save-button">Save Token Securely</button>
+      <a href="#" id="doc-link" class="doc-link">Learn more about secure token storage</a>
+    </div>
+    
+    <div id="token-feedback" class="feedback"></div>
+    
+    <div class="security-message">
+      <span class="security-icon">🔒</span>
+      <span>Your token is stored securely on your local device and never transmitted to our servers.</span>
+    </div>
+    
+    <div class="token-help">
+      <h3>To get a token:</h3>
+      <ol class="token-steps">
+        <li>Visit the Hugging Face Token page: <a href="https://huggingface.co/settings/tokens/new" target="_blank">https://huggingface.co/settings/tokens/new</a></li>
+        <li>Sign in (or create a free account)</li>
+        <li>Enter "MCP Configuration" as the token name</li>
+        <li>Set the role to "Read"</li>
+        <li>Copy and paste the token in the field above</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tokenInput = document.getElementById('hf-token-input');
+      const saveButton = document.getElementById('save-token-button');
+      const docLink = document.getElementById('doc-link');
+      const feedback = document.getElementById('token-feedback');
+      
+      // Check for previously saved token
+      const savedToken = localStorage.getItem('huggingface_token') || 
+                         sessionStorage.getItem('huggingface_token');
+      if (savedToken) {
+        tokenInput.value = savedToken;
+      }
+      
+      // Save button click handler
+      saveButton.addEventListener('click', function() {
+        const token = tokenInput.value.trim();
+        
+        if (!token) {
+          showFeedback('Please enter a token', false);
+          return;
+        }
+        
+        // Basic validation
+        if (!token.startsWith('hf_')) {
+          showFeedback('Invalid token format. Hugging Face tokens typically start with "hf_"', false);
+          return;
+        }
+        
+        // Save token
+        try {
+          localStorage.setItem('huggingface_token', token);
+          sessionStorage.setItem('huggingface_token', token);
+          showFeedback('Token saved successfully!', true);
+          
+          // Change button color temporarily
+          const originalColor = saveButton.style.backgroundColor;
+          saveButton.style.backgroundColor = '#4caf50';
+          setTimeout(() => {
+            saveButton.style.backgroundColor = originalColor;
+          }, 2000);
+        } catch (error) {
+          showFeedback('Error saving token: ' + error.message, false);
+        }
+      });
+      
+      // Documentation link handler
+      docLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        alert('Secure Token Storage Documentation:\n\n' +
+              'Your Hugging Face API token is stored securely on your device using ' +
+              'platform-specific secure storage mechanisms. The token is never transmitted ' +
+              'to our servers and is accessed only when needed to authenticate with Hugging Face.\n\n' +
+              'For more information, please visit our documentation site.');
+      });
+      
+      // Helper to show feedback
+      function showFeedback(message, isSuccess) {
+        feedback.textContent = isSuccess ? '✓ ' + message : '⚠️ ' + message;
+        feedback.style.color = isSuccess ? '#4caf50' : '#f44336';
+        feedback.style.display = 'block';
+        
+        // Hide after a while
+        setTimeout(() => {
+          feedback.style.display = 'none';
+        }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -63,6 +63,11 @@ const RouteHandler = ({ routes, defaultRoute = '/' }) => {
     
     console.log('Query parameters:', queryParams);
     
+    // Debug the plan/tier parameter specifically
+    if (queryParams.plan) {
+      console.log('Found plan parameter:', queryParams.plan);
+    }
+    
     // For subscription routes, add a special flag for all steps
     const isSubscriptionRoute = currentPath.startsWith('/subscribe');
     if (isSubscriptionRoute) {
@@ -105,7 +110,7 @@ const RouteHandler = ({ routes, defaultRoute = '/' }) => {
             path: currentPath, 
             queryParams,
             // Pass tier from query params if available
-            initialTier: queryParams.tier || 'basic'
+            initialTier: queryParams.plan || 'basic'
           });
         }
       }
@@ -151,6 +156,7 @@ const RouteHandler = ({ routes, defaultRoute = '/' }) => {
     const exactMatch = routes.find(route => route.path === currentPath);
     if (exactMatch) {
       console.log('Found exact match:', exactMatch.path);
+      console.log('Passing initialTier to component:', queryParams.plan);
       return React.createElement(exactMatch.component, { 
         path: currentPath,
         queryParams, // Pass query parameters to the component

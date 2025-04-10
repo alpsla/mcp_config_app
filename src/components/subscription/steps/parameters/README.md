@@ -161,3 +161,30 @@ The design has been optimized for various screen sizes:
 - The toggle switch for recommended settings disables all parameter inputs when active
 - Custom parameters are stored with the user profile and persist across sessions
 - Premium parameters are only editable for Complete tier subscribers
+
+
+Hugging Face token integration plan
+Implementation Plan
+
+Phase 1: Client-side validation
+
+Add format validation to the token input field
+Provide immediate feedback on token format
+
+
+Phase 2: Secure storage (Electron app)
+
+Implement platform-specific secure storage
+Add "Save Token Securely" button
+
+
+Phase 3: Wrapper script generation
+
+Create script generator module
+Update Claude Desktop config
+
+
+Phase 4: Token validation with API
+
+Add lightweight API call to verify token works
+Show user feedback on successful validation

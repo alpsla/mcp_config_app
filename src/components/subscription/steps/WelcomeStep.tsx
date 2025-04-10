@@ -113,7 +113,7 @@ const WelcomeStep: React.FC<{
           fontWeight: 'bold',
           margin: '15px 0'
         }}>
-          {props.selectedTier === 'complete' ? '$8.99' : '$4.99'}<span style={{fontSize: '16px'}}>/month</span>
+          {price}<span style={{fontSize: '16px'}}>/month</span>
         </div>
         
         <p style={{fontSize: '16px', opacity: '0.9'}}>

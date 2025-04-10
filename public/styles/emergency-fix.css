@@ -1,0 +1,70 @@
+/**
+ * Emergency CSS fixes for token input and link issues
+ */
+
+/* Emergency token input styling */
+.emergency-token-input {
+  width: 100% !important;
+  padding: 12px !important;
+  border-radius: 4px !important;
+  border: 1px solid #ccc !important;
+  font-size: 14px !important;
+  margin-bottom: 15px !important;
+  margin-top: 15px !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  background-color: white !important;
+  color: black !important;
+}
+
+.emergency-token-input:focus {
+  border-color: #1976D2 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* Fix links - ensure they're clickable */
+a[href="#"],
+a:not([href]) {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  color: #1976D2 !important;
+  text-decoration: underline !important;
+}
+
+/* Fix save button */
+button:contains("Save Token") {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+}
+
+/* Make sure links don't inherit pointer-events: none */
+div[style*="pointer-events: none"] a,
+div[style*="pointer-events:none"] a {
+  pointer-events: auto !important;
+}
+
+/* Ensure all hugging face sections allow interaction */
+div[style*="background-color: rgb(240, 247, 255)"],
+.huggingface-token-section {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
+/* Fix for "Enter your token..." text that may be misplaced */
+div:contains("Enter your token in the field above") {
+  display: block !important;
+  margin-top: 5px !important;
+  margin-bottom: 15px !important;
+  color: #666 !important;
+  text-align: center !important;
+}
+
+/* Fix for security message */
+div:contains("Your token is stored securely on your local device") {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  margin: 10px 0 !important;
+}

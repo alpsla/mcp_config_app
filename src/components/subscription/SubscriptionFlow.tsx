@@ -92,6 +92,9 @@ const SubscriptionFlowWithProvider: React.FC<SubscriptionFlowProps> = (props) =>
       ? props.initialTier as SubscriptionTierSimple 
       : 'basic';
   
+  // Log the initialized tier to help with debugging
+  console.log('Using initialTier:', safeInitialTier);
+  
   // Simulate loading to ensure context is fully initialized
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -124,6 +127,7 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
   const { authState, updateSubscriptionTier } = useAuth();
   const { 
     selectedTier, 
+    setSelectedTier,
     currentStep, 
     setCurrentStep, 
     formData, 
@@ -133,6 +137,19 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
     error, 
     setError 
   } = useSubscriptionContext();
+  
+  // Ensure initialTier is used if present (this helps maintain tier selection during navigation)
+  React.useEffect(() => {
+    console.log('===== SUBSCRIPTION FLOW CONTENT - EFFECT =====');
+    console.log('initialTier from props:', initialTier);
+    console.log('currentTier in context:', selectedTier);
+    console.log('============================================');
+    
+    if (initialTier && ['basic', 'complete'].includes(initialTier)) {
+      console.log('SubscriptionFlowContent: Setting tier from initialTier:', initialTier);
+      setSelectedTier(initialTier as SubscriptionTierSimple);
+    }
+  }, [initialTier, setSelectedTier, selectedTier]);
   
   // Add body class for styling override
   useEffect(() => {

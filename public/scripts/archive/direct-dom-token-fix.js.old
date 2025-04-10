@@ -1,0 +1,231 @@
+/**
+ * direct-dom-token-fix.js
+ * Direct DOM manipulation fix for the Hugging Face token input
+ * Specifically targeting the structure visible in the UI screenshot
+ */
+
+(function() {
+  // Run immediately
+  setTimeout(fixTokenInput, 500);
+  
+  // Listen for hash changes (navigation)
+  window.addEventListener('hashchange', function() {
+    setTimeout(fixTokenInput, 500);
+  });
+  
+  // Find and fix the token input field
+  function fixTokenInput() {
+    console.log('Running direct DOM token fix...');
+    
+    // Target exactly what we saw in the screenshot
+    const tokenSections = document.querySelectorAll('div[style*="background-color: rgb(240, 247, 255)"]');
+    
+    if (tokenSections.length === 0) {
+      console.log('No token sections found, will retry later.');
+      return;
+    }
+    
+    let tokenInput = null;
+    let tokenSection = null;
+    
+    // Find the specific token section and input
+    for (const section of tokenSections) {
+      if (section.textContent.includes('Hugging Face API Token')) {
+        tokenSection = section;
+        tokenInput = section.querySelector('input');
+        console.log('Found token section and input:', !!tokenSection, !!tokenInput);
+        break;
+      }
+    }
+    
+    // If not found directly, try a more aggressive approach
+    if (!tokenInput) {
+      for (const section of tokenSections) {
+        if (section.textContent.includes('Hugging Face')) {
+          tokenSection = section;
+          tokenInput = section.querySelector('input');
+          console.log('Found token section via partial match:', !!tokenSection, !!tokenInput);
+          break;
+        }
+      }
+    }
+    
+    // If still not found, try one more method
+    if (!tokenInput && tokenSections.length > 0) {
+      // Just take the first token section and find its input
+      tokenSection = tokenSections[0];
+      tokenInput = tokenSection.querySelector('input');
+      console.log('Taking first token section as fallback:', !!tokenSection, !!tokenInput);
+    }
+    
+    // If we found an input, check if it's already been fixed
+    if (tokenInput && !tokenInput.hasAttribute('data-fixed-direct')) {
+      console.log('Fixing token input...');
+      
+      // Create our own fixed input element
+      const fixedInput = document.createElement('input');
+      fixedInput.type = 'text';
+      fixedInput.placeholder = tokenInput.placeholder || 'Enter your Hugging Face API token';
+      fixedInput.value = tokenInput.value || '';
+      fixedInput.setAttribute('data-fixed-direct', 'true');
+      fixedInput.classList.add('fixed-direct-token-input');
+      
+      // Style the fixed input
+      fixedInput.style.width = '100%';
+      fixedInput.style.padding = '12px';
+      fixedInput.style.borderRadius = '4px';
+      fixedInput.style.border = '1px solid #ccc';
+      fixedInput.style.fontSize = '14px';
+      fixedInput.style.marginBottom = '10px';
+      fixedInput.style.backgroundColor = '#fff';
+      fixedInput.style.position = 'relative';
+      fixedInput.style.zIndex = '1000';
+      fixedInput.style.boxSizing = 'border-box';
+      
+      // Event listener to keep original input in sync
+      fixedInput.addEventListener('input', function(e) {
+        const newValue = e.target.value;
+        
+        // Update the original input if it exists
+        if (tokenInput && tokenInput.parentNode) {
+          // Use property descriptor to set value
+          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype, 'value'
+          ).set;
+          
+          nativeInputValueSetter.call(tokenInput, newValue);
+          
+          // Dispatch events to trigger React state updates
+          const inputEvent = new Event('input', { bubbles: true });
+          tokenInput.dispatchEvent(inputEvent);
+          
+          const changeEvent = new Event('change', { bubbles: true });
+          tokenInput.dispatchEvent(changeEvent);
+        }
+        
+        // Store value in sessionStorage as backup
+        try {
+          sessionStorage.setItem('hf_token', newValue);
+          console.log('Token stored in session storage');
+        } catch (err) {
+          console.error('Failed to store token in session storage', err);
+        }
+      });
+      
+      // Create a container for the fixed input
+      const container = document.createElement('div');
+      container.style.position = 'relative';
+      container.style.zIndex = '1000';
+      container.style.margin = '10px 0';
+      container.style.padding = '10px';
+      container.style.backgroundColor = '#E8F5E9';
+      container.style.borderRadius = '4px';
+      container.style.border = '1px solid #4CAF50';
+      
+      // Add a label
+      const label = document.createElement('div');
+      label.textContent = 'Token Input (Fixed)';
+      label.style.fontWeight = 'bold';
+      label.style.marginBottom = '8px';
+      label.style.color = '#2E7D32';
+      
+      // Add feedback element
+      const feedback = document.createElement('div');
+      feedback.textContent = 'This input should be working correctly';
+      feedback.style.fontSize = '12px';
+      feedback.style.color = '#4CAF50';
+      feedback.style.marginTop = '6px';
+      
+      // Add help text about storing tokens
+      const helpText = document.createElement('div');
+      helpText.textContent = 'Token stored locally for this session only';
+      helpText.style.fontSize = '11px';
+      helpText.style.color = '#666';
+      helpText.style.marginTop = '4px';
+      
+      // Assemble the container
+      container.appendChild(label);
+      container.appendChild(fixedInput);
+      container.appendChild(feedback);
+      container.appendChild(helpText);
+      
+      // Insert the container in a good location
+      if (tokenInput && tokenInput.parentNode) {
+        // If we have the original input, insert before it
+        tokenInput.parentNode.insertBefore(container, tokenInput);
+        tokenInput.style.opacity = '0.1'; // Make original mostly invisible but keep it for data
+      } else if (tokenSection) {
+        // If we have the section but not the input, look for a good insertion point
+        const firstParagraph = tokenSection.querySelector('p');
+        if (firstParagraph && firstParagraph.nextSibling) {
+          tokenSection.insertBefore(container, firstParagraph.nextSibling);
+        } else {
+          // Just append it to the token section
+          tokenSection.appendChild(container);
+        }
+      }
+      
+      // Focus the input
+      setTimeout(() => {
+        fixedInput.focus();
+      }, 100);
+      
+      // Set global access to make debugging easier
+      window.fixedHuggingFaceInput = fixedInput;
+      
+      // Check for token in session storage
+      try {
+        const savedToken = sessionStorage.getItem('hf_token');
+        if (savedToken && savedToken !== fixedInput.value) {
+          fixedInput.value = savedToken;
+          fixedInput.dispatchEvent(new Event('input', { bubbles: true }));
+          console.log('Restored token from session storage');
+        }
+      } catch (err) {
+        console.error('Failed to retrieve from session storage', err);
+      }
+      
+      // Add some global functions to help with debugging
+      window.setHuggingFaceToken = function(token) {
+        if (fixedInput) {
+          fixedInput.value = token;
+          fixedInput.dispatchEvent(new Event('input', { bubbles: true }));
+          return 'Token set successfully';
+        }
+        return 'Fixed input not found';
+      };
+      
+      window.getHuggingFaceToken = function() {
+        return fixedInput ? fixedInput.value : 'Fixed input not found';
+      };
+      
+      console.log('Token input has been fixed and should now be working.');
+      
+      // Return success
+      return true;
+    } else if (tokenInput) {
+      // Already fixed
+      console.log('Token input already fixed, skipping.');
+      return true;
+    }
+    
+    // No token input found
+    console.log('No token input found, will try again later.');
+    return false;
+  }
+  
+  // Set up periodic checking to ensure fix is applied
+  let fixAttempts = 0;
+  const maxAttempts = 10;
+  
+  const checkInterval = setInterval(function() {
+    fixAttempts++;
+    
+    if (fixTokenInput() || fixAttempts >= maxAttempts) {
+      // Stop checking once fixed or max attempts reached
+      clearInterval(checkInterval);
+      console.log(`Token input fix ${fixAttempts >= maxAttempts ? 'max attempts reached' : 'successful'}`);
+    }
+  }, 1000);
+  
+})();

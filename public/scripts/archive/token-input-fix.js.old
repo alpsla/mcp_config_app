@@ -1,0 +1,363 @@
+/**
+ * token-input-fix.js
+ * Direct DOM fix for Hugging Face token input field
+ */
+
+(function() {
+  // Wait for DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFix);
+  } else {
+    initFix();
+  }
+
+  // Initialize the fix
+  function initFix() {
+    console.log('[TokenInputFix] Initializing token input fix');
+    
+    // Apply fixes immediately if we're on the parameters page
+    if (isParametersPage()) {
+      applyFix();
+    }
+    
+    // Watch for navigation changes
+    window.addEventListener('hashchange', function() {
+      if (isParametersPage()) {
+        console.log('[TokenInputFix] Detected parameters page, applying fix');
+        setTimeout(applyFix, 100); // Small delay to ensure DOM is updated
+      }
+    });
+    
+    // Watch for DOM changes that might add the token input
+    const observer = new MutationObserver(function(mutations) {
+      if (isParametersPage() && !document.querySelector('.token-input-fixed')) {
+        console.log('[TokenInputFix] Detected DOM changes, checking for token input');
+        applyFix();
+      }
+    });
+    
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true 
+    });
+  }
+  
+  // Check if we're on the parameters page
+  function isParametersPage() {
+    return window.location.hash.includes('/subscribe/parameters') || 
+           document.querySelector('.huggingface-token-section') !== null;
+  }
+  
+  // Apply the fix to the token input
+  function applyFix() {
+    console.log('[TokenInputFix] Searching for token input field');
+    
+    // Target selector strategies
+    const selectors = [
+      'input[placeholder*="Hugging Face"]',
+      'input[placeholder*="API token"]',
+      '.huggingface-token-section input',
+      '.token-input-container input',
+      'input[type="text"][placeholder="Enter your Hugging Face API token"]'
+    ];
+    
+    // Try each selector
+    let tokenInput = null;
+    for (const selector of selectors) {
+      tokenInput = document.querySelector(selector);
+      if (tokenInput) {
+        console.log('[TokenInputFix] Found token input with selector:', selector);
+        break;
+      }
+    }
+    
+    // If not found, try more aggressive approach
+    if (!tokenInput) {
+      console.log('[TokenInputFix] Input not found with selectors, trying alternative approach');
+      
+      // Look for any input that might be the token input
+      const inputs = document.querySelectorAll('input[type="text"]');
+      for (const input of inputs) {
+        const placeholder = input.getAttribute('placeholder') || '';
+        if (placeholder.toLowerCase().includes('token') || 
+            placeholder.toLowerCase().includes('hugging') ||
+            input.closest('div')?.textContent.includes('Hugging Face')) {
+          tokenInput = input;
+          console.log('[TokenInputFix] Found token input via text content match');
+          break;
+        }
+      }
+      
+      // If still not found, get inputs from the screenshot structure
+      if (!tokenInput) {
+        const possibleContainers = document.querySelectorAll('div[style*="background-color: rgb(240, 247, 255)"]');
+        for (const container of possibleContainers) {
+          if (container.textContent.includes('Hugging Face')) {
+            tokenInput = container.querySelector('input');
+            console.log('[TokenInputFix] Found token input in container with matching background color');
+            break;
+          }
+        }
+      }
+    }
+    
+    // Fix the input if found
+    if (tokenInput) {
+      // Skip if already fixed
+      if (tokenInput.classList.contains('token-input-fixed')) {
+        console.log('[TokenInputFix] Input already fixed, skipping');
+        return;
+      }
+      
+      console.log('[TokenInputFix] Applying fix to token input');
+      
+      // Store the original input for reference
+      const originalInput = tokenInput;
+      
+      // Create a new input element
+      const newInput = document.createElement('input');
+      newInput.type = 'text';
+      newInput.placeholder = originalInput.placeholder || 'Enter your Hugging Face API token';
+      newInput.value = originalInput.value || '';
+      newInput.className = originalInput.className + ' token-input-fixed';
+      
+      // Copy attributes
+      for (const attr of originalInput.attributes) {
+        if (attr.name !== 'type' && attr.name !== 'class' && attr.name !== 'style') {
+          newInput.setAttribute(attr.name, attr.value);
+        }
+      }
+      
+      // Apply enhanced styles
+      Object.assign(newInput.style, {
+        width: '100%',
+        padding: '12px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        fontSize: '14px',
+        backgroundColor: '#fff',
+        boxSizing: 'border-box',
+        transition: 'all 0.2s ease',
+        outline: 'none',
+        // Critical fixes for input to work
+        pointerEvents: 'auto',
+        opacity: '1',
+        visibility: 'visible',
+        position: 'relative',
+        zIndex: '100'
+      });
+      
+      // Critical event handler to ensure input works
+      newInput.addEventListener('input', function(e) {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype, 'value'
+        ).set;
+        
+        // Update value and trigger events on original input if it still exists
+        if (originalInput && originalInput.parentNode) {
+          nativeInputValueSetter.call(originalInput, e.target.value);
+          originalInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        
+        // Also save value to session storage as backup
+        try {
+          sessionStorage.setItem('huggingface_token', e.target.value);
+        } catch (err) {
+          console.error('[TokenInputFix] Failed to save to session storage:', err);
+        }
+        
+        console.log('[TokenInputFix] Input value updated');
+      });
+      
+      // Add focus and blur styles
+      newInput.addEventListener('focus', () => {
+        newInput.style.borderColor = '#1976D2';
+        newInput.style.boxShadow = '0 0 0 3px rgba(25, 118, 210, 0.1)';
+      });
+      
+      newInput.addEventListener('blur', () => {
+        newInput.style.borderColor = '#ccc';
+        newInput.style.boxShadow = 'none';
+      });
+      
+      // Create a container to hold our new input
+      const container = document.createElement('div');
+      container.className = 'token-input-fixed-container';
+      container.style.position = 'relative';
+      container.style.zIndex = '10';
+      container.style.marginBottom = '10px';
+      
+      // Append new input to container
+      container.appendChild(newInput);
+      
+      // Replace the original input or insert our container
+      if (originalInput.parentNode) {
+        // Either replace directly
+        originalInput.parentNode.insertBefore(container, originalInput);
+        originalInput.style.display = 'none';
+        
+        console.log('[TokenInputFix] Replaced original input with fixed version');
+      } else {
+        // Or find a suitable place to insert it
+        const parameters = document.querySelector('.huggingface-token-section') || 
+                          document.querySelector('div[style*="background-color: rgb(240, 247, 255)"]');
+        
+        if (parameters) {
+          // Find a good insertion point - after the header but before other elements
+          const header = parameters.querySelector('h3');
+          if (header && header.nextElementSibling) {
+            parameters.insertBefore(container, header.nextElementSibling.nextElementSibling);
+            console.log('[TokenInputFix] Inserted fixed input after header');
+          } else {
+            // Just append if we can't find a good spot
+            parameters.appendChild(container);
+            console.log('[TokenInputFix] Appended fixed input to parameters section');
+          }
+        } else {
+          console.error('[TokenInputFix] Could not find a place to insert the fixed input');
+        }
+      }
+      
+      // Focus the new input to make it immediately usable
+      setTimeout(() => {
+        newInput.focus();
+      }, 100);
+      
+      // Add global access to save token
+      window.saveHuggingFaceToken = function(token) {
+        if (newInput) {
+          newInput.value = token;
+          newInput.dispatchEvent(new Event('input', { bubbles: true }));
+          console.log('[TokenInputFix] Token set via global function');
+        }
+      };
+      
+      // Add a small note to indicate the fix is applied
+      const note = document.createElement('div');
+      note.style.fontSize = '12px';
+      note.style.color = '#4CAF50';
+      note.style.padding = '4px';
+      note.style.marginTop = '4px';
+      note.textContent = 'Input field is now working correctly';
+      container.appendChild(note);
+      
+      // Check for token in session storage
+      try {
+        const savedToken = sessionStorage.getItem('huggingface_token');
+        if (savedToken && !newInput.value) {
+          newInput.value = savedToken;
+          newInput.dispatchEvent(new Event('input', { bubbles: true }));
+          console.log('[TokenInputFix] Restored token from session storage');
+        }
+      } catch (err) {
+        console.error('[TokenInputFix] Failed to retrieve from session storage:', err);
+      }
+      
+      console.log('[TokenInputFix] Fix successfully applied');
+    } else {
+      console.error('[TokenInputFix] Could not find token input field');
+      
+      // Last resort - add our own input
+      addEmergencyTokenInput();
+    }
+  }
+  
+  // Add an emergency token input if we can't find the original
+  function addEmergencyTokenInput() {
+    console.log('[TokenInputFix] Adding emergency token input');
+    
+    // Find the token section
+    const tokenSection = document.querySelector('.huggingface-token-section') ||
+                        document.querySelector('div[style*="background-color: rgb(240, 247, 255)"]');
+    
+    if (!tokenSection) {
+      console.error('[TokenInputFix] Could not find token section');
+      return;
+    }
+    
+    // Check if we already added an emergency input
+    if (tokenSection.querySelector('.emergency-token-input')) {
+      console.log('[TokenInputFix] Emergency token input already exists');
+      return;
+    }
+    
+    // Create container
+    const container = document.createElement('div');
+    container.className = 'emergency-token-input';
+    container.style.marginTop = '20px';
+    container.style.marginBottom = '15px';
+    container.style.padding = '10px';
+    container.style.backgroundColor = '#E8F5E9';
+    container.style.borderRadius = '4px';
+    container.style.border = '1px solid #4CAF50';
+    
+    // Create input
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Enter your Hugging Face API token here';
+    input.style.width = '100%';
+    input.style.padding = '12px';
+    input.style.borderRadius = '4px';
+    input.style.border = '1px solid #ccc';
+    input.style.fontSize = '14px';
+    input.style.boxSizing = 'border-box';
+    
+    // Create label
+    const label = document.createElement('div');
+    label.textContent = 'Alternative Token Input (Fixed):';
+    label.style.fontWeight = 'bold';
+    label.style.marginBottom = '10px';
+    
+    // Create note
+    const note = document.createElement('div');
+    note.textContent = 'Use this input field to enter your token. We detected an issue with the original input and provided this alternative.';
+    note.style.fontSize = '12px';
+    note.style.marginTop = '8px';
+    
+    // Add event listener
+    input.addEventListener('input', function(e) {
+      // Try to update all other inputs on the page
+      const allInputs = document.querySelectorAll('input[type="text"]');
+      for (const otherInput of allInputs) {
+        if (otherInput !== input && otherInput.placeholder && 
+            otherInput.placeholder.toLowerCase().includes('token')) {
+          otherInput.value = e.target.value;
+          otherInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+      
+      // Save to session storage
+      try {
+        sessionStorage.setItem('huggingface_token', e.target.value);
+      } catch (err) {
+        console.error('[TokenInputFix] Failed to save to session storage:', err);
+      }
+    });
+    
+    // Assemble and insert
+    container.appendChild(label);
+    container.appendChild(input);
+    container.appendChild(note);
+    
+    // Find a good position to insert
+    const description = tokenSection.querySelector('p');
+    if (description && description.nextElementSibling) {
+      tokenSection.insertBefore(container, description.nextElementSibling);
+    } else {
+      // Just insert at the beginning if we can't find a good spot
+      const firstChild = tokenSection.firstChild;
+      tokenSection.insertBefore(container, firstChild);
+    }
+    
+    console.log('[TokenInputFix] Emergency token input added');
+    
+    // Focus the input
+    setTimeout(() => {
+      input.focus();
+    }, 100);
+    
+    // Add global access
+    window.emergencyHuggingFaceInput = input;
+  }
+  
+})();
