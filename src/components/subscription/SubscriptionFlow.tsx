@@ -3,6 +3,8 @@ import { useAuth } from '../../auth/AuthContext';
 import { enhancedConfigurationManager } from '../../services/EnhancedConfigurationManager';
 import { SubscriptionTierSimple, mapSimpleTypeToTier } from '../../types/enhanced-types';
 import { useSubscriptionContext, SubscriptionFlowProvider } from '../../contexts/SubscriptionFlowContext';
+import { SubscriptionTier } from '../../types';
+import secureTokenStorage from '../../utils/secureTokenStorage';
 
 // Import step components
 import WelcomeStep from './steps/WelcomeStep';
@@ -12,8 +14,13 @@ import PaymentStep from './steps/PaymentStep';
 import ParametersStep from './steps/ParametersStep';
 import SuccessStep from './steps/SuccessStep';
 
+// Import the new ProgressBar component
+import ProgressBar from './ProgressBar';
+
 // Import styles
 import './SubscriptionFlow.css';
+// Import consistent layout styles
+import './styles';
 
 // Error boundary component
 class ErrorBoundary extends React.Component<
@@ -155,8 +162,12 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
   useEffect(() => {
     document.body.classList.add('subscription-flow-active');
     
+    // Log debug info
+    console.log('Subscription flow active - added body class');
+    
     return () => {
       document.body.classList.remove('subscription-flow-active');
+      console.log('Subscription flow deactivated - removed body class');
     };
   }, []);
   
@@ -280,6 +291,14 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
       setError(null);
       
       // 1. Save subscription profile
+      // Retrieve the securely stored token if provided
+      let hfToken = null;
+      if (formData.hfToken) {
+        // If there's a token in the form data, try to retrieve it from secure storage
+        // This assumes it has been stored during the ParametersStep
+        hfToken = await secureTokenStorage.retrieveToken();
+      }
+      
       await enhancedConfigurationManager.createOrUpdateSubscriptionProfile(
         authState.user.id,
         selectedTier,
@@ -287,7 +306,10 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
           temperature: formData.temperature,
           max_tokens: formData.maxLength,
           top_p: formData.topP,
-          top_k: formData.topK
+          top_k: formData.topK,
+          // Note: We're not storing the actual token in the database
+          // We store a flag indicating if a token has been provided and securely stored
+          hf_token_provided: !!hfToken
         }
       );
       
@@ -310,7 +332,10 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
       if (updateSubscriptionTier) {
         // Convert simple tier type to SubscriptionTier enum
         const subscriptionTier = mapSimpleTypeToTier(selectedTier);
-        updateSubscriptionTier(subscriptionTier);
+        if (subscriptionTier) {
+          // Cast to the expected type
+          updateSubscriptionTier(subscriptionTier as SubscriptionTier);
+        }
       }
       
       // 4. Mark as complete and show success step
@@ -337,6 +362,7 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
   // Render current step with error handling
   const renderCurrentStep = () => {
     try {
+      console.log('Rendering step:', currentStep, 'Step name:', stepNames[currentStep]);
       switch (currentStep) {
         case 0: // Welcome
           return (
@@ -381,7 +407,25 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
             </ErrorBoundary>
           );
         
-        case 3: // Payment
+        case 3: // Parameters
+          return (
+            <ErrorBoundary fallback={<div className="step-error">Error loading parameters step</div>}>
+              <ParametersStep 
+                selectedTier={selectedTier}
+                initialData={{
+                  temperature: formData.temperature !== undefined ? formData.temperature : 0.7,
+                  maxLength: formData.maxLength !== undefined ? formData.maxLength : 100,
+                  topP: formData.topP !== undefined ? formData.topP : 0.9,
+                  topK: formData.topK !== undefined ? formData.topK : 40,
+                  hfToken: formData.hfToken || ''
+                }}
+                onNext={handleComplete}
+                onBack={handleBack}
+              />
+            </ErrorBoundary>
+          );
+        
+        case 4: // Payment
           return (
             <ErrorBoundary fallback={<div className="step-error">Error loading payment step</div>}>
               <PaymentStep 
@@ -398,24 +442,6 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
                   billingCountry: formData.billingCountry || 'US'
                 }}
                 onNext={handleStepDataUpdate}
-                onBack={handleBack}
-              />
-            </ErrorBoundary>
-          );
-        
-        case 4: // Parameters
-          return (
-            <ErrorBoundary fallback={<div className="step-error">Error loading parameters step</div>}>
-              <ParametersStep 
-                selectedTier={selectedTier}
-                initialData={{
-                  useDefaultParameters: formData.useDefaultParameters !== undefined ? formData.useDefaultParameters : true,
-                  temperature: formData.temperature !== undefined ? formData.temperature : 0.7,
-                  maxLength: formData.maxLength !== undefined ? formData.maxLength : 100,
-                  topP: formData.topP !== undefined ? formData.topP : 0.9,
-                  topK: formData.topK !== undefined ? formData.topK : 40
-                }}
-                onNext={handleComplete}
                 onBack={handleBack}
               />
             </ErrorBoundary>
@@ -461,22 +487,12 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
     }
   };
   
-  // Define simple steps for the UI - always show all steps consistently
-  const displayStepTitles = [
-    'Welcome',
-    'Profile', 
-    'Interests',
-    'Parameters',
-    'Payment',
-    'Success'
-  ];
+  // Define step names for the progress bar - make sure all steps are included
+  const stepNames = ['Welcome', 'Profile', 'Interests', 'Parameters', 'Payment', 'Success'];
   
-  // Map current step to display step index correctly
-  // This ensures all steps are shown consistently
-  const getDisplayStepIndex = (currentStep: number) => {
-    // Direct mapping as we now show all 6 steps
-    return currentStep;
-  };
+  // Debug the steps and current step
+  console.log('Step names:', stepNames);
+  console.log('Current step:', currentStep);
 
   
   // Add a useEffect hook to handle scrolling on component mount or update
@@ -503,18 +519,11 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
   
   // Reset scroll position when component mounts
   useEffect(() => {
+    console.log('Resetting scroll position on component mount');
     window.scrollTo(0, 0);
     
-    // Add an event listener to intercept any scroll attempts 
-    // while the component is first rendering
-    const preventScroll = (e: Event) => {
-      window.scrollTo(0, 0);
-    };
-    
-    window.addEventListener('scroll', preventScroll, { once: true });
-    
     return () => {
-      window.removeEventListener('scroll', preventScroll);
+      console.log('Subscription flow unmounted');
     };
   }, []);
   
@@ -535,30 +544,16 @@ const SubscriptionFlowContent: React.FC<SubscriptionFlowProps> = ({
         }}
       />
       
-      {/* Progress Steps */}
-      <div className="subscription-progress">
-        {displayStepTitles.map((title, index) => {
-          // Use our consistent mapping function
-          let displayStepIndex = getDisplayStepIndex(currentStep);
-          
-          return (
-            <div 
-              key={index}
-              className={`progress-step ${index === displayStepIndex ? 'active' : ''} ${index < displayStepIndex ? 'completed' : ''}`}
-            >
-              <div className="step-number">
-                {index < displayStepIndex ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                ) : (
-                  index + 1
-                )}
-              </div>
-              <div className="step-name">{title}</div>
-            </div>
-          );
-        })}
+      {/* Debug info - only show in development environments */}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{ padding: '5px', margin: '5px', border: '1px solid red', textAlign: 'center' }}>
+          <strong>Debug Info:</strong> Rendering step {currentStep} ({stepNames[currentStep]})
+        </div>
+      )}
+      
+      {/* Progress Steps - Using the ProgressBar component */}
+      <div className="subscription-progress-container">
+        <ProgressBar currentStep={currentStep} steps={stepNames} />
       </div>
       
       {/* Content Area */}

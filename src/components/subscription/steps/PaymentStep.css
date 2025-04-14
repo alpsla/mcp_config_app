@@ -1,0 +1,93 @@
+/* Payment Step Styles */
+
+.payment-step {
+  max-width: 900px;
+  margin: 30px auto;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e3f2fd;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blue top bar */
+.payment-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #1976d2, rgba(25, 118, 210, 0.8));
+  z-index: 1;
+}
+
+.payment-step h2 {
+  font-size: 28px;
+  margin: 0 0 15px 0;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+}
+
+.step-description {
+  margin: 0 auto 30px;
+  color: #666;
+  font-size: 16px;
+  max-width: 700px;
+  text-align: center;
+}
+
+/* Fix button alignment */
+.step-actions {
+  display: flex;
+  justify-content: space-between; /* Ensure Back on left, Next on right */
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  width: 100%;
+}
+
+.secondary-button {
+  padding: 12px 24px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  margin-right: auto; /* Ensures it stays left-aligned */
+}
+
+.secondary-button:hover {
+  background-color: #f5f5f5;
+}
+
+.primary-button {
+  padding: 12px 28px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  margin-left: auto; /* Ensures it stays right-aligned */
+}
+
+.primary-button:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  filter: brightness(1.05);
+}
+
+/* Make sure all headers are centered */
+.payment-step h2,
+.payment-step h3,
+.payment-step h4 {
+  text-align: center;
+}

@@ -121,6 +121,8 @@ interface SubscriptionFlowContextData {
     maxLength: number;
     topP: number;
     topK: number;
+    hfToken: string; // Token itself for UI purposes only
+    hfTokenProvided?: boolean; // Flag indicating if token is provided
   };
   updateFormData: (data: Partial<SubscriptionFlowContextData['formData']>) => void;
   isProcessing: boolean;
@@ -156,7 +158,9 @@ const initialFormData = {
   temperature: 0.7,
   maxLength: 100,
   topP: 0.9,
-  topK: 40
+  topK: 40,
+  hfToken: '', // Initialize hfToken
+  hfTokenProvided: false // Initialize hfTokenProvided
 };
 
 // Create the context

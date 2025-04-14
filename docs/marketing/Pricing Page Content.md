@@ -131,6 +131,6 @@ Coming in Full Release:
 
 
 Negative Option rules
-I agree my subscription will auto-renew each month at $5.99 unless I cancel. Taxes may apply; prices subject to change. 
+I agree my subscription will auto-renew each month at Equivalent to $5.99 {$[Price]} unless I cancel. Taxes may apply; prices subject to change. 
 Cancel any time through your profile settings prior to any renewal to avoid future charges. Cancellation is effective at the end of your current 
 billing period. No refund or credits for partial billing periods

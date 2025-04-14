@@ -1,0 +1,207 @@
+/* Consistent Layout Styles
+   This file provides consistent styling for all subscription pages */
+
+/* Consistent Container Styling */
+.subscription-step,
+.parameters-container,
+.profile-container,
+.interests-container,
+.payment-step,
+.welcome-container,
+.success-container {
+  max-width: 900px !important;
+  margin: 30px auto !important;
+  background-color: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid #e3f2fd !important;
+  padding: 40px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Top blue bar styling */
+.subscription-step::before,
+.parameters-container::before,
+.profile-container::before,
+.interests-container::before,
+.payment-step::before,
+.welcome-container::before,
+.success-container::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 8px !important;
+  background: linear-gradient(to right, #1976d2, rgba(25, 118, 210, 0.8)) !important;
+  z-index: 1 !important;
+}
+
+/* Consistent Header Styling */
+.subscription-header,
+.parameters-header,
+.profile-header,
+.interests-header,
+.payment-header,
+.welcome-header,
+.success-header,
+.step-header,
+.subscription-step > h2,
+.subscription-step h2,
+.subscription-step .step-header,
+.payment-step > h2,
+.payment-step h2,
+.payment-step .step-header {
+  text-align: center !important;
+  margin-bottom: 40px !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Consistent Title Styling */
+.subscription-title,
+.parameters-title,
+.profile-title,
+.interests-title,
+.payment-title,
+.welcome-title,
+.success-title,
+.subscription-step > h2,
+.subscription-step h2,
+.payment-step > h2,
+.payment-step h2,
+h2.profile-title,
+h2.parameters-title,
+h2.interests-title,
+h2.payment-title,
+h2.welcome-title,
+h2.success-title {
+  font-size: 28px !important;
+  margin: 0 0 15px 0 !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Consistent Description Styling */
+.subscription-description,
+.parameters-description,
+.profile-description,
+.interests-description,
+.payment-description,
+.welcome-description,
+.success-description,
+.step-description,
+.subscription-step p.step-description,
+.payment-step p.step-description,
+p.profile-description,
+p.parameters-description,
+p.interests-description,
+p.payment-description,
+p.welcome-description,
+p.success-description {
+  margin: 0 auto 30px !important;
+  color: #666 !important;
+  font-size: 16px !important;
+  max-width: 700px !important;
+  text-align: center !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Consistent Navigation Button Layout */
+.navigation-buttons,
+.step-actions {
+  margin-top: 40px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #eee !important;
+  display: flex !important;
+  justify-content: space-between !important; /* This ensures Back is on left, Next on right */
+  width: 100% !important;
+}
+
+/* Back Button Styling */
+.back-button,
+.secondary-button {
+  padding: 12px 24px !important;
+  background-color: #fff !important;
+  color: #333 !important;
+  border: 1px solid #ddd !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  transition: all 0.2s ease !important;
+  margin-right: auto !important; /* Ensures it stays left-aligned */
+}
+
+.back-button:hover,
+.secondary-button:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* Next Button Styling */
+.next-button,
+.primary-button {
+  padding: 12px 28px !important;
+  background-color: #1976d2 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  transition: all 0.2s ease !important;
+  margin-left: auto !important; /* Ensures it stays right-aligned */
+}
+
+.next-button:hover,
+.primary-button:hover {
+  background-color: #1565c0 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+/* Fix for when only one button is present */
+.navigation-buttons.single-button,
+.step-actions.single-button {
+  justify-content: flex-end !important;
+}
+
+/* Override any center alignment that might be applied elsewhere */
+.navigation-buttons.centered,
+.step-actions.centered {
+  justify-content: space-between !important;
+}
+
+/* Make sure all text is properly visible */
+.subscription-step,
+.parameters-container,
+.profile-container,
+.interests-container,
+.payment-step,
+.welcome-container,
+.success-container {
+  color: #333 !important;
+}
+
+/* Force text centering for any nested elements with text-align classes */
+[class*="title"],
+[class*="header"] > h2,
+[class*="header"] h2,
+[class*="step"] > h2,
+.subscription-step h2,
+.payment-step h2 {
+  text-align: center !important;
+}
+
+/* Fix for direct h2 elements that might not have classes */
+.subscription-step > h2:first-of-type,
+.payment-step > h2:first-of-type {
+  text-align: center !important;
+  margin: 0 0 15px 0 !important;
+  display: block !important;
+  width: 100% !important;
+}

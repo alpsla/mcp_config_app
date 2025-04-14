@@ -1,0 +1,57 @@
+/* CSS to hide specific overlay elements */
+
+/* Hide the Hugging Face token entry overlay */
+#token-entry-overlay,
+div[id*="token-entry-overlay"],
+div[style*="position: fixed"][style*="top: 20px"][style*="right: 20px"][style*="z-index: 9999"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide any direct token input elements */
+#direct-token-input,
+input[id*="direct-token-input"],
+button[id*="direct-token-save"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide "Save Parameters as Preset" section */
+div:has(h4:contains("Save Parameters as Preset")),
+form:has(input[name="presetName"]),
+div:has(input[name="enablePreset"]),
+input[name="presetName"],
+input[name="enablePreset"],
+form[data-dashlane-rid*="deb972b8742a"],
+input[data-dashlanecreated="true"],
+span[data-dashlanecreated="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide any Dashlane elements */
+[data-dashlanecreated="true"],
+[data-dashlane-rid] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide any other token overlay containers that might be dynamically created */
+.token-overlay-container,
+.floating-token-input,
+.floating-preset-container,
+.preset-form,
+.preset-container,
+.preset-section,
+.dashlane-ui-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

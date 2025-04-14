@@ -1,0 +1,88 @@
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  overflow-x: auto; /* Allow horizontal scroll on small screens */
+  padding: 10px 0;
+}
+
+.step-indicators-container {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  z-index: 2;
+}
+
+.step-circle.active {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.step-label {
+  font-size: 14px;
+  margin-right: 20px;
+  transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  width: 30px;
+  margin: 0 5px;
+  z-index: 1;
+  transition: background-color 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .step-indicator {
+    padding: 10px 5px;
+  }
+  
+  .step-label {
+    font-size: 12px;
+    margin-right: 15px;
+  }
+  
+  .step-circle {
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+  }
+  
+  .step-connector {
+    width: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .step-label {
+    display: none; /* Hide labels on very small screens */
+  }
+  
+  .step-circle {
+    margin-right: 5px;
+  }
+  
+  .step-connector {
+    width: 15px;
+  }
+}

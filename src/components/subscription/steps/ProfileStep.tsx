@@ -1,120 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../SubscriptionFlow.css';
-
-// Add a direct fix for the progress bar steps
-const fixProgressBarOnce = () => {
-  console.log('ProfileStep: Running progress bar fix');
-  
-  // Find the progress bar  
-  const progressBar = document.querySelector('.subscription-progress');
-  if (!progressBar) return;
-  
-  // Check if we already have all steps
-  const steps = progressBar.querySelectorAll('.progress-step');
-  const stepNames = Array.from(steps).map(step => {
-    const nameEl = step.querySelector('.step-name');
-    return nameEl ? nameEl.textContent : null;
-  }).filter(Boolean);
-  
-  // Only fix if we're missing the Interests or Parameters steps
-  if (stepNames.includes('Interests') && stepNames.includes('Parameters')) {
-    console.log('ProfileStep: No fix needed - all steps present');
-    return;
-  }
-  
-  console.log('ProfileStep: Missing steps, rebuilding progress bar');
-  
-  // Define all required steps
-  const requiredSteps = [
-    { name: 'Welcome', completed: true, active: false },
-    { name: 'Profile', completed: false, active: true },
-    { name: 'Interests', completed: false, active: false },
-    { name: 'Parameters', completed: false, active: false },
-    { name: 'Payment', completed: false, active: false },
-    { name: 'Success', completed: false, active: false }
-  ];
-  
-  // Clear the progress bar
-  progressBar.innerHTML = '';
-  
-  // Create the connecting line
-  const line = document.createElement('div');
-  line.style.position = 'absolute';
-  line.style.top = '16px';
-  line.style.left = '0';
-  line.style.right = '0';
-  line.style.height = '2px';
-  line.style.backgroundColor = '#e0e0e0';
-  line.style.zIndex = '1';
-  progressBar.appendChild(line);
-  
-  // Create all steps
-  requiredSteps.forEach((step, index) => {
-    // Create step element
-    const stepDiv = document.createElement('div');
-    stepDiv.className = `progress-step ${step.active ? 'active' : ''} ${step.completed ? 'completed' : ''}`;
-    stepDiv.style.display = 'flex';
-    stepDiv.style.flexDirection = 'column';
-    stepDiv.style.alignItems = 'center';
-    stepDiv.style.position = 'relative';
-    stepDiv.style.zIndex = '2';
-    stepDiv.style.flex = '1';
-    stepDiv.style.minWidth = '80px';
-    stepDiv.style.marginBottom = '10px';
-    
-    // Create number element
-    const numberDiv = document.createElement('div');
-    numberDiv.className = 'step-number';
-    numberDiv.style.width = '32px';
-    numberDiv.style.height = '32px';
-    numberDiv.style.borderRadius = '50%';
-    numberDiv.style.display = 'flex';
-    numberDiv.style.alignItems = 'center';
-    numberDiv.style.justifyContent = 'center';
-    numberDiv.style.marginBottom = '0.5rem';
-    numberDiv.style.fontWeight = '600';
-    numberDiv.style.border = '2px solid #fff';
-    
-    if (step.completed) {
-      numberDiv.innerHTML = '✓';
-      numberDiv.style.backgroundColor = '#34a853';
-      numberDiv.style.color = 'white';
-    } else if (step.active) {
-      numberDiv.textContent = (index + 1).toString();
-      numberDiv.style.backgroundColor = '#4285f4';
-      numberDiv.style.color = 'white';
-    } else {
-      numberDiv.textContent = (index + 1).toString();
-      numberDiv.style.backgroundColor = '#e0e0e0';
-      numberDiv.style.color = '#757575';
-    }
-    
-    // Create name element
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'step-name';
-    nameDiv.textContent = step.name;
-    nameDiv.style.fontSize = '0.85rem';
-    nameDiv.style.textAlign = 'center';
-    
-    if (step.active) {
-      nameDiv.style.color = '#4285f4';
-      nameDiv.style.fontWeight = '600';
-    } else if (step.completed) {
-      nameDiv.style.color = '#34a853';
-    } else {
-      nameDiv.style.color = '#757575';
-    }
-    
-    // Add elements to step
-    stepDiv.appendChild(numberDiv);
-    stepDiv.appendChild(nameDiv);
-    
-    // Add step to progress bar
-    progressBar.appendChild(stepDiv);
-  });
-  
-  console.log('ProfileStep: Progress bar rebuilt with all steps');
-};
+import './ProfileStep.css';
 
 interface ProfileStepProps {
   initialData: {
@@ -128,26 +14,33 @@ interface ProfileStepProps {
   onBack: () => void;
 }
 
+/**
+ * ProfileStep Component
+ * 
+ * A clean React component for the profile step of the subscription flow.
+ * This component handles user profile data collection in a standard React way.
+ */
 const ProfileStep: React.FC<ProfileStepProps> = ({
   initialData,
   onNext,
   onBack
 }) => {
-  // Safely initialize data with defaults and console log for debugging
-  const [profileData, setProfileData] = useState(() => {
-    console.log('ProfileStep initializing with data:', initialData);
-    return {
-      firstName: initialData?.firstName || '',
-      lastName: initialData?.lastName || '',
-      displayName: initialData?.displayName || '',
-      company: initialData?.company || '',
-      role: initialData?.role || ''
-    };
+  // Safely initialize data with defaults
+  const [profileData, setProfileData] = useState({
+    firstName: initialData?.firstName || '',
+    lastName: initialData?.lastName || '',
+    displayName: initialData?.displayName || '',
+    company: initialData?.company || '',
+    role: initialData?.role || ''
   });
   
-  // Log when initialData changes
+  // Log when component renders
   useEffect(() => {
-    console.log('ProfileStep initialData changed:', initialData);
+    console.log('ProfileStep rendered');
+  }, []);
+  
+  // Update from props if they change
+  useEffect(() => {
     if (initialData) {
       setProfileData(prevData => ({
         ...prevData,
@@ -158,7 +51,6 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
         role: initialData.role || prevData.role
       }));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -197,146 +89,64 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  // Validate on blur to provide immediate feedback
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    if (name === 'firstName' && !value.trim()) {
+      setErrors(prev => ({
+        ...prev,
+        firstName: 'First name is required'
+      }));
+    } else if (name === 'lastName' && !value.trim()) {
+      setErrors(prev => ({
+        ...prev,
+        lastName: 'Last name is required'
+      }));
+    }
+  };
+
   // Handle next button click
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      onNext(profileData);
-    }
-  };
-  
-  // Run the progress bar fix after the component mounts
-  useEffect(() => {
-    // Wait for rendering to complete
-    setTimeout(() => {
-      fixProgressBarOnce();
-    }, 100);
-  }, []);
-
-
-  // Add code to execute when the component mounts
-  useEffect(() => {
-    // Set up a MutationObserver to watch for changes to the DOM
-    const observer = new MutationObserver((mutations) => {
-      // On any DOM change, check if we need to fix the progress bar
-      ensureProgressSteps();
-    });
-
-    // Start observing the document with the configured parameters
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Run the fix function immediately
-    ensureProgressSteps();
-
-    // Clean up the observer when the component unmounts
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  // Function to ensure the progress bar has all required steps
-  const ensureProgressSteps = () => {
-    // Find the progress bar
-    const progressBar = document.querySelector('.subscription-progress');
-    if (!progressBar) {
-      console.log('Progress bar not found');
-      return;
-    }
-
-    // Required steps in the correct order
-    const requiredSteps = ['Welcome', 'Profile', 'Interests', 'Parameters', 'Payment', 'Success'];
     
-    // Replace all steps
-    progressBar.innerHTML = '';
-
-    // Add the progress line
-    const line = document.createElement('div');
-    line.style.position = 'absolute';
-    line.style.top = '16px';
-    line.style.left = '0';
-    line.style.right = '0';
-    line.style.height = '2px';
-    line.style.backgroundColor = '#e0e0e0';
-    line.style.zIndex = '1';
-    progressBar.appendChild(line);
-
-    // Create all steps
-    requiredSteps.forEach((stepName, index) => {
-      const isCompleted = index < 1; // Welcome is completed
-      const isActive = index === 1;  // Profile is active
-
-      const stepDiv = document.createElement('div');
-      stepDiv.className = `progress-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
-      stepDiv.style.display = 'flex';
-      stepDiv.style.flexDirection = 'column';
-      stepDiv.style.alignItems = 'center';
-      stepDiv.style.position = 'relative';
-      stepDiv.style.zIndex = '2';
-      stepDiv.style.flex = '1';
-      stepDiv.style.minWidth = '80px';
-      stepDiv.style.marginBottom = '10px';
-
-      // Step number
-      const numberDiv = document.createElement('div');
-      numberDiv.className = 'step-number';
-      if (isCompleted) {
-        numberDiv.innerHTML = '✓';
-        numberDiv.style.backgroundColor = '#34a853';
-        numberDiv.style.color = 'white';
-      } else if (isActive) {
-        numberDiv.textContent = (index + 1).toString();
-        numberDiv.style.backgroundColor = '#4285f4';
-        numberDiv.style.color = 'white';
-      } else {
-        numberDiv.textContent = (index + 1).toString();
-        numberDiv.style.backgroundColor = '#e0e0e0';
-        numberDiv.style.color = '#757575';
+    // Validate the form
+    const isValid = validateForm();
+    
+    // Add visual feedback by scrolling to the first error if validation fails
+    if (!isValid) {
+      // Find the first error field
+      const firstErrorField = Object.keys(errors)[0];
+      if (firstErrorField) {
+        const errorElement = document.getElementById(firstErrorField);
+        if (errorElement) {
+          // Scroll to the error field with a small offset
+          errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Focus the error field
+          errorElement.focus();
+        }
       }
-
-      numberDiv.style.width = '32px';
-      numberDiv.style.height = '32px';
-      numberDiv.style.borderRadius = '50%';
-      numberDiv.style.display = 'flex';
-      numberDiv.style.alignItems = 'center';
-      numberDiv.style.justifyContent = 'center';
-      numberDiv.style.marginBottom = '0.5rem';
-      numberDiv.style.fontWeight = '600';
-      numberDiv.style.border = '2px solid #fff';
-
-      // Step name
-      const nameDiv = document.createElement('div');
-      nameDiv.className = 'step-name';
-      nameDiv.textContent = stepName;
-      if (isActive) {
-        nameDiv.style.color = '#4285f4';
-        nameDiv.style.fontWeight = '600';
-      } else if (isCompleted) {
-        nameDiv.style.color = '#34a853';
-      } else {
-        nameDiv.style.color = '#757575';
-      }
-      nameDiv.style.fontSize = '0.85rem';
-      nameDiv.style.textAlign = 'center';
-
-      // Add to step
-      stepDiv.appendChild(numberDiv);
-      stepDiv.appendChild(nameDiv);
-
-      // Add to progress bar
-      progressBar.appendChild(stepDiv);
-    });
-
-    console.log('Progress bar updated with all steps');
+      return; // Prevent proceeding to next step
+    }
+    
+    // Proceed to next step if validation passes
+    onNext(profileData);
   };
   
   return (
     <div className="subscription-step">
-      <h2>Profile Information</h2>
+      <h2>Your Profile Information</h2>
       <p className="step-description">
-        Tell us a bit about yourself to personalize your experience
+        Tell us a bit about yourself to help us personalize your experience and provide better support.
       </p>
 
-      <form className="subscription-form">
+      <form 
+        className="subscription-form" 
+        onSubmit={(e) => { 
+          e.preventDefault(); 
+          handleNext(e as any); 
+        }}
+      >
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="firstName">
@@ -348,8 +158,10 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
               name="firstName"
               value={profileData.firstName}
               onChange={handleInputChange}
+              onBlur={handleBlur}
               className={errors.firstName ? 'error' : ''}
               placeholder="Your first name"
+              autoComplete="given-name"
             />
             {errors.firstName && (
               <div className="error-message">{errors.firstName}</div>
@@ -366,12 +178,14 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
               name="lastName"
               value={profileData.lastName}
               onChange={handleInputChange}
+              onBlur={handleBlur}
               className={errors.lastName ? 'error' : ''}
               placeholder="Your last name"
+              autoComplete="family-name"
             />
             {errors.lastName && (
               <div className="error-message">{errors.lastName}</div>
-            )}
+            )}            
           </div>
         </div>
 
@@ -386,6 +200,7 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
             value={profileData.displayName}
             onChange={handleInputChange}
             placeholder="How you'd like to be addressed in the app"
+            autoComplete="nickname"
           />
           <div className="helper-text">
             This is how we'll address you in the application
@@ -404,6 +219,7 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
               value={profileData.company}
               onChange={handleInputChange}
               placeholder="Your company name"
+              autoComplete="organization"
             />
           </div>
 
@@ -418,73 +234,40 @@ const ProfileStep: React.FC<ProfileStepProps> = ({
               value={profileData.role}
               onChange={handleInputChange}
               placeholder="Your role or position"
+              autoComplete="organization-title"
             />
           </div>
         </div>
       </form>
       
-      <div 
-        id="profile-buttons-container"
-        className="step-actions button-container navigation-buttons"
-        style={{ 
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: '20px',
-          marginTop: '30px',
-          paddingTop: '20px',
-          borderTop: '1px solid #e0e0e0',
-          width: '100%',
-          position: 'relative',
-          zIndex: 1000,
-          visibility: 'visible',
-          opacity: 1
-        }}
-      >
-        <button 
-          id="profile-back-button"
+      <div className="privacy-notice">
+        <div className="privacy-icon">🔒</div>
+        <div className="privacy-text">
+          Your privacy is important to us. The information you provide is secured and only used to enhance your experience. We never share your personal information with third parties without your consent.
+        </div>
+      </div>
+      
+      {/* Validation summary - only shown when there are errors */}
+      {Object.keys(errors).length > 0 && (
+        <div className="validation-summary">
+          <div className="validation-icon">⚠️</div>
+          <div className="validation-text">
+            Please correct the highlighted fields before proceeding.
+          </div>
+        </div>
+      )}
+      
+      <div className="step-actions">
+        <button
           type="button"
-          className="secondary-button button-cancel"
-          style={{
-            padding: '12px 24px',
-            backgroundColor: '#f2f2f2',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            minWidth: '150px',
-            fontSize: '16px',
-            display: 'inline-block',
-            visibility: 'visible',
-            opacity: 1,
-            position: 'relative',
-            zIndex: 1001
-          }}
+          className="secondary-button"
           onClick={onBack}
         >
           Back
         </button>
-        
-        <button 
-          id="profile-next-button"
+        <button
           type="button"
-          className="primary-button basic button-continue"
-          style={{
-            padding: '12px 24px',
-            backgroundColor: '#4285F4',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            minWidth: '150px',
-            fontSize: '16px',
-            display: 'inline-block',
-            visibility: 'visible',
-            opacity: 1,
-            position: 'relative',
-            zIndex: 1001
-          }}
+          className="primary-button"
           onClick={handleNext}
         >
           Next

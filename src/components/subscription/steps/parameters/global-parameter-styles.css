@@ -1,0 +1,61 @@
+/**
+ * Global styles for parameters page to ensure proper disabling
+ * Import this in ParametersStep.tsx if needed
+ */
+
+/* Force all disabled elements to behave properly */
+.parameters-container input:disabled,
+.parameters-container button:disabled,
+.parameters-container select:disabled,
+.parameters-container textarea:disabled,
+.parameters-container .disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* Ensure disabled sections are truly inaccessible */
+.parameters-container .parameter-sliders.disabled,
+.parameters-container .advanced-parameters.disabled,
+.parameters-container .preset-saver.disabled,
+.parameters-container .hf-token-section.disabled {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Add this style to all disabled slider thumbs */
+.parameters-container input[type="range"]:disabled::-webkit-slider-thumb,
+.parameters-container input[type="range"]:disabled::-moz-range-thumb {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Add this style to disabled slider tracks */
+.parameters-container input[type="range"]:disabled::-webkit-slider-runnable-track,
+.parameters-container input[type="range"]:disabled::-moz-range-track {
+  opacity: 0.5 !important;
+}
+
+/* Ensure anchor tags are disabled too */
+.parameters-container a[disabled],
+.parameters-container .disabled a {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  text-decoration: none !important;
+}
+
+/* Force cursor style for disabled elements */
+.parameters-container .disabled * {
+  cursor: not-allowed !important;
+}
+
+/* Apply special highlighting to recommended settings toggle for emphasis */
+.parameters-container .recommended-settings {
+  transition: box-shadow 0.3s ease;
+}
+
+.parameters-container .recommended-settings:hover {
+  box-shadow: 0 0 10px rgba(25, 118, 210, 0.1);
+}

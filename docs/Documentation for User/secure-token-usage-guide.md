@@ -51,7 +51,7 @@ When you save your token:
    - On Linux: Your token is stored using libsecret or in an encrypted file
 
 2. **Wrapper Script Generation**:
-   - A small script is created that retrieves your token securely
+   - A small script is created that retrieves your token securely 
    - The Claude Desktop configuration is updated to use this script
    - The script sets your token as an environment variable
 

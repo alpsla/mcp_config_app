@@ -1,0 +1,103 @@
+.preset-saver {
+  margin-top: 30px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.preset-saver:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.preset-saver.disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.preset-saver h4 {
+  font-size: 18px;
+  color: #333;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.preset-description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* Fix for the form layout */
+.preset-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.preset-input-container {
+  flex: 1;
+  max-width: 70%;
+}
+
+.preset-name-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.preset-name-input:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.save-preset-button {
+  padding: 10px 16px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-preset-button:hover:not(:disabled) {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+.save-preset-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 480px) {
+  .preset-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .preset-input-container {
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .save-preset-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,96 @@
+/* Main Parameter Slider Fix - Based on working Advanced Parameters styles */
+
+/* Override the slider styles from ParameterSlider.css with the working ones from AdvancedParametersSection.css */
+
+/* Container styling */
+.slider-container {
+  position: relative !important;
+  height: 20px !important;
+  margin: 15px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Track styling */
+.slider-track {
+  position: absolute !important;
+  height: 8px !important;
+  width: 100% !important;
+  background-color: #E0E0E0 !important;
+  border-radius: 4px !important;
+  z-index: 1 !important;
+  overflow: hidden !important;
+}
+
+/* Fill styling */
+.slider-fill {
+  position: absolute !important;
+  height: 100% !important;
+  background-color: #1976D2 !important;
+  border-radius: 4px !important;
+  z-index: 2 !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+/* Slider input styling */
+.parameter-slider {
+  position: absolute !important;
+  -webkit-appearance: none !important;
+  width: 100% !important;
+  height: 20px !important;
+  background: transparent !important;
+  z-index: 3 !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  top: 0 !important;
+}
+
+/* Webkit thumb styling (Chrome, Safari) */
+.parameter-slider::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: #1976D2 !important;
+  cursor: pointer !important;
+  border: 3px solid white !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  position: relative !important;
+  z-index: 5 !important;
+  margin-top: 0 !important;
+  transform: translateY(-6px) !important; /* Center the thumb on the track */
+}
+
+/* Firefox thumb styling */
+.parameter-slider::-moz-range-thumb {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: #1976D2 !important;
+  cursor: pointer !important;
+  border: 3px solid white !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* Firefox track styling */
+.parameter-slider::-moz-range-track {
+  height: 8px !important;
+  background: transparent !important;
+}
+
+/* Focus states */
+.parameter-slider:focus {
+  outline: none !important;
+}
+
+.parameter-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.3) !important;
+}
+
+.parameter-slider:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.3) !important;
+}

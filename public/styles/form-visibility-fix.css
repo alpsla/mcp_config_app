@@ -1,0 +1,229 @@
+/**
+ * Form Visibility Fix
+ * CSS file to ensure form elements remain visible
+ */
+
+/* Ensure subscription form is always visible */
+.subscription-form,
+form.subscription-form,
+.subscription-step form,
+[data-testid="profile-form"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  position: static !important;
+  overflow: visible !important;
+  margin: 0 auto 2rem !important;
+  padding: 1.5rem !important;
+  background-color: #fff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  max-width: 800px !important;
+}
+
+/* Form row styling */
+.form-row,
+.subscription-form .form-row,
+[data-testid="profile-form"] .form-row {
+  display: flex !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Form group styling */
+.form-group,
+.subscription-form .form-group,
+[data-testid="profile-form"] .form-group {
+  display: block !important;
+  flex: 1 !important;
+  margin-bottom: 1.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Label styling */
+.form-group label,
+.subscription-form label,
+[data-testid="profile-form"] label {
+  display: block !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Input styling */
+.form-group input,
+.subscription-form input,
+[data-testid="profile-form"] input {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-size: 1rem !important;
+  background-color: #fff !important;
+  color: #333 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Input focus state */
+.form-group input:focus,
+.subscription-form input:focus,
+[data-testid="profile-form"] input:focus {
+  border-color: #4285f4 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2) !important;
+}
+
+/* Helper text */
+.helper-text,
+.subscription-form .helper-text,
+[data-testid="profile-form"] .helper-text {
+  display: block !important;
+  margin-top: 0.5rem !important;
+  font-size: 0.85rem !important;
+  color: #757575 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Error message */
+.error-message,
+.subscription-form .error-message,
+[data-testid="profile-form"] .error-message {
+  color: #ff5722 !important;
+  font-size: 0.85rem !important;
+  margin-top: 0.5rem !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Error input */
+input.error,
+.subscription-form input.error,
+[data-testid="profile-form"] input.error {
+  border-color: #ff5722 !important;
+}
+
+/* Required indicator */
+.required,
+.subscription-form .required,
+[data-testid="profile-form"] .required {
+  color: #ff5722 !important;
+}
+
+/* Button container */
+.step-actions,
+.subscription-form .step-actions,
+[data-testid="profile-form"] ~ .step-actions {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  margin-top: 30px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #e0e0e0 !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1000 !important;
+}
+
+/* Buttons */
+.primary-button,
+.secondary-button,
+.button-back,
+.button-next,
+.subscription-form button,
+[data-testid="profile-form"] ~ .step-actions button {
+  padding: 0.75rem 2rem !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  min-width: 150px !important;
+  font-size: 1rem !important;
+  transition: all 0.2s ease !important;
+  display: inline-block !important;
+  z-index: 1001 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.primary-button,
+.button-next {
+  background-color: #4285F4 !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.secondary-button,
+.button-back {
+  background-color: #f2f2f2 !important;
+  color: #333 !important;
+  border: 1px solid #ddd !important;
+}
+
+/* Privacy notice */
+.privacy-notice,
+.subscription-form ~ .privacy-notice {
+  margin-top: 20px !important;
+  padding: 15px !important;
+  border-radius: 8px !important;
+  background-color: #f8f9fa !important;
+  border-left: 3px solid #34a853 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.privacy-icon,
+.subscription-form ~ .privacy-notice .privacy-icon {
+  margin-right: 10px !important;
+  font-size: 18px !important;
+  color: #34a853 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.privacy-text,
+.subscription-form ~ .privacy-notice .privacy-text {
+  font-size: 0.9rem !important;
+  color: #666 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* This disables any DOM scripting that tries to hide these elements */
+form.subscription-form[style*="display: none"],
+form.subscription-form[style*="visibility: hidden"],
+form.subscription-form[style*="opacity: 0"],
+.form-row[style*="display: none"],
+.form-row[style*="visibility: hidden"],
+.form-row[style*="opacity: 0"],
+.form-group[style*="display: none"],
+.form-group[style*="visibility: hidden"],
+.form-group[style*="opacity: 0"],
+label[style*="display: none"],
+label[style*="visibility: hidden"],
+label[style*="opacity: 0"],
+input[style*="display: none"],
+input[style*="visibility: hidden"],
+input[style*="opacity: 0"],
+.step-actions[style*="display: none"],
+.step-actions[style*="visibility: hidden"],
+.step-actions[style*="opacity: 0"],
+button[style*="display: none"],
+button[style*="visibility: hidden"],
+button[style*="opacity: 0"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

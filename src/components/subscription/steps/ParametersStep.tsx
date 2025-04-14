@@ -1,17 +1,40 @@
-import React, { useState } from 'react';
-import RecommendedSettingsToggle from './parameters/RecommendedSettingsToggle';
+import React, { useState, useEffect } from 'react';
+import { SubscriptionTierSimple } from '../../../types/enhanced-types';
+import secureTokenStorage from '../../../utils/secureTokenStorage';
+import '../SubscriptionFlow.css';
+import './ParametersStep.css';
+import './parameters/fix-main-sliders.css'; // Import targeted fix for main sliders
+import useUIFixes from '../../../hooks/useUIFixes';
+
+// Import components
 import ParameterSlider from './parameters/ParameterSlider';
 import HuggingFaceTokenSection from './parameters/HuggingFaceTokenSection';
 import AdvancedParametersSection from './parameters/AdvancedParametersSection';
-import PresetSaver from './parameters/PresetSaver';
 import NavigationButtons from './parameters/NavigationButtons';
-import { SubscriptionTierSimple } from '../../../types/enhanced-types';
-import '../SubscriptionFlow.css';
+
+// Parameter defaults based on tier
+const getTierDefaults = (tier: SubscriptionTierSimple) => {
+  if (tier === 'complete') {
+    return {
+      temperature: 0.8,
+      maxLength: 1024,
+      topP: 0.95,
+      topK: 60
+    };
+  }
+  
+  // Basic tier defaults
+  return {
+    temperature: 0.7,
+    maxLength: 512, 
+    topP: 0.9,
+    topK: 50
+  };
+};
 
 interface ParametersStepProps {
   selectedTier: SubscriptionTierSimple;
   initialData: {
-    useDefaultParameters?: boolean;
     temperature?: number;
     maxLength?: number;
     topP?: number;
@@ -28,80 +51,181 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
   onNext,
   onBack
 }) => {
-  // State for parameters
-  const [useDefaultParameters, setUseDefaultParameters] = useState(
-    initialData.useDefaultParameters !== undefined ? initialData.useDefaultParameters : true
+  // State for tracking if form has been interacted with
+  const [formTouched, setFormTouched] = useState(false);
+  
+  // Default values based on tier
+  const tierDefaults = getTierDefaults(selectedTier);
+  
+  // State for parameters - use initialData if available, otherwise use tier defaults
+  const [temperature, setTemperature] = useState(
+    initialData.temperature || tierDefaults.temperature
   );
-  const [temperature, setTemperature] = useState(initialData.temperature || 0.7);
-  const [maxLength, setMaxLength] = useState(initialData.maxLength || 512);
-  const [topP, setTopP] = useState(initialData.topP || 0.95);
-  const [topK, setTopK] = useState(initialData.topK || 50);
+  
+  const [maxLength, setMaxLength] = useState(
+    initialData.maxLength || tierDefaults.maxLength
+  );
+  
+  const [topP, setTopP] = useState(
+    initialData.topP || tierDefaults.topP
+  );
+  
+  const [topK, setTopK] = useState(
+    initialData.topK || tierDefaults.topK
+  );
+  
   const [hfToken, setHfToken] = useState(initialData.hfToken || '');
+  
+  // Validation states
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [hfTokenError, setHfTokenError] = useState<string | null>(null);
   
   // Color for UI elements based on selected tier
   const color = selectedTier === 'complete' ? '#673AB7' : '#1976D2';
   
-  // Handle form submission
-  const handleNext = () => {
-    onNext({
-      useDefaultParameters,
-      temperature,
-      maxLength,
-      topP,
-      topK,
-      hfToken
-    });
+  // Apply UI fixes
+  useUIFixes();
+  
+  // Handle token changes
+  const handleTokenChange = (newToken: string) => {
+    setHfToken(newToken);
+    setFormTouched(true);
+    
+    // Only validate if form has been touched
+    if (newToken === '') {
+      // Only show error if form has been touched and submitted
+      if (formTouched) {
+        setHfTokenError('Hugging Face token is required. Please enter a valid token.');
+      }
+    } else if (newToken && newToken.length > 0) {
+      validateHfTokenFormat(newToken);
+    }
   };
   
-  // Handle preset saving
-  const handleSavePreset = (name: string) => {
-    console.log('Saving preset:', name, {
-      temperature,
-      maxLength,
-      topP,
-      topK
-    });
-    // Here you would integrate with your storage solution
-    alert(`Preset "${name}" has been saved.`);
+  // Validate Hugging Face token format
+  const validateHfTokenFormat = (token: string): boolean => {
+    // Simple validation - HF tokens typically start with "hf_" and are longer than 8 chars
+    if (token && !token.startsWith('hf_') && token.length > 0) {
+      setHfTokenError("Tokens typically start with 'hf_'");
+      return false;
+    }
+    setHfTokenError(null);
+    return true;
+  };
+  
+  // Check if token is empty
+  const validateTokenPresence = (token: string): boolean => {
+    if (!token || token.trim().length === 0) {
+      setHfTokenError('Hugging Face token is required. Please enter a valid token.');
+      return false;
+    }
+    return true;
+  };
+  
+  // Handle form submission with validation
+  const handleNext = async () => {
+    // Mark form as touched when user tries to submit
+    setFormTouched(true);
+    
+    // Reset validation states
+    setValidationError(null);
+    setIsValidating(true);
+    
+    try {
+      // Check if HF token is empty
+      if (!hfToken || hfToken.trim().length === 0) {
+        // Use specific error message for empty token
+        validateTokenPresence(hfToken);
+        setIsValidating(false);
+        
+        // Focus on the HF token input
+        const hfTokenInput = document.getElementById('hf-token-input');
+        if (hfTokenInput) {
+          hfTokenInput.focus();
+          // Scroll to the input if needed
+          hfTokenInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        return; // Prevent navigation if token is empty
+      }
+      
+      // Validate Hugging Face token
+      if (!validateHfTokenFormat(hfToken)) {
+        setIsValidating(false);
+        
+        // Focus on the HF token input for format validation errors too
+        const hfTokenInput = document.getElementById('hf-token-input');
+        if (hfTokenInput) {
+          hfTokenInput.focus();
+          hfTokenInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        return; // Stop if token format is invalid
+      }
+      
+      // Store token securely in the local device storage
+      const tokenSaved = await secureTokenStorage.storeToken(hfToken);
+      if (!tokenSaved) {
+        setValidationError('Failed to securely store your token. Please try again.');
+        setIsValidating(false);
+        return;
+      }
+      
+      // If validation passes, proceed to next step
+      // We pass the actual token for UI purposes, but it's stored securely on the device
+      onNext({
+        temperature,
+        maxLength,
+        topP,
+        topK,
+        hfToken
+      });
+    } catch (error) {
+      setValidationError('An unexpected error occurred.');
+    } finally {
+      setIsValidating(false);
+    }
   };
   
   return (
-    <div className="subscription-step" style={{ paddingTop: '20px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <div style={{
-          width: '70px',
-          height: '70px',
-          borderRadius: '50%',
-          backgroundColor: '#E3F2FD',
-          color: color,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '30px',
-          margin: '0 auto 20px'
-        }}>⚙️</div>
-        <h2 style={{
-          fontSize: '28px', 
-          margin: '0 0 10px 0',
-          color: '#333',
-          fontWeight: 600
-        }}>
-          Model Parameters
+    <div className="parameters-container">
+      {/* Header Section - Improved with settings icon before title */}
+      <div className="parameters-header">
+        <h2 className="parameters-title">
+          <span className="settings-icon">⚙️</span> Model Parameters
         </h2>
-        <p style={{ margin: '0 auto', color: '#666', fontSize: '16px', maxWidth: '600px' }}>
+        <p className="parameters-description">
           Customize how AI models respond to your requests by adjusting these parameters.
         </p>
       </div>
       
-      <div style={{ maxWidth: '650px', margin: '0 auto' }}>
-        {/* Recommended Settings Toggle */}
-        <RecommendedSettingsToggle 
-          enabled={useDefaultParameters}
-          onChange={setUseDefaultParameters}
-        />
+      <div className="parameters-content">
+        {/* Validation Error Message */}
+        {validationError && (
+          <div className="validation-error" role="alert">
+            <span className="error-icon">⚠️</span>
+            {validationError}
+          </div>
+        )}
+        
+        {/* Information Message - without the Reset button */}
+        <div className="parameters-info-message" style={{
+          backgroundColor: '#F0F7FF',
+          padding: '15px 20px',
+          borderRadius: '8px',
+          marginBottom: '25px',
+          border: '1px solid #BBDEFB'
+        }}>
+          <p style={{margin: '0'}}>
+            We've provided recommended parameter values based on typical user configurations. 
+            You can adjust these values as needed for your specific use case. 
+            Your settings will be saved as your default parameters when you click Next.
+          </p>
+        </div>
         
         {/* Parameter Sliders */}
-        <div style={{ opacity: useDefaultParameters ? 0.7 : 1, pointerEvents: useDefaultParameters ? 'none' : 'auto' }}>
+        <div className="parameter-sliders">
           <ParameterSlider
             label="Temperature"
             value={temperature}
@@ -112,7 +236,6 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
             leftLabel="More deterministic"
             rightLabel="More creative"
             description="Controls the randomness of outputs. Lower values make results more focused and deterministic."
-            disabled={useDefaultParameters}
           />
           
           <ParameterSlider
@@ -123,16 +246,18 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
             max={4096}
             step={256}
             leftLabel="Shorter responses"
-            rightLabel="Longer responses"
+            rightLabel="Longer responses" 
             description="The maximum number of tokens that can be generated. Higher values allow for more detailed responses."
-            disabled={useDefaultParameters}
+            unit=" tokens"
           />
         </div>
         
-        {/* Hugging Face API Token Section */}
+        {/* Hugging Face API Token Section - Ensure always visible */}
         <HuggingFaceTokenSection
-          initialToken={hfToken}
-          onChange={setHfToken}
+          token={hfToken}
+          onTokenChange={handleTokenChange}
+          error={hfTokenError}
+          initialExpanded={true}
         />
         
         {/* Advanced Parameters Section */}
@@ -141,22 +266,27 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
           topK={topK}
           onTopPChange={setTopP}
           onTopKChange={setTopK}
-          disabled={useDefaultParameters}
+          repetitionPenalty={1.1}
+          encoderRepetitionPenalty={1.0}
+          noRepeatNgramSize={0}
+          typicalP={1.0}
+          numBeams={1}
+          onRepetitionPenaltyChange={(value) => console.log('Rep penalty changed:', value)}
+          onEncoderRepetitionPenaltyChange={(value) => console.log('Encoder penalty changed:', value)}
+          onNoRepeatNgramSizeChange={(value) => console.log('No repeat ngram changed:', value)}
+          onTypicalPChange={(value) => console.log('Typical P changed:', value)}
+          onNumBeamsChange={(value) => console.log('Num beams changed:', value)}
+          initialExpanded={true}
         />
         
-        {/* Preset Saver */}
-        <PresetSaver
-          onSave={handleSavePreset}
-          disabled={useDefaultParameters}
+        {/* Navigation Buttons */}
+        <NavigationButtons
+          onBack={onBack}
+          onNext={handleNext}
+          nextColor={color}
+          disabled={isValidating}
         />
       </div>
-      
-      {/* Navigation Buttons */}
-      <NavigationButtons
-        onBack={onBack}
-        onNext={handleNext}
-        nextColor={color}
-      />
     </div>
   );
 };

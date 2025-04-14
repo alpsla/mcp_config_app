@@ -1,89 +1,171 @@
-import React, { useState } from 'react';
-import ParameterInputField from './ParameterInputField';
+import React, { useState, useEffect } from 'react';
+import './HuggingFaceTokenSection.css';
 
 interface HuggingFaceTokenSectionProps {
+  token?: string;
   initialToken?: string;
-  onChange: (token: string) => void;
+  onTokenChange?: (token: string) => void;
+  onChange?: (token: string) => void;
   disabled?: boolean;
+  error?: string | null;
+  initialExpanded?: boolean;
 }
 
 const HuggingFaceTokenSection: React.FC<HuggingFaceTokenSectionProps> = ({
-  initialToken = '',
+  token,
+  initialToken,
+  onTokenChange,
   onChange,
-  disabled = false
+  disabled = false,
+  error = null,
+  initialExpanded = false
 }) => {
-  const [token, setToken] = useState(initialToken);
+  // Support both naming conventions for token
+  const tokenValue = token || initialToken || '';
+  const handleChange = onTokenChange || onChange || (() => {});
   
-  // Handle token change
-  const handleTokenChange = (newToken: string) => {
-    setToken(newToken);
-    onChange(newToken);
+  const [isExpanded, setIsExpanded] = useState(initialExpanded);
+  const [showToken, setShowToken] = useState(false);
+  const [localToken, setLocalToken] = useState(tokenValue);
+  const [localError, setLocalError] = useState<string | null>(null);
+  
+  // Update local state when prop changes
+  useEffect(() => {
+    setLocalToken(tokenValue);
+  }, [tokenValue]);
+  
+  // Update local error from props
+  useEffect(() => {
+    setLocalError(error);
+  }, [error]);
+  
+  // Update expanded state if prop changes after initial render
+  useEffect(() => {
+    if (initialExpanded !== undefined) {
+      setIsExpanded(initialExpanded);
+    }
+  }, [initialExpanded]);
+  
+  const toggleExpand = () => {
+    if (disabled) return; // Don't toggle if disabled
+    setIsExpanded(!isExpanded);
   };
   
+  const toggleShowToken = (e: React.MouseEvent) => {
+    if (disabled) return; // Don't toggle if disabled
+    e.stopPropagation(); // Prevent event propagation to parent elements
+    setShowToken(!showToken);
+  };
+  
+  const validateToken = (token: string): boolean => {
+    // Basic validation - HF tokens typically start with "hf_" and are longer than 8 chars
+    if (token && !token.startsWith('hf_') && token.length > 0) {
+      setLocalError('Hugging Face token is required. Please enter a valid token.');
+      return false;
+    }
+    
+    // Clear error if valid or empty
+    setLocalError(null);
+    return true;
+  };
+  
+  // Handle token change with real-time validation
+  const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return; // Don't update if disabled
+    const newValue = e.target.value;
+    setLocalToken(newValue);
+    
+    // Different validation messages for different cases
+    if (newValue.length > 0 && !newValue.startsWith('hf_')) {
+      // Only validate format if there's actual input
+      setLocalError('Tokens typically start with "hf_"');
+    } else {
+      // Clear error if valid or empty
+      setLocalError(null); 
+    }
+    
+    handleChange(newValue);
+  };
+  
+  // Automatically expand the section if there's an error
+  useEffect(() => {
+    if (localError && !isExpanded) {
+      setIsExpanded(true);
+    }
+  }, [localError, isExpanded]);
+  
   return (
-    <div className="huggingface-token-section" style={{ 
-      marginTop: '30px', 
-      marginBottom: '20px', 
-      backgroundColor: '#F0F7FF', 
-      padding: '20px', 
-      borderRadius: '10px', 
-      border: '1px solid #BBDEFB',
-      opacity: disabled ? 0.7 : 1,
-      pointerEvents: disabled ? 'none' : 'auto'
-    }}>
-      <h3 style={{ marginTop: 0, color: '#1565C0' }}>
-        Hugging Face API Token
-      </h3>
-      
-      <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#333' }}>
-        To access premium models, you'll need a Hugging Face API token.
-      </p>
-      
-      <div className="token-input-container">
-        <ParameterInputField
-          value={token}
-          onChange={handleTokenChange}
-          placeholder="Enter your Hugging Face API token"
-          isPassword={true}
-          testId="hf-token-input"
+    <div className={`hf-token-section ${disabled ? 'disabled' : ''} hf-visible`}>
+      <div className="token-header" onClick={toggleExpand}>
+        <h3 className="token-title">
+          <span className="token-icon">🔑</span>
+          Hugging Face API Token
+          {localError && <span className="token-error-indicator">⚠️</span>}
+        </h3>
+        <button 
+          type="button" 
+          className="expand-button"
+          aria-expanded={isExpanded}
+          aria-label={isExpanded ? "Collapse token section" : "Expand token section"}
           disabled={disabled}
-        />
+        >
+          {isExpanded ? '−' : '+'}
+        </button>
       </div>
       
-      <div style={{
-        backgroundColor: '#E8F5E9',
-        padding: '10px 15px',
-        borderRadius: '4px',
-        marginTop: '10px',
-        marginBottom: '15px',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <span style={{ color: '#2E7D32', marginRight: '10px', fontSize: '18px' }}>🔒</span>
-        <span style={{ fontSize: '14px' }}>Your token is stored securely on your local device and never transmitted to our servers.</span>
-      </div>
-      
-      <div style={{ marginBottom: '20px' }}>
-        <h4 style={{ fontSize: '16px', color: '#333', marginBottom: '10px' }}>
-          To get a token:
-        </h4>
-        <ol style={{ marginLeft: '20px', paddingLeft: 0 }}>
-          <li style={{ marginBottom: '8px' }}>Visit the Hugging Face Token page: <br/>
+      {isExpanded && (
+        <div className="token-content">
+          <p className="token-description">
+            Enter your Hugging Face API token to use with your subscription.
+            You can find or create your token in your{' '}
             <a 
-              href="https://huggingface.co/settings/tokens/new?tokenType=fineGrained" 
+              href="https://huggingface.co/settings/tokens" 
               target="_blank" 
               rel="noopener noreferrer"
-              style={{ color: '#1976D2', textDecoration: 'none' }}
+              className="hf-link"
+              tabIndex={disabled ? -1 : 0} // Disable tabbing when disabled
             >
-              https://huggingface.co/settings/tokens/new
-            </a>
-          </li>
-          <li style={{ marginBottom: '8px' }}>Sign in (or create a free account)</li>
-          <li style={{ marginBottom: '8px' }}>Enter "MCP Configuration" as the token name</li>
-          <li style={{ marginBottom: '8px' }}>Set the role to "Read"</li>
-          <li>Copy and paste the token in the field above</li>
-        </ol>
-      </div>
+              Hugging Face account settings
+            </a>.
+          </p>
+          
+          <div className="token-input-container">
+            <div className="input-wrapper">
+              <input
+                type={showToken ? "text" : "password"}
+                id="hf-token-input"
+                className={`token-input ${localError ? 'error' : ''}`}
+                value={localToken}
+                onChange={handleTokenChange}
+                placeholder="Enter your Hugging Face API token"
+                aria-label="Hugging Face API token"
+                disabled={disabled}
+                title={localToken} // Show full token on hover
+              />
+              
+              <button
+                type="button"
+                className="toggle-visibility-button"
+                onClick={toggleShowToken}
+                aria-label={showToken ? "Hide token" : "Show token"}
+                disabled={disabled}
+              >
+                <span className="eye-icon">👁️</span>
+              </button>
+              
+              {localError && (
+                <div className="token-error-message" role="alert">
+                  {localError}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="token-note">
+            Your token will be securely stored on your device and <strong>never</strong> transmitted or stored on our servers as plain text. It will only be used for API requests when needed.
+          </div>
+        </div>
+      )}
     </div>
   );
 };

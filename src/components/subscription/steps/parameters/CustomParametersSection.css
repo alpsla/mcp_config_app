@@ -1,0 +1,332 @@
+.custom-parameters {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin: 30px 0;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fff;
+  transition: background-color 0.2s;
+}
+
+.section-header:hover {
+  background-color: #f5f5f5;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.section-icon {
+  margin-right: 10px;
+  font-size: 18px;
+  color: #1976d2;
+}
+
+.parameter-count {
+  font-size: 14px;
+  color: #666;
+  margin-right: 15px;
+}
+
+.expand-button {
+  background: none;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #555;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.expand-button:hover {
+  background-color: #e3e3e3;
+}
+
+.section-content {
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+.section-description {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Parameter list styling */
+.parameter-list {
+  background-color: #fff;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.parameter-list-header {
+  display: flex;
+  background-color: #f0f0f0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  padding: 10px 15px;
+}
+
+.param-name-header {
+  flex: 2;
+}
+
+.param-value-header {
+  flex: 2;
+}
+
+.param-actions-header {
+  flex: 1;
+  text-align: right;
+}
+
+.parameter-item {
+  display: flex;
+  padding: 12px 15px;
+  border-top: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+
+.parameter-item:hover {
+  background-color: #f5f5f5;
+}
+
+.param-name {
+  flex: 2;
+  font-weight: 500;
+  color: #333;
+}
+
+.param-value {
+  flex: 2;
+  color: #1976d2;
+  font-family: monospace;
+}
+
+.param-actions {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.remove-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.remove-button:hover {
+  background-color: #ffebee;
+  border-color: #ffcdd2;
+  color: #e53935;
+}
+
+/* Add button styling */
+.add-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #e8f5e9;
+  border: 1px dashed #81c784;
+  border-radius: 4px;
+  color: #2e7d32;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-button:hover {
+  background-color: #c8e6c9;
+  border-color: #66bb6a;
+}
+
+/* Form styling */
+.add-parameter-form {
+  background-color: #fff;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.form-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.form-row {
+  display: flex;
+  margin-bottom: 15px;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group.full-width {
+  flex: 1 0 100%;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.25);
+}
+
+.input-help {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.form-examples {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.form-examples h5 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.form-examples ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.form-examples li {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-button {
+  padding: 10px 15px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+}
+
+.add-param-button {
+  padding: 10px 15px;
+  background-color: #1976d2;
+  border: 1px solid #1976d2;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-param-button:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.add-param-button:disabled {
+  background-color: #90caf9;
+  border-color: #90caf9;
+  cursor: not-allowed;
+}
+
+/* Hint box styling */
+.parameters-hint {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fff3e0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 15px;
+}
+
+.hint-icon {
+  font-size: 18px;
+  margin-right: 10px;
+  color: #f57c00;
+}
+
+.hint-text {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.hint-text strong {
+  color: #333;
+  font-weight: 600;
+}

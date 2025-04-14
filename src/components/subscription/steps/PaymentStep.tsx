@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SubscriptionTierSimple } from '../../../types/enhanced-types';
 import '../SubscriptionFlow.css';
+import './PaymentStep.css';
 
 // Import sub-components
 import OrderSummary from './payment/OrderSummary';

@@ -1,0 +1,91 @@
+/* Override CSS to ensure all elements are visible */
+
+/* Form Visibility Override */
+.subscription-form,
+.form-row,
+.form-group,
+.form-group label,
+.form-group input,
+.form-group select,
+.form-group textarea,
+.helper-text,
+.error-message,
+.step-actions,
+.privacy-notice,
+.privacy-icon,
+.privacy-text,
+.button-container,
+.button-back,
+.button-next,
+.primary-button,
+.secondary-button {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: static !important;
+}
+
+/* Fix layout elements */
+.form-row {
+  display: flex !important;
+}
+
+.form-group {
+  flex: 1 !important;
+}
+
+.step-actions {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+/* Form inputs */
+input, select, textarea {
+  width: 100% !important;
+  padding: 12px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  margin-bottom: 10px !important;
+  font-size: 16px !important;
+  background-color: white !important;
+  color: #333 !important;
+}
+
+/* Progress Step Visibility Override */
+.subscription-progress,
+.progress-step,
+.step-number,
+.step-name {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix for button styling */
+.primary-button {
+  background-color: #4285F4 !important;
+  color: white !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  padding: 12px 24px !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+.secondary-button {
+  background-color: #f1f1f1 !important;
+  color: #333 !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  padding: 12px 24px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
+/* Ensure proper z-index */
+.step-actions,
+.primary-button,
+.secondary-button {
+  z-index: 1001 !important;
+}

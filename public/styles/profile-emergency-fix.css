@@ -1,0 +1,217 @@
+/**
+ * EMERGENCY PROFILE FORM FIX
+ * This is a last-resort CSS file with highest-specificity selectors to force form visibility
+ */
+
+/* Universal selector to catch all form elements */
+html body .subscription-step form,
+html body [data-testid="profile-step"] form,
+html body [data-testid="profile-form"],
+html body form.subscription-form,
+html body div.subscription-form,
+html body .subscription-step > form,
+html body form[class*="subscription"],
+html body div[class*="subscription"] > form,
+html body form {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
+  position: static !important;
+  max-width: 800px !important;
+  margin: 0 auto 2rem !important;
+  padding: 1.5rem !important;
+  background-color: #fff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  z-index: 9999 !important;
+}
+
+/* Find form rows no matter how they're structured */
+html body form .form-row,
+html body form [class*="form-row"],
+html body form [class*="formRow"],
+html body form > div,
+html body [data-testid="profile-form"] > div {
+  display: flex !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
+  position: static !important;
+}
+
+/* Find form groups no matter how they're structured */
+html body form .form-group,
+html body form [class*="form-group"],
+html body form [class*="formGroup"],
+html body form > div > div,
+html body [data-testid="profile-form"] > div > div {
+  display: block !important;
+  flex: 1 !important;
+  margin-bottom: 1.5rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
+  position: static !important;
+}
+
+/* Find labels no matter how they're structured */
+html body form label,
+html body form [for],
+html body form .form-group > label,
+html body form [class*="form-group"] > label,
+html body form [class*="formGroup"] > label,
+html body form > div > div > label,
+html body [data-testid="profile-form"] label {
+  display: block !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
+  position: static !important;
+}
+
+/* Find inputs no matter how they're structured */
+html body form input,
+html body form input[type="text"],
+html body form input[type="email"],
+html body form input[type="password"],
+html body form input[type="number"],
+html body form input[type="tel"],
+html body form .form-group > input,
+html body form [class*="form-group"] > input,
+html body form [class*="formGroup"] > input,
+html body form > div > div > input,
+html body [data-testid="profile-form"] input {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  font-size: 1rem !important;
+  background-color: #fff !important;
+  color: #333 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: static !important;
+}
+
+/* Find buttons no matter how they're structured */
+html body form ~ .step-actions,
+html body [data-testid="profile-form"] ~ .step-actions,
+html body form ~ div[class*="action"],
+html body form ~ div[class*="button"],
+html body form + .step-actions,
+html body [data-testid="profile-step"] > div:last-child {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  margin-top: 30px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #e0e0e0 !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: static !important;
+  z-index: 9999 !important;
+}
+
+/* Find action buttons */
+html body .step-actions button,
+html body [data-testid="profile-form"] ~ .step-actions button,
+html body form ~ div[class*="action"] button,
+html body form ~ div[class*="button"] button,
+html body form + .step-actions button,
+html body [data-testid="profile-step"] > div:last-child button,
+html body button.primary-button,
+html body button.secondary-button,
+html body button[class*="next"],
+html body button[class*="back"] {
+  display: inline-block !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  min-width: 150px !important;
+  font-size: 1rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: static !important;
+  z-index: 10000 !important;
+}
+
+/* Special selectors to target specific problem areas */
+html body div[style*="display: none"] form,
+html body div[style*="visibility: hidden"] form,
+html body div[style*="opacity: 0"] form {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Override any hidden class or style that might be applied */
+html body .hidden,
+html body .invisible,
+html body [style*="display: none"],
+html body [style*="visibility: hidden"],
+html body [style*="opacity: 0"],
+html body [class*="hidden"],
+html body [class*="invisible"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix for elements that need to be flex */
+html body .hidden.form-row,
+html body .invisible.form-row,
+html body .form-row[style*="display: none"],
+html body .form-row[style*="visibility: hidden"],
+html body .form-row[style*="opacity: 0"],
+html body [class*="form-row"][class*="hidden"],
+html body [class*="form-row"][class*="invisible"] {
+  display: flex !important;
+}
+
+/* Fix for buttons that need to be inline-block */
+html body .hidden.button,
+html body .invisible.button,
+html body button[style*="display: none"],
+html body button[style*="visibility: hidden"],
+html body button[style*="opacity: 0"],
+html body button[class*="hidden"],
+html body button[class*="invisible"] {
+  display: inline-block !important;
+}
+
+/* Extra important rule to override anything trying to hide content */
+@keyframes keepVisible {
+  0% { opacity: 0.99999; }
+  100% { opacity: 1; }
+}
+
+/* Apply animation to ensure elements stay visible */
+html body form,
+html body form *,
+html body .step-actions,
+html body .step-actions * {
+  animation: keepVisible 0.1s linear infinite !important;
+}

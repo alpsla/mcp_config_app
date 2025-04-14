@@ -1,0 +1,71 @@
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between; /* Ensure Back on left, Next on right */
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  width: 100%;
+}
+
+.back-button, .next-button {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button {
+  background-color: white;
+  border: 1px solid #ddd;
+  color: #333;
+  margin-right: auto; /* Ensures it stays left-aligned */
+}
+
+.back-button:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #bdbdbd;
+}
+
+.back-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.next-button {
+  background-color: #1976d2;
+  border: 1px solid #1976d2;
+  color: white;
+  min-width: 120px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-left: auto; /* Ensures it stays right-aligned */
+}
+
+.next-button:hover:not(:disabled) {
+  background-color: #1565c0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.next-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.25);
+}
+
+.back-button:disabled, .next-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Fix for mobile devices */
+@media (max-width: 568px) {
+  .navigation-buttons {
+    flex-direction: row; /* Keep buttons on same row even on mobile */
+    gap: 15px;
+  }
+  
+  .back-button, .next-button {
+    flex: 1; /* Allow buttons to grow to fill space */
+  }
+}

@@ -1,0 +1,114 @@
+/* 
+ * ProgressBar Component Styles
+ * Clean CSS that works exclusively with React rendering
+ * No dependencies on JavaScript DOM manipulation
+ */
+
+.subscription-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  position: relative;
+  flex-wrap: nowrap; /* Changed to nowrap to ensure items stay in a row */
+  width: 100%;
+  background-color: #f8f9fa; /* Changed to a more professional color */
+  padding: 15px 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* The connecting line behind the step circles */
+.progress-bar-line {
+  position: absolute;
+  top: 25px; /* Adjusted to align with step circles */
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+
+/* Individual step container */
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 80px;
+  margin-bottom: 10px;
+}
+
+/* Step circle with number or checkmark */
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #757575;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  border: 2px solid #fff;
+  transition: all 0.2s ease;
+}
+
+/* Step name text */
+.step-name {
+  font-size: 0.85rem;
+  color: #757575;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+/* Current/active step styles */
+.progress-step.active .step-number {
+  background-color: #4285f4;
+  color: white;
+}
+
+.progress-step.active .step-name {
+  color: #4285f4;
+  font-weight: 600;
+}
+
+/* Completed step styles */
+.progress-step.completed .step-number {
+  background-color: #34a853;
+  color: white;
+}
+
+.progress-step.completed .step-name {
+  color: #34a853;
+}
+
+/* Make sure SVG checkmark is centered and sized correctly */
+.progress-step.completed .step-number svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .subscription-progress {
+    flex-wrap: wrap;
+  }
+  
+  .progress-step {
+    margin-bottom: 15px;
+    flex-basis: 33.33%;
+  }
+  
+  .progress-bar-line {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-step {
+    flex-basis: 50%;
+  }
+}

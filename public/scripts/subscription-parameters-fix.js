@@ -1,310 +1,359 @@
 /**
- * subscription-parameters-fix.js
- * Fix for input fields in Subscription Parameters page
+ * This script fixes the parameters page in the subscription flow
+ * It adds essential CSS styles and initializes event handlers
  */
 
 (function() {
-  // Constants
-  const DEBUG = true;
-  const LOG_PREFIX = '[SubscriptionParametersFix]';
+  console.log("Subscription parameters fix script loaded");
   
-  // Helper for debug logs
-  function debugLog(...args) {
-    if (DEBUG) {
-      console.log(LOG_PREFIX, ...args);
-    }
+  // Wait for the DOM to be fully loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFix);
+  } else {
+    initFix();
   }
   
-  // Initialize the fix
-  function initialize() {
-    debugLog('Initializing input field fixes');
-    
-    // Run on document load
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', applyFixes);
-    } else {
-      applyFixes();
+  // Watch for route changes to apply the fix when parameters page is loaded
+  window.addEventListener('hashchange', function() {
+    console.log('Hash changed, checking if parameters page');
+    if (window.location.hash.includes('/subscribe/parameters')) {
+      console.log('Parameters page detected, applying fix');
+      applyFix();
+    }
+  });
+  
+  function initFix() {
+    // Check if we're on the parameters page on initial load
+    if (window.location.hash.includes('/subscribe/parameters')) {
+      console.log('Parameters page detected on initial load, applying fix');
+      applyFix();
     }
     
-    // Listen for hash changes to apply fixes when parameters page loads
-    window.addEventListener('hashchange', function() {
-      if (isParametersPage()) {
-        debugLog('Hash changed to parameters page');
-        applyFixes();
-      }
-    });
-    
-    // Create MutationObserver to watch for changes that would add the parameters form
+    // Create an observer to watch for DOM changes
+    initObserver();
+  }
+  
+  function initObserver() {
+    // Create a MutationObserver to detect when the parameters content is added to the DOM
     const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-          // If we're on the parameters page and see DOM mutations, check for our form
-          if (isParametersPage() && !document.querySelector('.inputs-fixed')) {
-            applyFixes();
-          }
+      // Check if we're on the parameters page
+      if (window.location.hash.includes('/subscribe/parameters')) {
+        // Look for parameters container
+        const paramContainer = document.querySelector('.parameters-container');
+        if (paramContainer && !paramContainer.hasAttribute('data-fixed')) {
+          console.log('Parameters container found, applying fix');
+          applyFix();
+          
+          // Mark the container as fixed to avoid applying fixes multiple times
+          paramContainer.setAttribute('data-fixed', 'true');
         }
-      });
+      }
     });
     
-    observer.observe(document.body, { 
-      childList: true, 
-      subtree: true 
+    // Start observing the body for changes
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
     });
-    
-    debugLog('Initialization complete');
   }
   
-  // Check if we're on the parameters page
-  function isParametersPage() {
-    return window.location.hash.includes('/subscribe/parameters') || 
-           document.querySelector('.huggingface-token-section') !== null;
-  }
-  
-  // Apply fixes to input fields
-  function applyFixes() {
-    debugLog('Applying input field fixes');
+  function applyFix() {
+    // Add the CSS fixes
+    addStyles();
     
-    // Inject CSS fixes
-    injectStyles();
-    
-    // Fix for Hugging Face token input
-    fixTokenInput();
-    
-    // Fix for other parameter inputs
-    fixParameterInputs();
-    
-    // Mark that we've applied fixes
-    const paramContainer = document.querySelector('.subscription-step');
-    if (paramContainer) {
-      paramContainer.classList.add('inputs-fixed');
-      debugLog('Added inputs-fixed class to container');
-    }
-  }
-
-  // Fix Hugging Face token input
-  function fixTokenInput() {
-    const tokenInputContainer = document.querySelector('.huggingface-token-section');
-    
-    if (!tokenInputContainer) {
-      debugLog('Token input container not found');
-      return;
-    }
-    
-    // Find the token input
-    let tokenInput = tokenInputContainer.querySelector('input');
-    
-    if (!tokenInput) {
-      debugLog('Token input not found');
-      return;
-    }
-    
-    // Check if it's already been fixed
-    if (tokenInput.hasAttribute('data-fixed')) {
-      debugLog('Token input already fixed');
-      return;
-    }
-    
-    debugLog('Fixing token input field');
-    
-    // Clone the input to remove any potentially problematic event listeners
-    const newInput = tokenInput.cloneNode(true);
-    
-    // Add our own event listener to ensure it works
-    newInput.addEventListener('input', function(e) {
-      // Dispatch input event correctly
-      const event = new Event('input', { bubbles: true });
-      e.target.dispatchEvent(event);
+    // Short delay to ensure the DOM has fully rendered
+    setTimeout(function() {
+      // Apply direct DOM fixes
+      fixContainer();
+      fixHeaders();
+      fixSliders();
+      fixAdvancedSection();
+      fixButton();
       
-      // Try to manually trigger React change handler
-      if (typeof window.reactTokenChangeHandler === 'function') {
-        window.reactTokenChangeHandler(e.target.value);
+      console.log('All fixes applied to parameters page');
+    }, 200);
+  }
+  
+  function addStyles() {
+    // Check if our styles have already been added
+    if (document.getElementById('parameters-fix-styles')) {
+      return;
+    }
+    
+    // Create a style element
+    const styleEl = document.createElement('style');
+    styleEl.id = 'parameters-fix-styles';
+    
+    // Add the CSS fixes
+    styleEl.textContent = `
+      /* Container fixes */
+      .parameters-container {
+        max-width: 900px !important;
+        margin: 30px auto !important;
+        background-color: white !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+        border: 1px solid #e3f2fd !important;
+        padding: 40px !important;
+        position: relative !important;
+        overflow: hidden !important;
       }
       
-      debugLog('Token input value changed:', e.target.value.substr(0, 3) + '***');
-    });
-    
-    // Replace the original input
-    tokenInput.parentNode.replaceChild(newInput, tokenInput);
-    
-    // Mark as fixed
-    newInput.setAttribute('data-fixed', 'true');
-    
-    // Ensure input is enabled and not read-only
-    newInput.readOnly = false;
-    newInput.disabled = false;
-    
-    // Remove any potential event blockers
-    newInput.parentNode.style.pointerEvents = 'auto';
-    newInput.parentNode.parentNode.style.pointerEvents = 'auto';
-    
-    debugLog('Token input field fixed');
-  }
-  
-  // Fix parameter inputs (sliders, number inputs)
-  function fixParameterInputs() {
-    // Fix range sliders
-    const sliders = document.querySelectorAll('input[type="range"]');
-    
-    if (sliders.length > 0) {
-      debugLog(`Found ${sliders.length} sliders to fix`);
-      
-      sliders.forEach((slider, index) => {
-        // Skip if already fixed
-        if (slider.hasAttribute('data-fixed')) {
-          return;
-        }
-        
-        // Clone to remove potential event blockers
-        const newSlider = slider.cloneNode(true);
-        
-        // Add direct event handler
-        newSlider.addEventListener('input', function(e) {
-          // Dispatch input event correctly
-          const event = new Event('input', { bubbles: true });
-          e.target.dispatchEvent(event);
-          
-          debugLog(`Slider ${index} value changed:`, e.target.value);
-          
-          // Update visual style to match value
-          const value = parseFloat(e.target.value);
-          const min = parseFloat(e.target.min || '0');
-          const max = parseFloat(e.target.max || '100');
-          const percentage = ((value - min) / (max - min)) * 100;
-          
-          // Apply gradient to show slider position
-          e.target.style.background = `linear-gradient(to right, #1976d2 0%, #1976d2 ${percentage}%, #e0e0e0 ${percentage}%, #e0e0e0 100%)`;
-        });
-        
-        // Replace the original slider
-        slider.parentNode.replaceChild(newSlider, slider);
-        
-        // Mark as fixed
-        newSlider.setAttribute('data-fixed', 'true');
-        
-        // Initialize the gradient
-        const value = parseFloat(newSlider.value);
-        const min = parseFloat(newSlider.min || '0');
-        const max = parseFloat(newSlider.max || '100');
-        const percentage = ((value - min) / (max - min)) * 100;
-        newSlider.style.background = `linear-gradient(to right, #1976d2 0%, #1976d2 ${percentage}%, #e0e0e0 ${percentage}%, #e0e0e0 100%)`;
-      });
-    }
-    
-    // Fix number inputs
-    const numberInputs = document.querySelectorAll('input[type="number"]');
-    
-    if (numberInputs.length > 0) {
-      debugLog(`Found ${numberInputs.length} number inputs to fix`);
-      
-      numberInputs.forEach((input, index) => {
-        // Skip if already fixed
-        if (input.hasAttribute('data-fixed')) {
-          return;
-        }
-        
-        // Clone to remove potential event blockers
-        const newInput = input.cloneNode(true);
-        
-        // Add direct event handler
-        newInput.addEventListener('input', function(e) {
-          // Dispatch input event correctly
-          const event = new Event('input', { bubbles: true });
-          e.target.dispatchEvent(event);
-          
-          debugLog(`Number input ${index} value changed:`, e.target.value);
-        });
-        
-        // Replace the original input
-        input.parentNode.replaceChild(newInput, input);
-        
-        // Mark as fixed
-        newInput.setAttribute('data-fixed', 'true');
-      });
-    }
-  }
-  
-  // Add CSS fixes
-  function injectStyles() {
-    const existingStyles = document.getElementById('subscription-parameters-fix-styles');
-    
-    if (existingStyles) {
-      debugLog('Styles already injected');
-      return;
-    }
-    
-    debugLog('Injecting styles');
-    
-    const styles = document.createElement('style');
-    styles.id = 'subscription-parameters-fix-styles';
-    
-    styles.textContent = `
-      /* Fix for input fields that may be blocked */
-      .huggingface-token-section input {
-        pointer-events: auto !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-      
-      /* Improved slider styling */
-      input[type="range"] {
-        -webkit-appearance: none;
+      /* Blue top bar */
+      .parameters-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 6px;
-        border-radius: 5px;
-        background: linear-gradient(to right, #1976d2 0%, #1976d2 50%, #e0e0e0 50%, #e0e0e0 100%);
-        outline: none;
-        transition: background 0.1s;
+        height: 8px;
+        background: linear-gradient(to right, #1976d2, rgba(25, 118, 210, 0.8));
+        z-index: 1;
+      }
+      
+      /* Header styling */
+      .parameters-header {
+        text-align: center;
+        margin-bottom: 40px !important;
+      }
+      
+      .parameters-icon-container {
+        width: 70px !important;
+        height: 70px !important;
+        border-radius: 50% !important;
+        background-color: #E3F2FD !important;
+        color: #1976D2 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto 20px !important;
+      }
+      
+      .parameters-icon {
+        font-size: 30px !important;
+      }
+      
+      .parameters-title {
+        font-size: 28px !important;
+        margin: 0 0 10px 0 !important;
+        color: #333 !important;
+        font-weight: 600 !important;
+      }
+      
+      .parameters-description {
+        margin: 0 auto !important;
+        color: #666 !important;
+        font-size: 16px !important;
+        max-width: 600px !important;
+      }
+      
+      /* Content area */
+      .parameters-content {
+        max-width: 650px !important;
+        margin: 0 auto !important;
+        opacity: 1 !important; /* Ensure content is visible */
+        pointer-events: auto !important; /* Ensure content is interactive */
+      }
+      
+      /* Parameter sliders */
+      .parameter-sliders {
+        transition: opacity 0.3s ease !important;
+      }
+      
+      /* Range slider styling */
+      input[type="range"] {
+        height: 6px !important;
+        border-radius: 5px !important;
+        outline: none !important;
+        appearance: none !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        margin: 10px 0 !important;
       }
       
       input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: #1976d2;
-        cursor: pointer;
-        border: 2px solid white;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        -webkit-appearance: none !important;
+        width: 18px !important;
+        height: 18px !important;
+        border-radius: 50% !important;
+        background: #1976d2 !important;
+        cursor: pointer !important;
+        border: 2px solid white !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
       }
       
-      input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: #1976d2;
-        cursor: pointer;
-        border: 2px solid white;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      /* HF Token section */
+      .huggingface-token-section {
+        margin-top: 30px !important;
+        margin-bottom: 20px !important;
+        background-color: #F0F7FF !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+        border: 1px solid #BBDEFB !important;
       }
       
-      /* Fix for containers that may have pointer-events disabled */
-      .subscription-step {
-        pointer-events: auto !important;
+      /* Token input */
+      .token-input {
+        width: 100% !important;
+        padding: 12px !important;
+        border-radius: 4px !important;
+        border: 1px solid #ccc !important;
+        font-size: 14px !important;
+        margin-bottom: 10px !important;
       }
       
-      /* Improved token input field styling */
-      .huggingface-token-section input {
-        width: 100%;
-        padding: 12px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-        transition: all 0.2s ease;
+      /* Advanced parameters section */
+      .advanced-parameters {
+        margin-top: 30px !important;
       }
       
-      .huggingface-token-section input:focus {
-        border-color: #1976d2;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+      .advanced-parameters-header {
+        font-size: 18px !important;
+        color: #444 !important;
+        margin-bottom: 15px !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      
+      /* Navigation buttons */
+      .navigation-buttons {
+        display: flex !important;
+        justify-content: space-between !important;
+        margin-top: 40px !important;
+        padding-top: 20px !important;
+        border-top: 1px solid #f0f0f0 !important;
+      }
+      
+      .back-button {
+        padding: 12px 24px !important;
+        background-color: #fff !important;
+        color: #333 !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        font-size: 16px !important;
+        transition: all 0.2s ease !important;
+      }
+      
+      .next-button {
+        padding: 12px 28px !important;
+        background-color: #1976d2 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        transition: all 0.2s ease !important;
+      }
+      
+      /* Make sure all elements are visible when needed */
+      input:disabled,
+      button:disabled {
+        opacity: 0.7 !important;
+        cursor: not-allowed !important;
+      }
+      
+      /* Input styles */
+      input[type="number"] {
+        width: 60px !important;
+        padding: 5px !important;
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        text-align: center !important;
+      }
+      
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .parameters-container {
+          margin: 20px !important;
+          padding: 30px 20px !important;
+        }
       }
     `;
     
-    document.head.appendChild(styles);
-    debugLog('Styles injected');
+    // Add the style element to the document head
+    document.head.appendChild(styleEl);
+    console.log('Parameter page styles added');
   }
   
-  // Start the fix
-  initialize();
+  function fixContainer() {
+    const container = document.querySelector('.parameters-container');
+    if (!container) {
+      console.log('Container not found');
+      return;
+    }
+    
+    // Make sure the container is visible
+    container.style.opacity = '1';
+    container.style.display = 'block';
+    console.log('Container visibility ensured');
+  }
   
-})(window);
+  function fixHeaders() {
+    const header = document.querySelector('.parameters-header');
+    if (!header) {
+      console.log('Header not found');
+      return;
+    }
+    
+    // Make sure the icon is visible
+    const icon = header.querySelector('.parameters-icon');
+    if (icon) {
+      icon.innerHTML = '⚙️';
+      icon.style.opacity = '1';
+      icon.style.fontSize = '30px';
+    }
+    
+    console.log('Header elements fixed');
+  }
+  
+  function fixSliders() {
+    const sliders = document.querySelectorAll('input[type="range"]');
+    sliders.forEach(slider => {
+      // Ensure sliders work by fixing their appearance
+      const value = parseFloat(slider.value);
+      const min = parseFloat(slider.getAttribute('min') || '0');
+      const max = parseFloat(slider.getAttribute('max') || '1');
+      const percentage = ((value - min) / (max - min)) * 100;
+      
+      // Set the gradient background to reflect the current value
+      slider.style.background = `linear-gradient(to right, #1976d2 0%, #1976d2 ${percentage}%, #e0e0e0 ${percentage}%, #e0e0e0 100%)`;
+      
+      // Add event listener to update the background when the value changes
+      slider.addEventListener('input', () => {
+        const newValue = parseFloat(slider.value);
+        const newPercentage = ((newValue - min) / (max - min)) * 100;
+        slider.style.background = `linear-gradient(to right, #1976d2 0%, #1976d2 ${newPercentage}%, #e0e0e0 ${newPercentage}%, #e0e0e0 100%)`;
+      });
+      
+      console.log('Slider fixed:', slider);
+    });
+  }
+  
+  function fixAdvancedSection() {
+    const advancedSection = document.querySelector('.advanced-parameters');
+    if (!advancedSection) {
+      console.log('Advanced section not found');
+      return;
+    }
+    
+    // Make sure the section is visible
+    advancedSection.style.display = 'block';
+    advancedSection.style.opacity = '1';
+    
+    console.log('Advanced parameters section fixed');
+  }
+  
+  function fixButton() {
+    // Fix navigation buttons
+    const buttons = document.querySelectorAll('.navigation-buttons button');
+    buttons.forEach(button => {
+      button.style.opacity = '1';
+      button.style.cursor = 'pointer';
+      console.log('Button fixed:', button);
+    });
+  }
+})();

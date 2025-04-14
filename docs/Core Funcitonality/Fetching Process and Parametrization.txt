@@ -57,7 +57,7 @@ Prompt and Store the Token
 In your app’s UI, prompt users for their Hugging Face API token once.
 Store it securely:
 macOS: Use security add-generic-password -a "$USER" -s "HFToken" -w "hf_xxx".
-Windows: Use PowerShell’s Set-Credential or .NET’s CredentialLocker.
+Windows: Use PowerShel. l’s Set-Credential or .NET’s CredentialLocker.
 Your app manages this programmatically.
 Generate a Wrapper Script
 Create a platform-specific script when setting up the config:

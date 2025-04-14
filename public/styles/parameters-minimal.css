@@ -1,0 +1,85 @@
+/* Minimal CSS for the parameters page */
+
+.parameters-container {
+  max-width: 900px;
+  margin: 30px auto;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e3f2fd;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.parameters-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.parameters-icon-container {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #E3F2FD;
+  color: #1976D2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.parameters-icon {
+  font-size: 30px;
+}
+
+.parameters-title {
+  font-size: 28px;
+  margin: 0 0 10px 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.parameters-description {
+  margin: 0 auto;
+  color: #666;
+  font-size: 16px;
+  max-width: 600px;
+}
+
+.parameters-content {
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.navigation-buttons {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navigation-buttons button:first-child {
+  padding: 12px 24px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.navigation-buttons button:last-child {
+  padding: 12px 28px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}

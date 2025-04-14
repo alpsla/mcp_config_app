@@ -1,0 +1,12 @@
+# Ignore all TypeScript files in this backup directory 
+# to prevent them from being included in builds
+*.tsx
+*.ts
+
+# Ignore specific backup files
+*.nots
+*.bak
+*.backup.*
+
+# Don't ignore this .gitignore file
+!.gitignore

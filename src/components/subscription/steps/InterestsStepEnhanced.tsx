@@ -1,18 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../SubscriptionFlow.css';
 import './buttons.css';
-
-// Define theme colors for Interests step
-const THEME = {
-  primary: '#673AB7', // Purple for interests theme
-  secondary: '#F3E5F5', // Light purple
-  accent: '#9C27B0',
-  text: '#333333',
-  border: '#D1C4E9',
-  cardBg: '#F9F5FD',
-  selectedBg: '#EDE7F6',
-  selectedBorder: '#673AB7'
-};
+import './InterestsStepEnhanced.css';
 
 interface InterestsStepProps {
   initialData: {
@@ -35,8 +24,19 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
     experienceLevel: initialData.experienceLevel || 'intermediate',
     otherInterest: '' // Add field for "Other" interest text input
   });
+  
+  // Add error state
+  const [error, setError] = useState<string>('');
 
-  // Add "Other" to the interests list
+  // One-time debugging log on mount
+  useEffect(() => {
+    console.log('InterestsStepEnhanced mounted');
+    return () => {
+      console.log('InterestsStepEnhanced unmounted');
+    };
+  }, []);
+
+  // Available interests categories with icons
   const availableInterests = [
     { id: 'text-generation', label: 'Text Generation', icon: '📝' },
     { id: 'image-generation', label: 'Image Generation', icon: '🖼️' },
@@ -98,6 +98,11 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
         interests: prev.interests.filter(interest => interest !== value)
       }));
     }
+    
+    // Clear error when selections change
+    if (error) {
+      setError('');
+    }
   };
   
   // Handle input change for "Other" interest text field
@@ -106,6 +111,11 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
       ...prev,
       otherInterest: e.target.value
     }));
+    
+    // Clear error when typing in other field
+    if (error) {
+      setError('');
+    }
   };
 
   // Handle radio button change for primary use case
@@ -114,6 +124,11 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
       ...prev,
       primaryUseCase: e.target.value
     }));
+    
+    // Clear error when use case changes
+    if (error) {
+      setError('');
+    }
   };
 
   // Handle radio button change for experience level
@@ -124,9 +139,39 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
     }));
   };
 
+  // Validate the form
+  const validateForm = () => {
+    // Check if at least one interest is selected
+    if (interestsData.interests.length === 0) {
+      setError('Please select at least one interest');
+      return false;
+    }
+    
+    // Check if "Other" is selected but no text is provided
+    if (interestsData.interests.includes('other') && !interestsData.otherInterest.trim()) {
+      setError('Please specify your other interest');
+      return false;
+    }
+    
+    // Check if primary use case is selected
+    if (!interestsData.primaryUseCase) {
+      setError('Please select a primary use case');
+      return false;
+    }
+    
+    // Clear any previous errors
+    setError('');
+    return true;
+  };
+
   // Handle next button click - include otherInterest in the data passed to parent
   const handleNext = () => {
-    // Create a copy of the data without the otherInterest field
+    // Validate the form first
+    if (!validateForm()) {
+      return; // Stop if validation fails
+    }
+    
+    // Create a copy of the data without the otherInterest field if not needed
     const { otherInterest, ...dataToSubmit } = interestsData;
     
     // If 'other' is selected and they provided text, add it to the submission
@@ -141,342 +186,133 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
     onNext(dataWithOther);
   };
 
-  // Custom styling for inputs
-  const customStyles = {
-    container: {
-      backgroundColor: THEME.secondary,
-      borderRadius: '12px',
-      padding: '40px 30px 30px',
-      borderLeft: `3px solid ${THEME.primary}`, // Thinner border for a more subtle look
-      boxShadow: `0 0 20px rgba(103, 58, 183, 0.08)`, // Subtle shadow with the theme color
-      margin: '20px auto',
-      maxWidth: '900px',
-      boxSizing: 'border-box' as const,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    headerContainer: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      textAlign: 'center' as const,
-      marginBottom: '30px'
-    },
-    iconContainer: {
-      width: '80px',
-      height: '80px',
-      borderRadius: '50%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '16px',
-      backgroundColor: THEME.primary,
-      color: 'white',
-      fontSize: '36px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-      border: '3px solid white'
-    },
-    title: {
-      margin: '0 0 10px 0',
-      fontSize: '28px',
-      fontWeight: 600,
-      color: THEME.primary
-    },
-    description: {
-      maxWidth: '500px',
-      fontSize: '16px',
-      lineHeight: 1.5,
-      color: '#555',
-      margin: '0'
-    },
-    formContainer: {
-      maxWidth: '800px',
-      margin: '0 auto',
-      backgroundColor: 'white',
-      borderRadius: '10px',
-      padding: '25px',
-      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.05)'
-    },
-    sectionTitle: {
-      color: THEME.primary,
-      marginBottom: '10px',
-      fontSize: '18px',
-      fontWeight: 500
-    },
-    sectionHint: {
-      color: '#666',
-      fontSize: '14px',
-      marginBottom: '20px'
-    },
-    interestsGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
-      gap: '12px',
-      marginBottom: '30px'
-    },
-    interestCheckbox: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '10px 15px',
-      backgroundColor: 'white',
-      border: `1px solid ${THEME.border}`,
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-    },
-    interestSelected: {
-      backgroundColor: THEME.selectedBg,
-      borderColor: THEME.selectedBorder,
-      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-      transform: 'translateY(-2px)',  // Lift the card slightly when selected
-      fontWeight: 500                 // Make text slightly bolder
-    },
-    checkboxIcon: {
-      marginRight: '10px',
-      fontSize: '20px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '24px',
-      height: '24px'
-    },
-    useCasesGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))',
-      gap: '12px',
-      marginBottom: '30px'
-    },
-    useCaseCard: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '12px 15px',
-      backgroundColor: 'white',
-      border: `1px solid ${THEME.border}`,
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-    },
-    useCaseSelected: {
-      backgroundColor: THEME.selectedBg,
-      borderColor: THEME.selectedBorder,
-      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-      transform: 'translateY(-2px)',  // Lift the card slightly when selected
-      fontWeight: 500                 // Make text slightly bolder
-    },
-    radioIcon: {
-      marginRight: '10px',
-      fontSize: '20px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '24px',
-      height: '24px'
-    },
-    experienceLevelsGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-      gap: '15px',
-      marginBottom: '30px'
-    },
-    experienceLevelCard: {
-      padding: '20px',
-      backgroundColor: 'white',
-      border: `1px solid ${THEME.border}`,
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-      display: 'flex',
-      flexDirection: 'column' as const
-    },
-    experienceLevelSelected: {
-      backgroundColor: THEME.selectedBg,
-      borderColor: THEME.selectedBorder,
-      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-      transform: 'translateY(-2px)',  // Lift the card slightly when selected
-    },
-    levelHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      marginBottom: '10px'
-    },
-    levelIcon: {
-      marginRight: '10px',
-      fontSize: '20px'
-    },
-    levelName: {
-      fontWeight: 600,
-      fontSize: '16px',
-      color: THEME.text
-    },
-    levelDescription: {
-      fontSize: '14px',
-      color: '#666',
-      marginTop: '5px'
-    },
-    actionButtons: {
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: '30px',
-      paddingTop: '20px',
-      borderTop: '1px solid #eee',
-      width: '100%',
-      marginBottom: '20px'
-    },
-    // Using the existing button styles instead of custom ones
-    buttonBack: undefined,
-    buttonNext: undefined
-  };
-
   return (
-    <div style={customStyles.container}>
-      {/* Header Section */}
-      <div style={customStyles.headerContainer}>
-        <div style={customStyles.iconContainer}>
-          <span role="img" aria-label="interests" style={{ lineHeight: 1 }}>🔍</span>
-        </div>
-        <h2 style={customStyles.title}>Interests & Use Cases</h2>
-        <p style={customStyles.description}>
-          Help us understand how you plan to use AI so we can provide better recommendations
-        </p>
-      </div>
+    <div className="subscription-step interests-step" style={{ backgroundColor: '#fff', color: '#333' }}>
+      <h2>Interests & Use Cases</h2>
+      <p className="step-description">
+        Help us understand how you plan to use AI so we can provide better recommendations
+      </p>
 
-      {/* Content Section */}
-      <div style={customStyles.formContainer}>
-        {/* Interests Section */}
-        <div>
-          <h3 style={customStyles.sectionTitle}>What AI capabilities are you interested in?</h3>
-          <p style={customStyles.sectionHint}>Select all that apply</p>
+      {/* Display error message if validation fails */}
+      {error && (
+        <div className="error-message" style={{
+          color: '#D32F2F',
+          backgroundColor: '#FEECEB',
+          padding: '10px',
+          borderRadius: '4px',
+          marginBottom: '15px',
+          fontSize: '0.85rem'
+        }}>
+          {error}
+        </div>
+      )}
+
+      <div className="interests-form">
+        <div className="form-section">
+          <h3>What AI capabilities are you interested in?</h3>
+          <p className="section-hint">Select all that apply</p>
           
-          <div style={customStyles.interestsGrid}>
-            {availableInterests.map(interest => {
-              const isSelected = interestsData.interests.includes(interest.id);
-              return (
-                <label 
-                  key={interest.id} 
-                  htmlFor={`interest-${interest.id}`}
-                  style={{
-                    ...customStyles.interestCheckbox,
-                    ...(isSelected ? customStyles.interestSelected : {})
-                  }}
-                >
-                  <span style={customStyles.checkboxIcon}>{interest.icon}</span>
-                  <input
-                    type="checkbox"
-                    id={`interest-${interest.id}`}
-                    value={interest.id}
-                    checked={isSelected}
-                    onChange={handleInterestChange}
-                    style={{ display: 'none' }}
-                  />
-                  {interest.label}
+          <div className="interests-grid">
+            {availableInterests.map(interest => (
+              <div key={interest.id} className={`interest-checkbox ${interestsData.interests.includes(interest.id) ? 'selected' : ''}`}>
+                <input
+                  type="checkbox"
+                  id={`interest-${interest.id}`}
+                  value={interest.id}
+                  checked={interestsData.interests.includes(interest.id)}
+                  onChange={handleInterestChange}
+                />
+                <label htmlFor={`interest-${interest.id}`}>
+                  <span className="interest-icon">{interest.icon}</span> {interest.label}
                 </label>
-              );
-            })}
+              </div>
+            ))}
           </div>
           
-          {/* Additional input field if "Other" is selected */}
+          {/* Additional input field when "Other" is selected */}
           {interestsData.interests.includes('other') && (
-            <div style={{ marginTop: '10px', marginBottom: '20px' }}>
+            <div className="other-interest-container">
               <input
                 type="text"
+                id="other-interest-input"
                 placeholder="Tell us about your other interest"
                 value={interestsData.otherInterest}
                 onChange={handleOtherInterestChange}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  borderRadius: '4px',
-                  border: `1px solid ${THEME.border}`,
-                  fontSize: '15px'
-                }}
+                className="other-interest-input"
               />
             </div>
           )}
         </div>
 
-        {/* Use Cases Section */}
-        <div>
-          <h3 style={customStyles.sectionTitle}>What's your primary use case?</h3>
-          <p style={customStyles.sectionHint}>Select your main purpose for using this tool</p>
+        <div className="form-section">
+          <h3>What's your primary use case?</h3>
+          <p className="section-hint">Select your main purpose for using this tool</p>
           
-          <div style={customStyles.useCasesGrid}>
-            {useCases.map(useCase => {
-              const isSelected = interestsData.primaryUseCase === useCase.id;
-              return (
-                <label 
-                  key={useCase.id} 
-                  htmlFor={`use-case-${useCase.id}`}
-                  style={{
-                    ...customStyles.useCaseCard,
-                    ...(isSelected ? customStyles.useCaseSelected : {})
-                  }}
-                >
-                  <span style={customStyles.radioIcon}>{useCase.icon}</span>
-                  <input
-                    type="radio"
-                    id={`use-case-${useCase.id}`}
-                    name="primaryUseCase"
-                    value={useCase.id}
-                    checked={isSelected}
-                    onChange={handleUseCaseChange}
-                    style={{ display: 'none' }}
-                  />
-                  {useCase.label}
+          <div className="use-cases-grid">
+            {useCases.map(useCase => (
+              <div key={useCase.id} className={`use-case-radio ${interestsData.primaryUseCase === useCase.id ? 'selected' : ''}`}>
+                <input
+                  type="radio"
+                  id={`use-case-${useCase.id}`}
+                  name="primaryUseCase"
+                  value={useCase.id}
+                  checked={interestsData.primaryUseCase === useCase.id}
+                  onChange={handleUseCaseChange}
+                />
+                <label htmlFor={`use-case-${useCase.id}`}>
+                  <span className="usecase-icon">{useCase.icon}</span> {useCase.label}
                 </label>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Experience Level Section */}
-        <div>
-          <h3 style={customStyles.sectionTitle}>What's your experience level with AI tools?</h3>
+        <div className="form-section">
+          <h3>What's your experience level with AI tools?</h3>
           
-          <div style={customStyles.experienceLevelsGrid}>
-            {experienceLevels.map(level => {
-              const isSelected = interestsData.experienceLevel === level.id;
-              return (
-                <label 
-                  key={level.id}
-                  htmlFor={`exp-${level.id}`}
-                  style={{
-                    ...customStyles.experienceLevelCard,
-                    ...(isSelected ? customStyles.experienceLevelSelected : {})
-                  }}
-                >
-                  <div style={customStyles.levelHeader}>
-                    <span style={customStyles.levelIcon}>{level.icon}</span>
-                    <div style={customStyles.levelName}>{level.label}</div>
+          <div className="experience-levels">
+            {experienceLevels.map(level => (
+              <div key={level.id} className={`experience-level-card ${interestsData.experienceLevel === level.id ? 'selected' : ''}`}>
+                <input
+                  type="radio"
+                  id={`exp-${level.id}`}
+                  name="experienceLevel"
+                  value={level.id}
+                  checked={interestsData.experienceLevel === level.id}
+                  onChange={handleExperienceLevelChange}
+                />
+                <label htmlFor={`exp-${level.id}`}>
+                  <div className="level-header">
+                    <span className="level-icon">{level.icon}</span>
+                    <div className="level-name">{level.label}</div>
                   </div>
-                  <input
-                    type="radio"
-                    id={`exp-${level.id}`}
-                    name="experienceLevel"
-                    value={level.id}
-                    checked={isSelected}
-                    onChange={handleExperienceLevelChange}
-                    style={{ display: 'none' }}
-                  />
-                  <div style={customStyles.levelDescription}>{level.description}</div>
+                  <div className="level-description">{level.description}</div>
                 </label>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Action Buttons - Using updated button styles from buttons.css */}
-      <div className="navigation-buttons">
+      <div className="navigation-buttons" style={{
+        display: 'flex', 
+        justifyContent: 'space-between',
+        marginTop: '30px',
+        paddingTop: '20px',
+        borderTop: '1px solid rgba(0,0,0,0.1)'
+      }}>
         <button
           type="button"
           className="button-cancel"
           onClick={onBack}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: '#f5f5f5',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 500
+          }}
         >
           Back
         </button>
@@ -485,7 +321,14 @@ const InterestsStepEnhanced: React.FC<InterestsStepProps> = ({
           className="button-continue"
           onClick={handleNext}
           style={{
-            backgroundColor: THEME.primary
+            padding: '12px 24px',
+            backgroundColor: '#4285F4',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
           Next
