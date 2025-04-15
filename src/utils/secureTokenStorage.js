@@ -1,17 +1,15 @@
 /**
  * Secure Token Storage
  * Provides methods for securely storing and retrieving Hugging Face API tokens
- * using platform-specific secure storage mechanisms
+ * with adaptation for both browser and Electron environments.
  */
-
-// Default to browser storage if not in Electron
-const isElectron = window && window.process && window.process.type;
 
 /**
  * Storage key for the token
  * @type {string}
  */
-const TOKEN_STORAGE_KEY = 'huggingface_token';
+// eslint-disable-next-line no-unused-vars
+const TOKEN_STORAGE_KEY = 'HuggingFaceToken';
 
 /**
  * Secure Token Storage API
@@ -24,10 +22,14 @@ const secureTokenStorage = {
    */
   async storeToken(token) {
     try {
-      if (isElectron) {
-        return await this.storeTokenElectron(token);
+      // Check if we're in an Electron environment
+      if (this.isElectronEnvironment()) {
+        // Use electron IPC to store token securely
+        return await window.electron.secureStorage.storeToken(token);
       } else {
-        return await this.storeTokenBrowser(token);
+        // In browser environments, we can't securely store the token
+        console.warn('Secure token storage is only available in desktop environments');
+        return false;
       }
     } catch (error) {
       console.error('Error storing token:', error);
@@ -41,10 +43,14 @@ const secureTokenStorage = {
    */
   async retrieveToken() {
     try {
-      if (isElectron) {
-        return await this.retrieveTokenElectron();
+      // Check if we're in an Electron environment
+      if (this.isElectronEnvironment()) {
+        // Use electron IPC to retrieve token securely
+        return await window.electron.secureStorage.retrieveToken();
       } else {
-        return await this.retrieveTokenBrowser();
+        // In browser environments, we can't securely retrieve the token
+        console.warn('Secure token retrieval is only available in desktop environments');
+        return null;
       }
     } catch (error) {
       console.error('Error retrieving token:', error);
@@ -58,10 +64,14 @@ const secureTokenStorage = {
    */
   async deleteToken() {
     try {
-      if (isElectron) {
-        return await this.deleteTokenElectron();
+      // Check if we're in an Electron environment
+      if (this.isElectronEnvironment()) {
+        // Use electron IPC to delete token securely
+        return await window.electron.secureStorage.deleteToken();
       } else {
-        return await this.deleteTokenBrowser();
+        // In browser environments, we can't securely delete the token
+        console.warn('Secure token deletion is only available in desktop environments');
+        return false;
       }
     } catch (error) {
       console.error('Error deleting token:', error);
@@ -69,159 +79,78 @@ const secureTokenStorage = {
     }
   },
   
-  // Electron Implementation
-  
   /**
-   * Store token using Electron's secure storage
-   * @param {string} token - The token to store
-   * @returns {Promise<boolean>} Promise resolving to success status
-   * @private
+   * Check if the current environment is Electron
+   * @returns {boolean} True if running in Electron
    */
-  async storeTokenElectron(token) {
-    if (!window.electron || !window.electron.secureStorage) {
-      throw new Error('Electron secure storage not available');
-    }
-    
-    return await window.electron.secureStorage.setItem(TOKEN_STORAGE_KEY, token);
+  isElectronEnvironment() {
+    // Check if window.electron exists (set by our preload script)
+    return !!(window && window.electron && window.electron.secureStorage);
   },
   
   /**
-   * Retrieve token using Electron's secure storage
-   * @returns {Promise<string|null>} Promise resolving to the token or null
-   * @private
+   * Validate a token with the Hugging Face API
+   * @param {string} token - The token to validate
+   * @returns {Promise<object>} Promise resolving to validation result
    */
-  async retrieveTokenElectron() {
-    if (!window.electron || !window.electron.secureStorage) {
-      throw new Error('Electron secure storage not available');
-    }
-    
-    return await window.electron.secureStorage.getItem(TOKEN_STORAGE_KEY);
-  },
-  
-  /**
-   * Delete token using Electron's secure storage
-   * @returns {Promise<boolean>} Promise resolving to success status
-   * @private
-   */
-  async deleteTokenElectron() {
-    if (!window.electron || !window.electron.secureStorage) {
-      throw new Error('Electron secure storage not available');
-    }
-    
-    return await window.electron.secureStorage.removeItem(TOKEN_STORAGE_KEY);
-  },
-  
-  // Browser Implementation (encrypted localStorage)
-  
-  /**
-   * Store token in browser storage with encryption
-   * @param {string} token - The token to store
-   * @returns {Promise<boolean>} Promise resolving to success status
-   * @private
-   */
-  async storeTokenBrowser(token) {
+  async validateToken(token) {
     try {
-      // For browser environments, we'll use the Web Crypto API for encryption
-      // This is a simple implementation - in production you'd want a more robust
-      // encryption strategy with proper key management
-      
-      // Generate a device-specific key (or use a stored one)
-      let encryptionKey = localStorage.getItem('encryption_key');
-      if (!encryptionKey) {
-        // Generate a random key
-        const keyBytes = new Uint8Array(32); // 256-bit key
-        window.crypto.getRandomValues(keyBytes);
-        encryptionKey = Array.from(keyBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-        localStorage.setItem('encryption_key', encryptionKey);
+      // Check if we're in an Electron environment
+      if (this.isElectronEnvironment()) {
+        // Use electron IPC to validate token
+        return await window.electron.secureStorage.validateToken(token);
+      } else {
+        // In browser environments, validate directly
+        return await this.validateTokenDirectly(token);
       }
-      
-      // Simple XOR encryption (not secure for production!)
-      // In a real app, use the Web Crypto API properly
-      const encryptedToken = this.simpleEncrypt(token, encryptionKey);
-      
-      // Store the encrypted token
-      localStorage.setItem(TOKEN_STORAGE_KEY, encryptedToken);
-      
-      return true;
     } catch (error) {
-      console.error('Error storing token in browser:', error);
-      
-      // Fallback to plain localStorage if encryption fails
-      localStorage.setItem(TOKEN_STORAGE_KEY, token);
-      return true;
+      return {
+        isValid: false,
+        message: `Error validating token: ${error instanceof Error ? error.message : String(error)}`
+      };
     }
   },
   
   /**
-   * Retrieve token from browser storage
-   * @returns {Promise<string|null>} Promise resolving to the token or null
-   * @private
+   * Validate token directly with Hugging Face API
+   * @param {string} token - The token to validate
+   * @returns {Promise<object>} Promise resolving to validation result
    */
-  async retrieveTokenBrowser() {
+  async validateTokenDirectly(token) {
     try {
-      const encryptedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
-      if (!encryptedToken) {
-        return null;
-      }
+      const response = await fetch('https://huggingface.co/api/whoami-v2', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       
-      const encryptionKey = localStorage.getItem('encryption_key');
-      if (!encryptionKey) {
-        // No encryption key, return as is (might be unencrypted)
-        return encryptedToken;
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          isValid: true,
+          username: data.name || 'Unknown user',
+          orgs: data.orgs || [],
+          message: 'Token validated successfully!'
+        };
+      } else if (response.status === 401) {
+        return {
+          isValid: false,
+          message: 'Invalid token: Authentication failed'
+        };
+      } else {
+        return {
+          isValid: false,
+          message: `Token validation failed: ${response.status} ${response.statusText}`
+        };
       }
-      
-      // Decrypt the token
-      return this.simpleEncrypt(encryptedToken, encryptionKey); // XOR works both ways
     } catch (error) {
-      console.error('Error retrieving token from browser:', error);
-      
-      // Fallback to returning whatever is stored
-      return localStorage.getItem(TOKEN_STORAGE_KEY);
+      return {
+        isValid: false,
+        message: `Error validating token: ${error instanceof Error ? error.message : String(error)}`
+      };
     }
-  },
-  
-  /**
-   * Delete token from browser storage
-   * @returns {Promise<boolean>} Promise resolving to success status
-   * @private
-   */
-  async deleteTokenBrowser() {
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
-    return true;
-  },
-  
-  /**
-   * Very simple XOR encryption/decryption
-   * NOT SECURE FOR PRODUCTION USE!
-   * @param {string} text - Text to encrypt/decrypt
-   * @param {string} key - Encryption key
-   * @returns {string} Encrypted/decrypted text
-   * @private
-   */
-  simpleEncrypt(text, key) {
-    let result = '';
-    for (let i = 0; i < text.length; i++) {
-      result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-    }
-    return btoa(result); // Base64 encode for storage
-  },
-  
-  /**
-   * Simple decryption using XOR
-   * NOT SECURE FOR PRODUCTION USE!
-   * @param {string} encrypted - Encrypted text
-   * @param {string} key - Encryption key
-   * @returns {string} Decrypted text
-   * @private
-   */
-  simpleDecrypt(encrypted, key) {
-    const text = atob(encrypted); // Base64 decode
-    let result = '';
-    for (let i = 0; i < text.length; i++) {
-      result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-    }
-    return result;
-  },
+  }
 };
 
 export default secureTokenStorage;

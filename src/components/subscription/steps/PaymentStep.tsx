@@ -224,6 +224,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   }, [selectedTier, pricingInfo]);
 
   // Force showing debug info when running in development
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const showDebug = process.env.NODE_ENV === 'development';
 
   return (
@@ -274,25 +275,6 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         >
           {paymentMethod === 'paypal' ? 'Continue to PayPal' : 'Next'}
         </button>
-      </div>
-      
-      {/* DEBUG INFO */}
-      <div style={{ 
-        margin: '20px 0', 
-        padding: '10px', 
-        border: '1px solid #ccc', 
-        borderRadius: '4px',
-        fontSize: '12px',
-        color: '#666',
-        fontFamily: 'monospace',
-        display: showDebug ? 'block' : 'none'
-      }}>
-        <h4>Debug Info:</h4>
-        <p>Selected Tier: <strong>{selectedTier}</strong></p>
-        <p>Safe Tier: <strong>{pricingInfo.safeTier}</strong></p>
-        <p>Display Name: <strong>{pricingInfo.displayName}</strong></p>
-        <p>Price: <strong>{pricingInfo.price}</strong></p>
-        <p>URL Hash: <strong>{window.location.hash}</strong></p>
       </div>
     </div>
   );

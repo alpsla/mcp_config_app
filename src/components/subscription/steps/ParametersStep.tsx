@@ -80,6 +80,7 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
   const [isValidating, setIsValidating] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [hfTokenError, setHfTokenError] = useState<string | null>(null);
+  const [tokenSaved, setTokenSaved] = useState(false);
   
   // Color for UI elements based on selected tier
   const color = selectedTier === 'complete' ? '#673AB7' : '#1976D2';
@@ -91,6 +92,11 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
   const handleTokenChange = (newToken: string) => {
     setHfToken(newToken);
     setFormTouched(true);
+    
+    // Reset token saved state when token changes
+    if (tokenSaved) {
+      setTokenSaved(false);
+    }
     
     // Only validate if form has been touched
     if (newToken === '') {
@@ -122,6 +128,25 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
     }
     return true;
   };
+  
+  // Check if a token has already been saved on component mount
+  useEffect(() => {
+    const checkStoredToken = async () => {
+      try {
+        const storedToken = await secureTokenStorage.retrieveToken();
+        if (storedToken) {
+          // If a token is already stored, we can set a placeholder or the actual token
+          // depending on your security requirements
+          setHfToken(storedToken);
+          setTokenSaved(true);
+        }
+      } catch (error) {
+        console.error("Error checking stored token:", error);
+      }
+    };
+    
+    checkStoredToken();
+  }, []);
   
   // Handle form submission with validation
   const handleNext = async () => {
@@ -164,12 +189,15 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
         return; // Stop if token format is invalid
       }
       
-      // Store token securely in the local device storage
-      const tokenSaved = await secureTokenStorage.storeToken(hfToken);
+      // If the token hasn't been explicitly saved with the Save button,
+      // we can store it now as a backup mechanism
       if (!tokenSaved) {
-        setValidationError('Failed to securely store your token. Please try again.');
-        setIsValidating(false);
-        return;
+        const tokenSaved = await secureTokenStorage.storeToken(hfToken);
+        if (!tokenSaved) {
+          setValidationError('Failed to securely store your token. Please try again.');
+          setIsValidating(false);
+          return;
+        }
       }
       
       // If validation passes, proceed to next step
@@ -252,12 +280,13 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
           />
         </div>
         
-        {/* Hugging Face API Token Section - Ensure always visible */}
+        {/* Hugging Face API Token Section - Always visible with token validation */}
         <HuggingFaceTokenSection
           token={hfToken}
           onTokenChange={handleTokenChange}
           error={hfTokenError}
           initialExpanded={true}
+          disabled={isValidating}
         />
         
         {/* Advanced Parameters Section */}
@@ -276,7 +305,7 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
           onNoRepeatNgramSizeChange={(value) => console.log('No repeat ngram changed:', value)}
           onTypicalPChange={(value) => console.log('Typical P changed:', value)}
           onNumBeamsChange={(value) => console.log('Num beams changed:', value)}
-          initialExpanded={true}
+          initialExpanded={false}
         />
         
         {/* Navigation Buttons */}
@@ -285,6 +314,7 @@ const ParametersStep: React.FC<ParametersStepProps> = ({
           onNext={handleNext}
           nextColor={color}
           disabled={isValidating}
+          nextLabel={isValidating ? "Validating..." : "Next"}
         />
       </div>
     </div>

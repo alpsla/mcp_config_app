@@ -1,190 +1,296 @@
-/* Hugging Face Token Section Styles */
+/* HuggingFaceTokenSection.css */
 
 .hf-token-section {
-  margin: 30px 0;
-  border: 1px solid #FFEEBA;
-  border-radius: 10px;
-  background-color: #FFFBF0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin: 20px 0;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  width: 100%; /* Ensure full width */
-}
-
-.token-header {
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #FFF3CD;
-  border-bottom: 1px solid #FFEEBA;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease;
-}
-
-.token-header:hover {
-  background-color: #FFE9B3;
-}
-
-.token-title {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #856404;
-}
-
-.token-icon {
-  margin-right: 10px;
-  font-size: 20px;
-}
-
-.token-error-indicator {
-  margin-left: 10px;
-  color: #dc3545;
-  font-size: 18px;
-}
-
-.expand-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #856404;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.expand-button:hover {
-  color: #775a03;
-}
-
-.token-content {
-  padding: 20px;
-}
-
-.token-description {
-  margin-bottom: 15px;
-  color: #856404;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.hf-link {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.hf-link:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-.token-input-container {
-  margin-bottom: 15px;
-  width: 100%; /* Ensure full width */
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.input-wrapper {
-  position: relative;
-  display: block;
-  width: 100%;
-}
-
-.token-input {
-  width: 100%;
-  height: 40px;
-  padding: 0 40px 0 12px;
-  font-size: 16px;
-  border: 1px solid #DBC074;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-.token-input:focus {
-  outline: none;
-  border-color: #D39E00;
-  box-shadow: 0 0 0 3px rgba(222, 170, 12, 0.2);
-}
-
-.token-input.error {
-  border-color: #dc3545;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   background-color: #fff;
+  transition: all 0.3s ease;
 }
 
-.token-input.error:focus {
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
-}
-
-.toggle-visibility-button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.eye-icon {
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.toggle-visibility-button:hover {
-  color: #775a03;
-}
-
-.toggle-visibility-button:focus {
-  outline: none;
-  color: #775a03;
-}
-
-.token-error-message {
-  position: absolute;
-  right: 45px;
-  top: 12px; /* Position to center vertically */
-  color: #dc3545;
-  font-size: 14px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.token-note {
-  padding: 12px 15px;
-  background-color: #FFF9E6;
-  border-radius: 6px;
-  border-left: 3px solid #F0B400;
-  color: #775a03;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* Disabled state */
 .hf-token-section.disabled {
   opacity: 0.7;
   pointer-events: none;
 }
 
-/* Always visible state */
 .hf-token-section.hf-visible {
-  display: block;
+  opacity: 1;
+  max-height: 2000px; /* Large enough for content */
+}
+
+.token-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.token-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.token-icon {
+  font-size: 20px;
+}
+
+.token-error-indicator {
+  color: #d32f2f;
+  margin-left: 8px;
+}
+
+.token-success-indicator {
+  color: #2e7d32;
+  margin-left: 8px;
+}
+
+.expand-button {
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.expand-button:hover {
+  background-color: #e0e0e0;
+}
+
+.expand-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
+}
+
+.token-content {
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.token-description {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.hf-link {
+  color: #2196f3;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.hf-link:hover {
+  text-decoration: underline;
+}
+
+.token-input-container {
+  margin-bottom: 20px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.token-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.token-input:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.token-input.error {
+  border-color: #d32f2f;
+  background-color: #fff8f8;
+}
+
+.toggle-visibility-button {
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #555;
+}
+
+.toggle-visibility-button:hover {
+  background-color: #f0f0f0;
+}
+
+.eye-icon {
+  font-size: 20px;
+}
+
+.save-token-button {
+  padding: 12px 20px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.save-token-button:hover {
+  background-color: #1976d2;
+}
+
+.save-token-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.token-error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.validation-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 15px 0;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.validation-result.success {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+}
+
+.validation-result.error {
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+}
+
+.validation-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.validation-message {
+  flex: 1;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.token-saved-details {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #e8f5e9;
+  border-radius: 6px;
+  border-left: 4px solid #4caf50;
+}
+
+.token-saved-details h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #2e7d32;
+}
+
+.saved-summary {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.saved-summary li {
+  margin-bottom: 8px;
+  color: #1b5e20;
+}
+
+.token-note {
+  margin-top: 20px;
+  padding: 12px 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #666;
+  border-left: 3px solid #2196f3;
+}
+
+.claude-integration-note {
+  margin-top: 15px;
+  padding: 12px 15px;
+  background-color: #fff3e0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #e65100;
+  border-left: 3px solid #ff9800;
+}
+
+.desktop-only-message {
+  padding: 15px;
+  background-color: #e8eaf6;
+  border-radius: 6px;
+  border-left: 4px solid #3f51b5;
+  color: #3f51b5;
+}
+
+.desktop-only-message a {
+  color: #3f51b5;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .input-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .token-input {
+    width: 100%;
+  }
+  
+  .toggle-visibility-button,
+  .save-token-button {
+    align-self: flex-start;
+  }
+  
+  .save-token-button {
+    margin-left: 0;
+    width: 100%;
+  }
 }
